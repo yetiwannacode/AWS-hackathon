@@ -1,0 +1,177 @@
+{
+    "level": 2,
+    "timer_seconds": 600,
+    "questions": [
+        {
+            "id": 1,
+            "question": "A student observes that a class 'Logger' needs to access private data of a class 'DataHolder' for debugging purposes, but inheritance is not suitable. Which approach is most appropriate?",
+            "options": [
+                "Make all members of 'DataHolder' public.",
+                "Declare 'Logger' as a friend class of 'DataHolder'.",
+                "Use getter methods for all private members of 'DataHolder'.",
+                "Inherit 'DataHolder' into 'Logger'."
+            ],
+            "correct_answer": "B",
+            "explanation": "Declaring 'Logger' as a friend class grants it access to the private members of 'DataHolder' without compromising encapsulation as much as making members public, or requiring inheritance when it's not logically needed.",
+            "hints": [
+                "Consider data hiding principles.",
+                "Think about the relationship between the classes.",
+                "Friend classes grant access."
+            ]
+        },
+        {
+            "id": 2,
+            "question": "If a function 'calculateSum' needs to access private members of two different classes, 'Array1' and 'Array2', to compute a combined sum, what is the best way to implement this in C++?",
+            "options": [
+                "Make 'calculateSum' a member function of both 'Array1' and 'Array2'.",
+                "Make 'calculateSum' a global function and declare it as a friend function in both 'Array1' and 'Array2'.",
+                "Pass public getter methods of 'Array1' and 'Array2' to 'calculateSum'.",
+                "Inherit both 'Array1' and 'Array2' into a new class and make 'calculateSum' a member function of the new class."
+            ],
+            "correct_answer": "B",
+            "explanation": "A friend function can access private members of multiple classes. Making it a global function and declaring it as a friend in both classes allows it to access the necessary data.",
+            "hints": [
+                "Consider the scope of access needed.",
+                "Think about the number of classes involved.",
+                "Friend functions can operate on multiple classes."
+            ]
+        },
+        {
+            "id": 3,
+            "question": "A programmer wants to overload the '+' operator to add a custom class 'ComplexNumber' with an integer. The overloaded operator function needs to access the private real and imaginary parts of the 'ComplexNumber' object. How can this be achieved?",
+            "options": [
+                "Make the overloaded operator function a member function of 'ComplexNumber'.",
+                "Make the overloaded operator function a friend function of 'ComplexNumber'.",
+                "Use public getter methods to access the real and imaginary parts.",
+                "Declare the real and imaginary parts as public members."
+            ],
+            "correct_answer": "B",
+            "explanation": "Overloading operators often requires accessing private members. A friend function allows the overloaded operator to directly access the private members for the addition operation.",
+            "hints": [
+                "Consider operator overloading requirements.",
+                "Think about access to private members.",
+                "Friend functions are useful for operator overloading."
+            ]
+        },
+        {
+            "id": 4,
+            "question": "A student is designing a 'Matrix' class and wants another class, 'MatrixCalculator', to perform operations like transpose and inverse, which require direct access to the matrix elements. What is the most appropriate way to grant 'MatrixCalculator' access without making the matrix elements public?",
+            "options": [
+                "Make 'MatrixCalculator' a derived class of 'Matrix'.",
+                "Make 'MatrixCalculator' a friend class of 'Matrix'.",
+                "Use getter and setter methods for each matrix element.",
+                "Make the matrix elements protected."
+            ],
+            "correct_answer": "B",
+            "explanation": "Making 'MatrixCalculator' a friend class grants it full access to the private members of 'Matrix', allowing it to perform the necessary operations efficiently without exposing the data.",
+            "hints": [
+                "Consider the relationship between the classes.",
+                "Think about the level of access required.",
+                "Friend classes provide broad access."
+            ]
+        },
+        {
+            "id": 5,
+            "question": "If a function 'printData' is declared as a friend of a class 'Data', and 'printData' attempts to access a private member of 'Data', what will happen?",
+            "options": [
+                "The program will compile and run successfully.",
+                "The program will compile, but throw a runtime error.",
+                "The program will not compile due to access violation.",
+                "The program will only compile if 'printData' is also a member function of 'Data'."
+            ],
+            "correct_answer": "A",
+            "explanation": "Since 'printData' is declared as a friend, it has the privilege to access private members of 'Data', so the program will compile and run successfully.",
+            "hints": [
+                "Remember the purpose of friend functions.",
+                "Consider access permissions.",
+                "Friend functions bypass normal access restrictions."
+            ]
+        },
+        {
+            "id": 6,
+            "question": "A developer uses a friend function to access a private member of a class. Another developer argues that this violates the principle of data hiding. Is the second developer correct?",
+            "options": [
+                "Yes, friend functions always violate data hiding.",
+                "No, friend functions never violate data hiding.",
+                "Yes, friend functions can violate data hiding, but are sometimes necessary for specific functionalities.",
+                "No, friend functions only violate data hiding if they modify the private member."
+            ],
+            "correct_answer": "C",
+            "explanation": "Friend functions, by design, have access to private members from outside the class, which inherently weakens data hiding. However, they are sometimes necessary for specific functionalities like operator overloading or interactions between closely related classes.",
+            "hints": [
+                "Consider the trade-offs of using friend functions.",
+                "Think about the definition of data hiding.",
+                "Friend functions offer flexibility but can compromise encapsulation."
+            ]
+        },
+        {
+            "id": 7,
+            "question": "A student is writing a program where a 'ReportGenerator' class needs to access the internal data structures of a 'Database' class for generating reports. The student is considering using a friend class. What is a potential disadvantage of this approach?",
+            "options": [
+                "It increases the compilation time.",
+                "It reduces the program's memory usage.",
+                "It can make the 'Database' class harder to maintain and reason about due to increased coupling.",
+                "It prevents the 'ReportGenerator' from being used with other database classes."
+            ],
+            "correct_answer": "C",
+            "explanation": "Using friend classes increases coupling between classes, meaning changes in one class can more easily affect the other, making maintenance and reasoning about the code more difficult.",
+            "hints": [
+                "Consider the impact on class relationships.",
+                "Think about maintainability.",
+                "Increased coupling can lead to maintenance issues."
+            ]
+        },
+        {
+            "id": 8,
+            "question": "A programmer declares a function 'modifyValue' as a friend of class 'Value'. Inside 'modifyValue', the programmer attempts to use runtime polymorphism on a member of 'Value'. Will this work as expected?",
+            "options": [
+                "Yes, friend functions fully support runtime polymorphism.",
+                "No, friend functions do not support runtime polymorphism on class members.",
+                "It depends on whether the member is public or private.",
+                "It depends on the compiler being used."
+            ],
+            "correct_answer": "B",
+            "explanation": "Friend functions cannot do any run-time polymorphism in their members, as mentioned in the disadvantages section of the provided text.",
+            "hints": [
+                "Refer to the disadvantages of friend functions.",
+                "Think about the nature of polymorphism.",
+                "Friend functions have limitations."
+            ]
+        },
+        {
+            "id": 9,
+            "question": "A class 'Secret' contains highly sensitive data. A function 'audit' needs to verify the integrity of this data, but should not be able to modify it. Which of the following is the MOST secure approach?",
+            "options": [
+                "Declare 'audit' as a friend function of 'Secret'.",
+                "Provide 'audit' with a read-only pointer to the 'Secret' object as an argument.",
+                "Make all members of 'Secret' public.",
+                "Create public getter methods for all sensitive data in 'Secret'."
+            ],
+            "correct_answer": "B",
+            "explanation": "Providing a read-only pointer allows 'audit' to inspect the data without the ability to modify it, maintaining data integrity and security. Friend functions, while granting access, don't inherently prevent modification.",
+            "hints": [
+                "Consider the principle of least privilege.",
+                "Think about read-only access.",
+                "Friend functions grant full access, not just read access."
+            ]
+        },
+        {
+            "id": 10,
+            "question": "A student is implementing a custom memory manager. The memory manager needs to access the private allocation details of various objects to track memory usage. What is the most appropriate way to grant the memory manager access to these details?",
+            "options": [
+                "Make the memory manager a friend of all classes that use it.",
+                "Use public getter methods in each class to expose the allocation details.",
+                "Make the allocation details protected members of each class.",
+                "Use global variables to store the allocation details."
+            ],
+            "correct_answer": "A",
+            "explanation": "Making the memory manager a friend of all classes that use it grants it the necessary access to private allocation details without exposing them publicly or relying on global variables, which can lead to other issues.",
+            "hints": [
+                "Consider the scope of access needed.",
+                "Think about the relationship between the memory manager and other classes.",
+                "Friend classes can be useful for system-level components."
+            ]
+        }
+    ],
+    "chapter_name": "WINSEM2024-25_BCSE102L_TH_VL2024250501487_2025-02-27_Reference-Material-I.pdf"
+}

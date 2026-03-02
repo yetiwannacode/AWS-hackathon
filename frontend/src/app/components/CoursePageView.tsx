@@ -39,42 +39,71 @@ interface CoursePageViewProps {
     onBack: () => void;
     onSelectDay: (day: Day) => void;
     completedDays: number[];
+    onRoadmapRefresh?: () => void;
 }
 
 export const CoursePageView: React.FC<CoursePageViewProps> = ({
     roadmap,
     onBack,
     onSelectDay,
-    completedDays
+    completedDays,
+    onRoadmapRefresh
 }) => {
     const [view, setView] = React.useState<'overview' | 'today'>('overview');
 
     const [isGenerating, setIsGenerating] = React.useState(false);
 
+    // Local roadmap state — mirrors the prop but can be updated immediately
+    // after generation completes, so locks/labels are removed instantly.
+    const [localRoadmap, setLocalRoadmap] = React.useState(roadmap);
+    React.useEffect(() => { setLocalRoadmap(roadmap); }, [roadmap]);
+
     const getCurrentDay = () => {
         const nextDayNum = (completedDays.length > 0 ? Math.max(...completedDays) : 0) + 1;
-        for (const week of roadmap.weeks) {
+        for (const week of localRoadmap.weeks) {
             for (const day of week.days) {
                 if (day.day_number === nextDayNum) return day;
             }
         }
-        return roadmap.weeks[0].days[0]; // Fallback to day 1
+        return localRoadmap.weeks[0].days[0]; // Fallback to day 1
     };
 
     const handleGenerateWeek = async (weekNum: number) => {
         setIsGenerating(true);
         const toastId = toast.loading(`Generating content for Week ${weekNum}... This might take a minute.`);
         try {
-            const response = await fetch(`http://localhost:8000/api/roadmap/${roadmap.id}/generate_week`, {
+            const response = await fetch(`http://localhost:8000/api/roadmap/${localRoadmap.id}/generate_week`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ week_number: weekNum })
             });
 
             if (response.ok) {
-                toast.success(`Week ${weekNum} is ready!`, { id: toastId });
-                // We need to fetch the updated roadmap to see the new content
-                setTimeout(() => window.location.reload(), 1500);
+                const result = await response.json();
+
+                // Immediately update local state with the returned roadmap
+                // so locks and "requires generation" labels are removed
+                if (result.roadmap) {
+                    setLocalRoadmap(result.roadmap);
+                }
+
+                if (result.status === 'partial') {
+                    const failedCount = result.failed_days.length;
+                    // Format errors for the toast
+                    const errorSummary = Object.entries(result.error_details)
+                        .map(([day, error]) => `Day ${day}: ${String(error).split('\n')[0]}`) // Just first line of error
+                        .join('\n');
+
+                    toast.error(`Week ${weekNum} partially failed. ${failedCount} days failed:\n${errorSummary}`, {
+                        id: toastId,
+                        duration: 8000
+                    });
+                } else {
+                    toast.success(`Week ${weekNum} is ready!`, { id: toastId });
+                }
+
+                // Also trigger parent refresh to keep App-level state in sync
+                onRoadmapRefresh?.();
             } else {
                 toast.error("Failed to generate week content.", { id: toastId });
             }
@@ -96,7 +125,7 @@ export const CoursePageView: React.FC<CoursePageViewProps> = ({
 
             <header className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-4xl font-black tracking-tight">{roadmap.title}</h1>
+                    <h1 className="text-4xl font-black tracking-tight">{localRoadmap.title}</h1>
                     <div className="flex bg-accent rounded-xl p-1">
                         <button
                             onClick={() => setView('overview')}
@@ -113,7 +142,7 @@ export const CoursePageView: React.FC<CoursePageViewProps> = ({
                     </div>
                 </div>
                 <p className="text-xl text-muted-foreground font-medium max-w-3xl">
-                    {roadmap.description}
+                    {localRoadmap.description}
                 </p>
                 <div className="flex items-center gap-6 pt-2">
                     <div className="space-y-1">
@@ -122,22 +151,22 @@ export const CoursePageView: React.FC<CoursePageViewProps> = ({
                             <div className="w-48 h-2 bg-accent rounded-full overflow-hidden">
                                 <div
                                     className="h-full bg-primary transition-all duration-1000"
-                                    style={{ width: `${(completedDays.length / roadmap.total_days) * 100}% ` }}
+                                    style={{ width: `${(completedDays.length / localRoadmap.total_days) * 100}% ` }}
                                 />
                             </div>
-                            <span className="font-black text-primary">{Math.round((completedDays.length / roadmap.total_days) * 100)}%</span>
+                            <span className="font-black text-primary">{Math.round((completedDays.length / localRoadmap.total_days) * 100)}%</span>
                         </div>
                     </div>
                     <div className="px-6 border-l border-border space-y-1">
                         <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Days Completed</p>
-                        <p className="font-black text-2xl">{completedDays.length} / {roadmap.total_days}</p>
+                        <p className="font-black text-2xl">{completedDays.length} / {localRoadmap.total_days}</p>
                     </div>
                 </div>
             </header>
 
             {view === 'overview' ? (
                 <div className="space-y-12">
-                    {roadmap.weeks.map((week) => (
+                    {localRoadmap.weeks.map((week) => (
                         <section key={week.week_number} className="space-y-6">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center font-black text-xl">
@@ -153,8 +182,8 @@ export const CoursePageView: React.FC<CoursePageViewProps> = ({
                                 {week.days.map((day) => {
                                     const isCompleted = completedDays.includes(day.day_number);
                                     const isNext = day.day_number === (completedDays.length > 0 ? Math.max(...completedDays) + 1 : 1);
-                                    const isLocked = day.reference_content === "CONTENT_NOT_GENERATED" && !isGenerating;
                                     const needsGeneration = day.reference_content === "CONTENT_NOT_GENERATED";
+                                    const isLocked = needsGeneration && !isGenerating;
 
                                     return (
                                         <button

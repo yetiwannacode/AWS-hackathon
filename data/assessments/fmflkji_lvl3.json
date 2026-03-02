@@ -1,0 +1,62 @@
+{
+    "level": 3,
+    "timer_seconds": 600,
+    "questions": [
+        {
+            "id": 1,
+            "question": "Critique the use of friend functions in a large-scale software project where data encapsulation and modularity are paramount. Propose an alternative design pattern that achieves similar functionality without compromising these principles.",
+            "type": "short_answer",
+            "explanation": "The answer should discuss the drawbacks of friend functions regarding data hiding and potential coupling between classes. Alternatives like interfaces, dependency injection, or the Mediator pattern should be suggested and justified.",
+            "hints": [
+                "Think about the long-term maintainability and testability of code using friend functions.",
+                "Consider how friend functions might affect the ability to refactor code safely.",
+                "Remember the SOLID principles, particularly the Dependency Inversion Principle and the Interface Segregation Principle."
+            ]
+        },
+        {
+            "id": 2,
+            "question": "Imagine you are tasked with refactoring a legacy C++ codebase that heavily relies on friend classes for inter-class communication. Outline a step-by-step approach to gradually replace these friend classes with a more robust and maintainable design. What are the potential challenges and how would you address them?",
+            "type": "short_answer",
+            "explanation": "The answer should describe a phased approach, possibly involving introducing interfaces, abstract classes, or message passing mechanisms. It should also acknowledge challenges like breaking existing functionality, performance considerations, and the need for thorough testing during the refactoring process.",
+            "hints": [
+                "Think about using design patterns like Adapter or Facade to ease the transition.",
+                "Consider the impact on existing unit tests and the need to create new tests.",
+                "Remember the importance of code reviews and continuous integration during refactoring."
+            ]
+        },
+        {
+            "id": 3,
+            "question": "Create a scenario where using a friend function to overload an operator is the most appropriate and efficient solution. Justify your choice by comparing it to other possible approaches, such as member function overloading or non-member non-friend function overloading.",
+            "type": "short_answer",
+            "explanation": "The answer should present a specific use case (e.g., overloading operators for classes with implicit type conversions). It should then explain why a friend function is superior in that particular context, considering factors like symmetry, access to private members, and code clarity.",
+            "hints": [
+                "Think about operators that require access to the internal representation of multiple classes.",
+                "Consider the order of operands and how it affects the choice of overloading method.",
+                "Remember the rules for operator overloading and the potential for ambiguity."
+            ]
+        },
+        {
+            "id": 4,
+            "question": "The text mentions that friend functions cannot do run-time polymorphism. Design a workaround that allows you to achieve polymorphic behavior while still leveraging the benefits of friend functions. Explain the limitations of your approach.",
+            "type": "short_answer",
+            "explanation": "The answer should involve using a base class pointer or reference within the friend function and then calling virtual functions on that pointer/reference. The limitations might include the need for a common base class and the potential for increased complexity.",
+            "hints": [
+                "Think about how dynamic dispatch works in C++.",
+                "Consider using a factory pattern to create objects of different derived classes.",
+                "Remember that the friend function itself cannot be virtual."
+            ]
+        },
+        {
+            "id": 5,
+            "question": "Propose a coding standard guideline regarding the use of friend functions and friend classes in C++. Your guideline should address when their use is acceptable, when it should be avoided, and what alternatives should be considered. Provide rationale for each recommendation.",
+            "type": "short_answer",
+            "explanation": "The answer should outline specific rules for using friend functions and classes, emphasizing the importance of data hiding and modularity. It should suggest alternatives like interfaces, dependency injection, and the principle of least privilege. The rationale should explain the benefits of adhering to the guideline in terms of code maintainability, testability, and security.",
+            "hints": [
+                "Think about the potential risks associated with granting unrestricted access to private members.",
+                "Consider the impact on code coupling and the ability to refactor code independently.",
+                "Remember the importance of clear and consistent coding standards for team collaboration."
+            ]
+        }
+    ],
+    "chapter_name": "WINSEM2024-25_BCSE102L_TH_VL2024250501487_2025-02-27_Reference-Material-I.pdf"
+}

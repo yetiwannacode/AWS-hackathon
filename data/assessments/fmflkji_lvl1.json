@@ -1,0 +1,177 @@
+{
+    "level": 1,
+    "timer_seconds": 600,
+    "questions": [
+        {
+            "id": 1,
+            "question": "What is a friend class in C++?",
+            "options": [
+                "A class that can access private and protected members of another class.",
+                "A class that can only access public members of another class.",
+                "A class that is derived from another class.",
+                "A class that cannot access any members of another class."
+            ],
+            "correct_answer": "A",
+            "explanation": "A friend class is declared as a friend within another class, granting it access to the private and protected members of that class.",
+            "hints": [
+                "Think about access permissions.",
+                "Consider the keywords involved.",
+                "Refer to the definition of friend class."
+            ]
+        },
+        {
+            "id": 2,
+            "question": "What keyword is used to declare a friend function in C++?",
+            "options": [
+                "public",
+                "private",
+                "friend",
+                "protected"
+            ],
+            "correct_answer": "C",
+            "explanation": "The 'friend' keyword is used to declare a function as a friend of a class, allowing it to access private and protected members.",
+            "hints": [
+                "Consider the purpose of the declaration.",
+                "Think about access control.",
+                "Look for the keyword associated with friend functions."
+            ]
+        },
+        {
+            "id": 3,
+            "question": "Can a friend function be called using the object name and dot operator?",
+            "options": [
+                "Yes, always.",
+                "No, never.",
+                "Only if it's a member function.",
+                "Only if the object is passed as an argument."
+            ],
+            "correct_answer": "B",
+            "explanation": "Friend functions are called like ordinary functions and cannot be called using the object name and dot operator.",
+            "hints": [
+                "Consider how friend functions are invoked.",
+                "Think about their relationship to the class.",
+                "Refer to the features of friend functions."
+            ]
+        },
+        {
+            "id": 4,
+            "question": "Where can a friend function be declared within a class?",
+            "options": [
+                "Only in the public section.",
+                "Only in the private section.",
+                "Only in the protected section.",
+                "In any section: public, private, or protected."
+            ],
+            "correct_answer": "D",
+            "explanation": "A friend function can be declared in any section (public, private, or protected) of the class without affecting its functionality.",
+            "hints": [
+                "Consider the placement of the 'friend' keyword.",
+                "Think about access modifiers.",
+                "Refer to the features of friend functions."
+            ]
+        },
+        {
+            "id": 5,
+            "question": "What is a primary disadvantage of using friend functions?",
+            "options": [
+                "They increase code complexity.",
+                "They violate data hiding principles.",
+                "They cannot access private members.",
+                "They require inheritance."
+            ],
+            "correct_answer": "B",
+            "explanation": "Friend functions have access to private members of a class from outside the class, which violates the principle of data hiding.",
+            "hints": [
+                "Consider the impact on encapsulation.",
+                "Think about access control.",
+                "Refer to the disadvantages of friend functions."
+            ]
+        },
+        {
+            "id": 6,
+            "question": "What is the relationship between a friend class and the class that declares it as a friend?",
+            "options": [
+                "The friend class can access members of the other class.",
+                "The other class can access members of the friend class.",
+                "Both classes can access each other's members.",
+                "Neither class can access the other's members."
+            ],
+            "correct_answer": "A",
+            "explanation": "When ClassB is a friend of ClassA, ClassB can access members of ClassA, but ClassA cannot access members of ClassB.",
+            "hints": [
+                "Consider the direction of access.",
+                "Think about the 'granted, not taken' principle.",
+                "Refer to the explanation of friend classes."
+            ]
+        },
+        {
+            "id": 7,
+            "question": "What is data hiding?",
+            "options": [
+                "A technique to hide data from the user.",
+                "A fundamental concept of object-oriented programming that restricts access to private members from outside the class.",
+                "A way to encrypt data.",
+                "A method to store data in a hidden file."
+            ],
+            "correct_answer": "B",
+            "explanation": "Data hiding is a core principle of OOP that restricts direct access to the internal data (private members) of a class from external entities.",
+            "hints": [
+                "Think about encapsulation.",
+                "Consider access modifiers.",
+                "Refer to the definition of data hiding."
+            ]
+        },
+        {
+            "id": 8,
+            "question": "Can friend functions perform run-time polymorphism?",
+            "options": [
+                "Yes, always.",
+                "No, never.",
+                "Only with virtual functions.",
+                "Only if they are member functions."
+            ],
+            "correct_answer": "B",
+            "explanation": "Friend functions cannot do any run-time polymorphism in their members.",
+            "hints": [
+                "Consider the nature of friend functions.",
+                "Think about polymorphism requirements.",
+                "Refer to the disadvantages of friend functions."
+            ]
+        },
+        {
+            "id": 9,
+            "question": "What type of function is a friend function?",
+            "options": [
+                "A member function.",
+                "A non-member function.",
+                "A virtual function.",
+                "An inline function."
+            ],
+            "correct_answer": "B",
+            "explanation": "A friend function is a non-member function or ordinary function of a class, which is declared as a friend using the keyword \u201cfriend\u201d inside the class.",
+            "hints": [
+                "Consider the relationship to the class.",
+                "Think about how it's declared.",
+                "Refer to the features of friend functions."
+            ]
+        },
+        {
+            "id": 10,
+            "question": "What access permissions are given to a function when it is declared as a friend?",
+            "options": [
+                "Access to only public members.",
+                "Access to only protected members.",
+                "Access to only private members.",
+                "Access to all private and protected members."
+            ],
+            "correct_answer": "D",
+            "explanation": "By declaring a function as a friend, all the access permissions are given to the function, including access to private and protected members.",
+            "hints": [
+                "Consider the purpose of the 'friend' keyword.",
+                "Think about access control.",
+                "Refer to the features of friend functions."
+            ]
+        }
+    ],
+    "chapter_name": "WINSEM2024-25_BCSE102L_TH_VL2024250501487_2025-02-27_Reference-Material-I.pdf"
+}

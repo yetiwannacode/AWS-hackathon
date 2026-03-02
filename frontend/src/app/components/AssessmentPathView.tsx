@@ -94,6 +94,23 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
         fetchProgress(); // Refresh to see new XP/Levels
     };
 
+    // Sync Cooldown Locally
+    useEffect(() => {
+        if (!selectedClassroom || !progress?.cooldown_remaining || progress.cooldown_remaining <= 0) return;
+
+        const timer = setInterval(() => {
+            setProgress((prev: Progress | null) => {
+                if (!prev || !prev.cooldown_remaining || prev.cooldown_remaining <= 0) {
+                    clearInterval(timer);
+                    return prev;
+                }
+                return { ...prev, cooldown_remaining: prev.cooldown_remaining - 1 };
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [selectedClassroom, (progress?.cooldown_remaining ?? 0) > 0]);
+
     // If teacher, show TeacherAssessmentPreview directly
     if (userRole === 'teacher' && selectedClassroom) {
         return <TeacherAssessmentPreview sessionId={selectedClassroom} onBack={() => setSelectedClassroom(null)} />;
@@ -160,23 +177,6 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
             </div>
         );
     }
-
-    // Sync Cooldown Locally
-    useEffect(() => {
-        if (!progress?.cooldown_remaining || progress.cooldown_remaining <= 0) return;
-
-        const timer = setInterval(() => {
-            setProgress((prev: Progress | null) => {
-                if (!prev || !prev.cooldown_remaining || prev.cooldown_remaining <= 0) {
-                    clearInterval(timer);
-                    return prev;
-                }
-                return { ...prev, cooldown_remaining: prev.cooldown_remaining - 1 };
-            });
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, [selectedClassroom, (progress?.cooldown_remaining ?? 0) > 0]);
 
     return (
         <div className="p-8 max-w-5xl mx-auto min-h-screen flex flex-col">

@@ -191,6 +191,15 @@ export default function App() {
             .then(data => setSelectedRoadmap(data))
             .catch(err => console.error(err));
     };
+
+    const handleRoadmapRefresh = () => {
+        // Re-fetch the current roadmap after week content is generated
+        if (!selectedRoadmapId) return;
+        fetch(`http://localhost:8000/api/roadmap/${selectedRoadmapId}`)
+            .then(res => res.json())
+            .then(data => setSelectedRoadmap(data && !data.detail ? data : null))
+            .catch(err => console.error('Failed to refresh roadmap:', err));
+    };
     let navbarTitle = "C.O.T.E.ai";
     const selectedTopic = selectedTopicId ? topics[selectedTopicId] : null;
     if (selectedTopic) {
@@ -272,6 +281,7 @@ export default function App() {
                                 onBack={() => setSelectedRoadmapId(null)}
                                 onSelectDay={handleSelectDay}
                                 completedDays={selectedRoadmap.completed_days || []}
+                                onRoadmapRefresh={handleRoadmapRefresh}
                             />
                         ) : selectedTopic ? (
                             <MaterialsHub

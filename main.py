@@ -14,6 +14,7 @@ from pydantic import BaseModel
 import assessment_service
 import flashcard_service
 import roadmap_service
+from typing import List, Dict, Any, Optional
 
 app = FastAPI()
 
@@ -224,6 +225,44 @@ async def get_flashcards(session_id: str, language: str = "english"):
         return cards
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+class FlashcardUpdateRequest(BaseModel):
+    session_id: str
+    language: str
+    index: int
+    updated_card: Dict[str, str]
+
+@app.post("/api/flashcards/update")
+async def update_flashcard(request: FlashcardUpdateRequest):
+    """Manually update a specific flashcard."""
+    result = flashcard_service.update_flashcard_manual(
+        request.session_id, 
+        request.language, 
+        request.index, 
+        request.updated_card
+    )
+    if "error" in result:
+        raise HTTPException(status_code=400, detail=result["error"])
+    return result
+
+class FlashcardAIEditRequest(BaseModel):
+    session_id: str
+    language: str
+    index: int
+    instruction: str
+
+@app.post("/api/flashcards/ai-edit")
+async def ai_edit_flashcard(request: FlashcardAIEditRequest):
+    """Refine a specific flashcard using AI instructions."""
+    result = flashcard_service.refine_flashcard_with_ai(
+        request.session_id, 
+        request.language, 
+        request.index, 
+        request.instruction
+    )
+    if "error" in result:
+        raise HTTPException(status_code=500, detail=result["error"])
+    return result
 
 class XPRequest(BaseModel):
     session_id: str

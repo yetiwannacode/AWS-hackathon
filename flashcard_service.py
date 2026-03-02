@@ -125,6 +125,91 @@ def generate_flashcards(session_id: str, language: str = "english"):
         print(f"RAW CONTENT: {response.content}")
         return []
 
+def update_flashcard_manual(session_id: str, language: str, index: int, updated_card: Dict[str, str]):
+    """
+    Manually updates a specific flashcard in the cache.
+    """
+    cache_name = f"flashcards_v9_{language.lower()}.json"
+    flashcard_cache_path = os.path.join("uploads", session_id, cache_name)
+    
+    if not os.path.exists(flashcard_cache_path):
+        return {"error": "Flashcard cache not found"}
+        
+    try:
+        with open(flashcard_cache_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            
+        if 0 <= index < len(data["flashcards"]):
+            data["flashcards"][index] = updated_card
+            
+            with open(flashcard_cache_path, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            return {"success": True, "flashcards": data["flashcards"]}
+        else:
+            return {"error": "Invalid flashcard index"}
+    except Exception as e:
+        print(f"❌ Error updating flashcard: {e}")
+        return {"error": str(e)}
+
+def refine_flashcard_with_ai(session_id: str, language: str, index: int, user_instruction: str):
+    """
+    Refines a specific flashcard using AI based on teacher instructions.
+    """
+    cache_name = f"flashcards_v9_{language.lower()}.json"
+    flashcard_cache_path = os.path.join("uploads", session_id, cache_name)
+    
+    if not os.path.exists(flashcard_cache_path):
+        return {"error": "Flashcard cache not found"}
+        
+    try:
+        with open(flashcard_cache_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            
+        if not (0 <= index < len(data["flashcards"])):
+            return {"error": "Invalid flashcard index"}
+            
+        current_card = data["flashcards"][index]
+        
+        # Build prompt for refinement
+        refinement_prompt = f"""
+        You are refining a specific revision flashcard based on a teacher's instruction.
+        
+        Current Flashcard:
+        Topic: {current_card['topic']}
+        Summary: {current_card['summary']}
+        
+        Teacher's Instruction for refinement: "{user_instruction}"
+        
+        Rules:
+        1. Maintain the JSON format: {{"topic": "...", "summary": "..."}}
+        2. Keep the summary concise (max 120 words).
+        3. Use the requested language: {language}.
+        4. Return ONLY the JSON object for this single refined card.
+        """
+        
+        messages = [
+            SystemMessage(content="You are an expert tutor refining educational content."),
+            HumanMessage(content=refinement_prompt)
+        ]
+        
+        print(f"🪄 Refining flashcard {index} via AI for session {session_id}...")
+        response = generate_ai_response(messages)
+        
+        # Parse refined card
+        clean_content = response.content.replace('```json', '').replace('```', '').strip()
+        refined_card = json.loads(clean_content)
+        
+        # Update and save
+        data["flashcards"][index] = refined_card
+        with open(flashcard_cache_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+            
+        return {"success": True, "refined_card": refined_card, "flashcards": data["flashcards"]}
+        
+    except Exception as e:
+        print(f"❌ Error refining flashcard with AI: {e}")
+        return {"error": str(e)}
+
 if __name__ == "__main__":
     # Test logic
     # print(generate_flashcards("test_session"))

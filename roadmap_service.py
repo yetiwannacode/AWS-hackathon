@@ -1,7 +1,7 @@
 import json
 from json_repair import repair_json
 import os
-
+import time
 import uuid
 from datetime import datetime
 from typing import List, Dict, Any, Optional
@@ -152,7 +152,66 @@ def list_roadmaps(session_id: str) -> List[Dict[str, Any]]:
                     })
     return roadmaps
 
+
+def generate_day_content(roadmap_title: str, week_number: int, day: dict) -> Dict[str, Any]:
+    """
+    Generate deep content for a SINGLE day to avoid RESOURCE_EXHAUSTED errors
+    that occur when generating all 7 days at once in one large API call.
+    """
+    day_prompt = f"""You are an expert educational consultant generating content for ONE specific day of a learning roadmap.
+
+Roadmap: {roadmap_title}
+Week {week_number}, Day {day['day_number']}: {day['topic']}
+
+Generate a JSON object for this single day with these exact fields:
+{{
+    "day_number": {day['day_number']},
+    "learning_objectives": ["objective 1", "objective 2", "objective 3"],
+    "youtube_video_title": "Title of a real, relevant YouTube tutorial",
+    "youtube_video_url": "https://www.youtube.com/watch?v=...",
+    "reference_content": "A comprehensive, in-depth tutorial of at least 400 words. For coding topics: include exact syntax, data types, library functions with code examples. For math topics: include formulas, derivations, and worked examples. Write as if it is the primary learning material the student will read.",
+    "questions": [
+        {{"question": "A concept-checking question", "type": "recall", "hint": "Detailed answer/explanation"}},
+        {{"question": "A scenario-based question", "type": "application", "hint": "Detailed answer/explanation"}}
+    ]
+}}
+
+Return ONLY the JSON object. No markdown formatting, no extra text."""
+
+    max_retries = 3
+    retry_delay = 10  # base delay in seconds
+
+    for attempt in range(max_retries):
+        try:
+            response = client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=day_prompt,
+                config=types.GenerateContentConfig(
+                    tools=[types.Tool(google_search=types.GoogleSearch())]
+                )
+            )
+            text = response.text.strip()
+            if text.startswith("```json"):
+                text = text[7:]
+            if text.endswith("```"):
+                text = text[:-3]
+            return {"success": True, "data": json.loads(repair_json(text))}
+        except Exception as e:
+            if "RESOURCE_EXHAUSTED" in str(e) and attempt < max_retries - 1:
+                wait_time = retry_delay * (attempt + 1)
+                print(f"  ⚠️ Quota hit for Day {day['day_number']}, retrying in {wait_time}s... (Attempt {attempt+1}/{max_retries})")
+                time.sleep(wait_time)
+                continue
+            print(f"  ⚠️ Error generating content for Day {day['day_number']}: {e}")
+            return {"success": False, "error": str(e)}
+
+
 def generate_week_content(roadmap_id: str, week_number: int):
+    """
+    Generate deep content for all days in a specific week.
+    Generates one day at a time to avoid Gemini RESOURCE_EXHAUSTED errors.
+    Saves progress after each day so partial results are not lost.
+    """
     roadmap = get_roadmap(roadmap_id)
     if not roadmap:
         return {"error": "Roadmap not found"}
@@ -162,76 +221,54 @@ def generate_week_content(roadmap_id: str, week_number: int):
     if not target_week:
         return {"error": f"Week {week_number} not found in roadmap outline"}
 
-    print(f"🔄 Generating deep content for Week {week_number} of roadmap: {roadmap['title']}")
+    print(f"🔄 Generating deep content for Week {week_number} of '{roadmap['title']}' (one day at a time)")
     
-    # Extract topics for the week to provide context to Gemini
-    week_context = []
+    errors = []
+    error_details = {}
     for day in target_week["days"]:
-        week_context.append(f"Day {day['day_number']}: {day['topic']}")
-    
-    context_str = "\n".join(week_context)
-    
-    system_prompt = f"""
-    You are an expert educational consultant. Your task is to fill in the deep educational content for a specific week of a learning roadmap.
-    
-    For each day in the provided list, you must provide:
-    1. `learning_objectives`: A list of key things the user will learn.
-    2. `youtube_search_term`: A specific search term to find the best tutorial.
-    3. `youtube_video_title`: The title of a recommended video.
-    4. `youtube_video_url`: An actual URL found via web search.
-    5. `reference_content`: A highly comprehensive, in-depth tutorial (minimum 400 words).
-    6. `questions`: 2 questions with a `hint` field (the answer/explanation).
-    
-    IMPORTANT:
-    - THE CONTENT MUST BE EXTREMELY ELABORATE. For coding, include data types, syntax, and library functions. For Math, include formulas and derivations.
-    - Return ONLY the JSON array matching the 'days' structure.
-    """
-
-    try:
-        response = client.models.generate_content(
-            model='gemini-2.0-flash',
-            contents=f"{system_prompt}\n\nRoadmap Title: {roadmap['title']}\nWeek {week_number} Outline:\n{context_str}",
-            config=types.GenerateContentConfig(
-                tools=[types.Tool(google_search=types.GoogleSearch())],
-                response_mime_type="application/json"
-            )
-        )
+        # Skip days that already have generated content
+        existing_content = day.get("reference_content", "")
+        if existing_content and existing_content not in ("CONTENT_NOT_GENERATED", ""):
+            print(f"  ✅ Day {day['day_number']} already has content, skipping.")
+            continue
         
-        text = response.text.strip()
-        # Clean up possible markdown
-        if text.startswith("```json"): text = text[7:]
-        if text.endswith("```"): text = text[:-3]
+        print(f"  📝 Generating Day {day['day_number']}: {day['topic']}")
         
-        try:
-            new_days_data = json.loads(repair_json(text))
+        # Add a small delay between days to stay under RPM/TPM limits
+        if day != target_week["days"][0]:
+            time.sleep(2)
             
-            # Update the roadmap object
-            for i, day in enumerate(target_week["days"]):
-                # Find matching day data in the response
-                new_day_data = next((d for d in new_days_data if d.get("day_number") == day["day_number"]), None)
-                if not new_day_data:
-                    # Fallback to index if day_number match fails
-                    new_day_data = new_days_data[i] if i < len(new_days_data) else None
-                
-                if new_day_data:
-                    day.update({
-                        "learning_objectives": new_day_data.get("learning_objectives", []),
-                        "youtube_video_title": new_day_data.get("youtube_video_title", ""),
-                        "youtube_video_url": new_day_data.get("youtube_video_url", ""),
-                        "reference_content": new_day_data.get("reference_content", ""),
-                        "questions": new_day_data.get("questions", [])
-                    })
-            
+        result = generate_day_content(roadmap["title"], week_number, day)
+        
+        if result["success"]:
+            new_day_data = result["data"]
+            day.update({
+                "learning_objectives": new_day_data.get("learning_objectives", []),
+                "youtube_video_title": new_day_data.get("youtube_video_title", ""),
+                "youtube_video_url": new_day_data.get("youtube_video_url", ""),
+                "reference_content": new_day_data.get("reference_content", ""),
+                "questions": new_day_data.get("questions", [])
+            })
+            # Save after each successful day so progress is preserved on partial failures
             save_roadmap(roadmap)
-            return {"status": "success", "week_number": week_number}
-            
-        except Exception as parse_err:
-            print(f"❌ JSON parsing failure in week generation: {parse_err}")
-            return {"error": "Failed to parse AI response for week content"}
+            print(f"  ✅ Day {day['day_number']} done and saved.")
+        else:
+            errors.append(str(day["day_number"]))
+            error_details[str(day["day_number"])] = result["error"]
 
-    except Exception as e:
-        print(f"API Error in week generation: {e}")
-        return {"error": str(e)}
+    if errors:
+        print(f"⚠️ Week {week_number} generation finished with failures on days: {', '.join(errors)}")
+        return {
+            "status": "partial", 
+            "week_number": week_number, 
+            "failed_days": errors, 
+            "error_details": error_details,
+            "roadmap": roadmap
+        }
+    
+    print(f"✅ Week {week_number} content generation complete!")
+    return {"status": "success", "week_number": week_number, "roadmap": roadmap}
+
 
 def update_progress(roadmap_id: str, day_number: int):
     roadmap = get_roadmap(roadmap_id)

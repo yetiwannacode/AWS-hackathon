@@ -32,6 +32,7 @@ export const MaterialsHub: React.FC<MaterialsHubProps> = ({ topic, onBack, userR
             <FlashcardsView
                 sessionId={topic.id}
                 language={selectedLanguage}
+                isTeacher={userRole === 'teacher'}
                 onBack={() => setView('hub')}
             />
         );

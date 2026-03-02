@@ -11,14 +11,21 @@ interface Flashcard {
 interface FlashcardsViewProps {
     sessionId: string;
     language: string;
+    isTeacher?: boolean;
     onBack: () => void;
 }
 
-export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, language, onBack }) => {
+export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, language, isTeacher = false, onBack }) => {
     const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [direction, setDirection] = useState(0);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editMode, setEditMode] = useState<'manual' | 'ai'>('manual');
+    const [editTopic, setEditTopic] = useState('');
+    const [editSummary, setEditSummary] = useState('');
+    const [aiPrompt, setAiPrompt] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         const fetchFlashcards = async () => {
@@ -63,6 +70,72 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
         if (currentIndex > 0) {
             setDirection(-1);
             setCurrentIndex(prev => prev - 1);
+            setIsEditing(false); // Close edit mode when navigating
+        }
+    };
+
+    const handleStartEdit = () => {
+        const currentCard = flashcards[currentIndex];
+        setEditTopic(currentCard.topic);
+        setEditSummary(currentCard.summary);
+        setIsEditing(true);
+    };
+
+    const handleSaveManual = async () => {
+        setIsSaving(true);
+        try {
+            const res = await fetch(`http://localhost:8000/api/flashcards/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    language,
+                    index: currentIndex,
+                    updated_card: { topic: editTopic, summary: editSummary }
+                })
+            });
+            const result = await res.json();
+            if (result.success) {
+                setFlashcards(result.flashcards);
+                setIsEditing(false);
+                toast.success("Flashcard updated manually");
+            } else {
+                toast.error(result.error || "Update failed");
+            }
+        } catch (err) {
+            toast.error("Failed to save changes");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleRefineAI = async () => {
+        if (!aiPrompt.trim()) return;
+        setIsSaving(true);
+        try {
+            const res = await fetch(`http://localhost:8000/api/flashcards/ai-edit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    language,
+                    index: currentIndex,
+                    instruction: aiPrompt
+                })
+            });
+            const result = await res.json();
+            if (result.success) {
+                setFlashcards(result.flashcards);
+                setIsEditing(false);
+                setAiPrompt('');
+                toast.success("AI refined the flashcard!");
+            } else {
+                toast.error(result.error || "AI refinement failed");
+            }
+        } catch (err) {
+            toast.error("AI service error");
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -121,19 +194,108 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-[5rem] -mr-8 -mt-8 pointer-events-none group-hover:bg-primary/10 transition-colors" />
 
                         <div className="space-y-8 relative z-10">
-                            <div className="space-y-2">
-                                <span className="text-primary text-xs font-black uppercase tracking-[0.2em]">Topic {currentIndex + 1} of {flashcards.length}</span>
-                                <h2 className="text-4xl font-black tracking-tight">{currentCard.topic}</h2>
+                            <div className="flex items-start justify-between">
+                                <div className="space-y-2">
+                                    <span className="text-primary text-xs font-black uppercase tracking-[0.2em]">Topic {currentIndex + 1} of {flashcards.length}</span>
+                                    <h2 className="text-4xl font-black tracking-tight">{currentCard.topic}</h2>
+                                </div>
+                                {isTeacher && !isEditing && (
+                                    <button
+                                        onClick={handleStartEdit}
+                                        className="p-3 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-colors"
+                                        title="Edit Flashcard"
+                                    >
+                                        <Sparkles size={20} />
+                                    </button>
+                                )}
                             </div>
 
-                            <div
-                                className="prose prose-sm dark:prose-invert max-w-none text-lg leading-relaxed text-foreground/80 font-medium"
-                                dangerouslySetInnerHTML={{
-                                    __html: currentCard.summary
-                                        .replace(/\*\*(.*?)\*\*/g, '<b class="text-primary font-black">$1</b>')
-                                        .replace(/\n\s*-\s*/g, '<br/>• ')
-                                }}
-                            />
+                            {isEditing ? (
+                                <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+                                    <div className="flex bg-muted p-1 rounded-xl">
+                                        <button
+                                            onClick={() => setEditMode('manual')}
+                                            className={`flex-1 py-2 text-sm font-black rounded-lg transition-all ${editMode === 'manual' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground'}`}
+                                        >
+                                            Manual Edit
+                                        </button>
+                                        <button
+                                            onClick={() => setEditMode('ai')}
+                                            className={`flex-1 py-2 text-sm font-black rounded-lg transition-all ${editMode === 'ai' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground'}`}
+                                        >
+                                            AI Refine
+                                        </button>
+                                    </div>
+
+                                    {editMode === 'manual' ? (
+                                        <div className="space-y-4">
+                                            <input
+                                                value={editTopic}
+                                                onChange={(e) => setEditTopic(e.target.value)}
+                                                className="w-full bg-muted border-none rounded-xl px-4 py-3 font-bold focus:ring-2 ring-primary/50 text-xl"
+                                                placeholder="Topic Title"
+                                            />
+                                            <textarea
+                                                value={editSummary}
+                                                onChange={(e) => setEditSummary(e.target.value)}
+                                                className="w-full h-40 bg-muted border-none rounded-xl px-4 py-3 font-medium focus:ring-2 ring-primary/50 resize-none text-base"
+                                                placeholder="Summary (Supports markdown/bullet points)"
+                                            />
+                                            <div className="flex gap-3">
+                                                <button
+                                                    onClick={handleSaveManual}
+                                                    disabled={isSaving}
+                                                    className="flex-1 bg-primary text-primary-foreground py-3 rounded-xl font-black disabled:opacity-50"
+                                                >
+                                                    {isSaving ? <Loader2 className="animate-spin mx-auto" /> : 'Save Changes'}
+                                                </button>
+                                                <button
+                                                    onClick={() => setIsEditing(false)}
+                                                    className="px-6 border-2 border-muted text-muted-foreground hover:bg-muted py-3 rounded-xl font-black"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-4">
+                                            <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
+                                                <p className="text-sm font-medium text-primary">Describe how you want to refine this card (e.g., "Make it simpler", "Add more details about formulas").</p>
+                                            </div>
+                                            <textarea
+                                                value={aiPrompt}
+                                                onChange={(e) => setAiPrompt(e.target.value)}
+                                                className="w-full h-32 bg-muted border-none rounded-xl px-4 py-3 font-medium focus:ring-2 ring-primary/50 resize-none text-base"
+                                                placeholder="AI Instructions..."
+                                            />
+                                            <div className="flex gap-3">
+                                                <button
+                                                    onClick={handleRefineAI}
+                                                    disabled={isSaving || !aiPrompt.trim()}
+                                                    className="flex-1 bg-primary text-primary-foreground py-3 rounded-xl font-black flex items-center justify-center gap-2 disabled:opacity-50"
+                                                >
+                                                    {isSaving ? <Loader2 className="animate-spin" /> : <><Sparkles size={18} /> Refine with AI</>}
+                                                </button>
+                                                <button
+                                                    onClick={() => setIsEditing(false)}
+                                                    className="px-6 border-2 border-muted text-muted-foreground hover:bg-muted py-3 rounded-xl font-black"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div
+                                    className="prose prose-sm dark:prose-invert max-w-none text-lg leading-relaxed text-foreground/80 font-medium"
+                                    dangerouslySetInnerHTML={{
+                                        __html: currentCard.summary
+                                            .replace(/\*\*(.*?)\*\*/g, '<b class="text-primary font-black">$1</b>')
+                                            .replace(/\n\s*-\s*/g, '<br/>• ')
+                                    }}
+                                />
+                            )}
                         </div>
                     </motion.div>
                 </AnimatePresence>

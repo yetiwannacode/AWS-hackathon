@@ -1,0 +1,512 @@
+{
+    "title": "Python Mastery: From Zero to Advanced in 30 Days",
+    "description": "A comprehensive roadmap to learn Python programming from beginner to advanced level in 30 days, covering fundamental concepts, data structures, object-oriented programming, and advanced topics like data analysis and web development.",
+    "total_days": 30,
+    "weeks": [
+        {
+            "week_number": 1,
+            "goal": "Master Python basics including syntax, variables, data types, and basic operations.",
+            "days": [
+                {
+                    "day_number": 1,
+                    "topic": "Introduction to Python and Setting Up",
+                    "learning_objectives": [
+                        "Understand what Python is and why it is popular.",
+                        "Install Python and set up a development environment (VS Code, Jupyter Notebook).",
+                        "Write and execute your first Python program ('Hello, World!')."
+                    ],
+                    "youtube_video_title": "Python Tutorial for Beginners: Learn Python in 1 Hour",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=QXeEoD0pB3E",
+                    "reference_content": "Welcome to the world of Python! Python is a high-level, versatile, and widely-used programming language known for its readability and simplicity. It's used in web development, data science, machine learning, automation, and more.\n\n**Why Python?**\n\n*   **Beginner-Friendly:** Python's syntax is clear and easy to understand, making it an excellent choice for beginners.\n*   **Versatile:** Python can be used for a wide variety of tasks, from simple scripting to complex applications.\n*   **Large Community:** Python has a large and active community, which means there are plenty of resources available to help you learn.\n\n**Setting Up Your Environment**\n\n1.  **Install Python:**\\\n    *   Go to the official Python website (python.org) and download the latest version of Python 3.\\\n    *   Run the installer and make sure to check the box that says 'Add Python to PATH'. This will allow you to run Python from the command line.\\\n    *   Verify the installation by opening a command prompt or terminal and typing `python --version`. You should see the version of Python that you installed.\\\n2.  **Choose an IDE (Integrated Development Environment):**\\\n    *   **VS Code:** A popular and powerful code editor with excellent Python support. Install the Python extension for VS Code.\\\n    *   **Jupyter Notebook:** An interactive environment that is great for data science and experimentation. Install it using `pip install notebook`.\\\n3.  **Write Your First Program:**\\\n    *   Open your chosen IDE and create a new file called `hello.py`.\\\n    *   Type the following code into the file:\\\n        `print(\"Hello, World!\")`\\\n    *   Save the file.\\\n    *   Run the program by typing `python hello.py` in the command prompt or terminal. You should see the message 'Hello, World!' printed to the console. Congratulations, you have successfully executed your first Python program!",
+                    "questions": [
+                        {
+                            "question": "What are some reasons why Python is a good language to learn?",
+                            "type": "recall",
+                            "hint": "Consider its syntax, versatility, and community support."
+                        },
+                        {
+                            "question": "Explain the steps to set up a Python development environment.",
+                            "type": "application",
+                            "hint": "Think about installing Python, choosing an IDE, and verifying the installation."
+                        }
+                    ]
+                },
+                {
+                    "day_number": 2,
+                    "topic": "Variables and Data Types",
+                    "learning_objectives": [
+                        "Understand the concept of variables and how to assign values to them.",
+                        "Learn about different data types in Python (integers, floats, strings, booleans).",
+                        "Practice type conversion between data types."
+                    ],
+                    "youtube_video_title": "Python Variables - Understanding Variables in Python",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=Wtk_EiPxRak",
+                    "reference_content": "In Python, a variable is a symbolic name that refers to an object or a value stored in the computer's memory. Variables are fundamental building blocks for any Python program. Unlike some other languages, Python doesn't require explicit declaration of a variable's data type. Python is a dynamically typed language, which means that variable types are determined and checked during runtime.\n\n**Creating Variables**\n\nTo create a variable, you simply assign a value to it using the assignment operator (=). For example:\n\n```python\nx = 10\ny = \"Hello\"\n```\n\n**Data Types**\n\nPython has several built-in data types, including:\n\n*   **Integers (int):** Whole numbers without a decimal point. Example: `10, -5, 0`\n*   **Floats (float):** Numbers with a decimal point. Example: `3.14, -2.5, 0.0`\n*   **Strings (str):** Sequences of characters enclosed in single or double quotes. Example: `'Hello', \"Python\"`\n*   **Booleans (bool):** Represent truth values, either `True` or `False`.\n\n```python\nnum1 = 5  # integer\nnum2 = 5.0 #float\nmessage = \"Hello, world!\" #string\nis_true = True #boolean\n\nprint(type(num1)) #outputs <class 'int'>\nprint(type(num2)) #outputs <class 'float'>\nprint(type(message)) #outputs <class 'str'>\nprint(type(is_true)) #outputs <class 'bool'>\n```\n\n**Type Conversion**\n\nYou can convert between data types using built-in functions:\n\n*   `int()`: Converts a value to an integer.\n*   `float()`: Converts a value to a float.\n*   `str()`: Converts a value to a string.\\\n*   `bool()`: Converts a value to a boolean.\n\n```python\nx = \"123\"  # string\ny = int(x)  # convert string to integer\nz = float(y) # convert integer to float\n\nprint(type(x)) # <class 'str'>\nprint(type(y)) # <class 'int'>\nprint(type(z)) # <class 'float'>\n```\n\nIt's important to note that not all conversions are possible. For example, you cannot convert a string like \"abc\" to an integer.",
+                    "questions": [
+                        {
+                            "question": "What is a variable in Python and how do you create one?",
+                            "type": "recall",
+                            "hint": "Think about symbolic names and the assignment operator."
+                        },
+                        {
+                            "question": "Describe the four basic data types in Python with examples.",
+                            "type": "recall",
+                            "hint": "Integers, floats, strings, and booleans."
+                        }
+                    ]
+                },
+                {
+                    "day_number": 3,
+                    "topic": "Input/Output and String Operations",
+                    "learning_objectives": [
+                        "Learn how to take input from the user using the `input()` function.",
+                        "Understand how to display output using the `print()` function.",
+                        "Practice basic string operations (concatenation, slicing, formatting)."
+                    ],
+                    "youtube_video_title": "Python Input and Output",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=KZYuhYXkxts",
+                    "reference_content": "In Python, input and output operations are essential for interacting with users and displaying results. The `input()` function allows you to take input from the user, while the `print()` function allows you to display output to the console.\n\n**Input**\n\nThe `input()` function prompts the user to enter a value and returns the value as a string.\n\n```python\nname = input(\"Enter your name: \")\nage = input(\"Enter your age: \")\n\nprint(\"Hello, \" + name + \"! You are \" + age + \" years old.\")\n```\n\n**Output**\n\nThe `print()` function displays the value of an expression to the console. You can use it to display strings, numbers, and other data types.\n\n```python\nprint(\"Hello, World!\")\nprint(1 + 2)\n```\n\n**String Operations**\n\nPython provides a variety of string operations that allow you to manipulate strings.\n\n*   **Concatenation:** Joining two or more strings together using the `+` operator.\\\n    `greeting = \"Hello\" + \" \" + name`\n*   **Slicing:** Extracting a portion of a string using the `[]` operator.\\\n    `substring = greeting[0:5] # \"Hello\"`\n*   **Formatting:** Inserting values into a string using f-strings or the `format()` method.\\\n    `message = f\"Hello, {name}! You are {age} years old.\"`\\\n    `message = \"Hello, {}. You are {} years old.\".format(name, age)`\n\n```python\n#string concatenation\nstring1 = \"Hello\"\nstring2 = \"World\"\nresult = string1 + \" \" + string2\nprint(result) #output Hello World\n\n#string slicing\nmy_string = \"Python\"\nsubstring = my_string[1:4]\nprint(substring) #output yth\n\n#string formatting using f-strings\nname = \"Alice\"\nage = 30\nformatted_string = f\"My name is {name} and I am {age} years old.\"\nprint(formatted_string) #output My name is Alice and I am 30 years old\n```",
+                    "questions": [
+                        {
+                            "question": "How do you take input from the user in Python?",
+                            "type": "recall",
+                            "hint": "Use the `input()` function."
+                        },
+                        {
+                            "question": "Explain how to format strings in Python using f-strings.",
+                            "type": "recall",
+                            "hint": "f-strings allow you to embed expressions inside string literals."
+                        }
+                    ]
+                },
+                {
+                    "day_number": 4,
+                    "topic": "Operators",
+                    "learning_objectives": [
+                        "Learn about different types of operators in Python (arithmetic, comparison, logical, bitwise).",
+                        "Understand the precedence of operators.",
+                        "Practice using operators in expressions."
+                    ],
+                    "youtube_video_title": "Python Operators",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=vHYtdmGmEgo",
+                    "reference_content": "Operators are special symbols in Python that carry out arithmetic or logical computation. The value that the operator operates on is called the operand.\n\n**Arithmetic Operators**\n\nArithmetic operators are used to perform mathematical operations.\n\n*   `+`: Addition\\\n    `x + y`\n*   `-`: Subtraction\\\n    `x - y`\n*   `*`: Multiplication\\\n    `x * y`\n*   `/`: Division\\\n    `x / y`\n*   `%`: Modulus (remainder)\\\n    `x % y`\n*   `**`: Exponentiation\\\n    `x ** y`\n*   `//`: Floor division (integer division)\\\n    `x // y`\n\n**Comparison Operators**\n\nComparison operators are used to compare two values.\n\n*   `==`: Equal to\\\n    `x == y`\n*   `!=`: Not equal to\\\n    `x != y`\n*   `>`: Greater than\\\n    `x > y`\n*   `<`: Less than\\\n    `x < y`\n*   `>=`: Greater than or equal to\\\n    `x >= y`\n*   `<=`: Less than or equal to\\\n    `x <= y`\n\n**Logical Operators**\n\nLogical operators are used to combine conditional statements.\n\n*   `and`: Returns True if both statements are true\\\n    `x and y`\n*   `or`: Returns True if one of the statements is true\\\n    `x or y`\n*   `not`: Reverse the result, returns False if the result is true\\\n    `not x`\n\n**Bitwise Operators**\n\nBitwise operators are used to perform operations on individual bits.\n\n*   `&`: AND\\\n    `x & y`\n*   `|`: OR\\\n    `x | y`\n*   `^`: XOR\\\n    `x ^ y`\n*   `~`: NOT\\\n    `~x`\n*   `<<`: Left shift\\\n    `x << y`\n*   `>>`: Right shift\\\n    `x >> y`\n\n**Operator Precedence**\n\nOperator precedence determines the order in which operators are evaluated in an expression. You can use parentheses to override the default precedence.\n\n| Operator                      | Description                                                                                                |\n| :---------------------------- | :--------------------------------------------------------------------------------------------------------- |\n| `()`                          | Parentheses                                                                                              |\n| `**`                          | Exponentiation                                                                                             |\n| `*, /, //, %`                 | Multiplication, division, floor division, modulus                                                            |\n| `+, -`                        | Addition and subtraction                                                                                     |\n| `<<, >>`                      | Left and right bitwise shift                                                                                 |\n| `&`                           | Bitwise AND                                                                                              |\n| `^`                           | Bitwise XOR                                                                                              |\n| <code>&#124;</code>                          | Bitwise OR                                                                                               |\n| `==, !=, >, >=, <, <=, is, is not, in, not in` | Comparison operators, identity operators, membership operators                                              |\n| `not`                         | Logical NOT                                                                                              |\n| `and`                         | Logical AND                                                                                              |\n| `or`                          | Logical OR                                                                                               |\n\n```python\nx = 10\ny = 5\n\nprint(x + y * 2)   # 20 (multiplication before addition)\nprint((x + y) * 2) # 30 (parentheses override precedence)\n```",
+                    "questions": [
+                        {
+                            "question": "List and describe the different types of operators in Python.",
+                            "type": "recall",
+                            "hint": "Arithmetic, comparison, logical, and bitwise operators."
+                        },
+                        {
+                            "question": "Explain operator precedence and how it affects expression evaluation.",
+                            "type": "recall",
+                            "hint": "The order in which operators are evaluated; parentheses can override it."
+                        }
+                    ]
+                },
+                {
+                    "day_number": 5,
+                    "topic": "Conditional Statements",
+                    "learning_objectives": [
+                        "Understand how to use `if`, `elif`, and `else` statements for decision-making.",
+                        "Write programs that execute different code blocks based on conditions.",
+                        "Practice using conditional statements with comparison and logical operators."
+                    ],
+                    "youtube_video_title": "Python If Statements",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=m8N5LlxJvoI",
+                    "reference_content": "Conditional statements in Python allow you to execute different blocks of code depending on whether a condition is true or false. The primary conditional statements are `if`, `elif` (else if), and `else`.\n\n**`if` Statement**\n\nThe `if` statement executes a block of code if a condition is true.\n\n```python\nage = 20\nif age >= 18:\n    print(\"You are an adult.\")\n```\n\n**`elif` Statement**\n\nThe `elif` statement allows you to check multiple conditions in sequence. It is short for \"else if\" and is executed if the previous `if` or `elif` condition is false.\n\n```python\nscore = 75\nif score >= 90:\n    print(\"Excellent!\")\nelif score >= 70:\n    print(\"Good job!\")\nelse:\n    print(\"Keep trying!\")\n```\n\n**`else` Statement**\n\nThe `else` statement executes a block of code if none of the preceding `if` or `elif` conditions are true.\n\n```python\nnumber = 5\nif number > 0:\n    print(\"Positive number\")\nelse:\n    print(\"Non-positive number\")\n```\n\n**Nested `if` Statements**\n\nYou can also nest `if` statements inside other `if` statements to create more complex decision-making structures.\n\n```python\nage = 25\nhas_license = True\n\nif age >= 18:\n    if has_license:\n        print(\"You are eligible to drive.\")\n    else:\n        print(\"You are old enough to drive, but you don't have a license.\")\nelse:\n    print(\"You are not old enough to drive.\")\n```\n\n**Example**\n```python\n#Example code demonstrating if, elif and else statements.\n\nmarks = int(input(\"Enter your marks: \"))\n\nif marks > 90:\n    print(\"Grade A\")\nelif marks > 70 and marks <= 90:\n    print(\"Grade B\")\nelif marks > 50 and marks <= 70:\n    print(\"Grade C\")\nelse:\n    print(\"Fail\")\n```",
+                    "questions": [
+                        {
+                            "question": "Explain the purpose of `if`, `elif`, and `else` statements in Python.",
+                            "type": "recall",
+                            "hint": "Decision-making based on conditions."
+                        },
+                        {
+                            "question": "Write a program that checks if a number is positive, negative, or zero using conditional statements.",
+                            "type": "application",
+                            "hint": "Use `if`, `elif`, and `else` to cover all three cases."
+                        }
+                    ]
+                },
+                {
+                    "day_number": 6,
+                    "topic": "Loops",
+                    "learning_objectives": [
+                        "Understand how to use `for` and `while` loops for iteration.",
+                        "Learn how to use `break` and `continue` statements to control loop execution.",
+                        "Practice using loops with the `range()` function."
+                    ],
+                    "youtube_video_title": "Python Loops",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=6iF8XbX2n0A",
+                    "reference_content": "Loops in Python allow you to execute a block of code repeatedly. Python provides two main types of loops: `for` and `while`.\n\n**`for` Loop**\n\nThe `for` loop iterates over a sequence (such as a list, tuple, or string).\n\n```python\nnumbers =\nfor number in numbers:\n    print(number)\n```\n\n**`while` Loop**\n\nThe `while` loop executes a block of code as long as a condition is true.\n\n```python\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1\n```\n\n**`break` Statement**\n\nThe `break` statement is used to exit a loop prematurely.\n\n```python\nnumbers =\nfor number in numbers:\n    if number == 3:\n        break\n    print(number)  # Output: 1 2\n```\n\n**`continue` Statement**\n\nThe `continue` statement is used to skip the rest of the current iteration and continue with the next iteration.\n\n```python\nnumbers =\nfor number in numbers:\n    if number == 3:\n        continue\n    print(number)  # Output: 1 2 4 5\n```\n\n**`range()` Function**\n\nThe `range()` function generates a sequence of numbers, which is often used in `for` loops.\n\n```python\nfor i in range(5):\n    print(i)  # Output: 0 1 2 3 4\n```\n\n```python\n#Example of for and while loop along with break and continue statements\n\n#for loop\nfor i in range(5):\n    print(i)\n\n#while loop\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1\n\n#break statement\nnumbers =\nfor number in numbers:\n    if number == 3:\n        break\n    print(number)\n\n#continue statement\nnumbers =\nfor number in numbers:\n    if number == 3:\n        continue\n    print(number)\n```",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between `for` and `while` loops in Python.",
+                            "type": "recall",
+                            "hint": "`for` loops iterate over a sequence, `while` loops continue as long as a condition is true."
+                        },
+                        {
+                            "question": "How do `break` and `continue` statements affect loop execution?",
+                            "type": "recall",
+                            "hint": "`break` exits the loop, `continue` skips to the next iteration."
+                        }
+                    ]
+                },
+                {
+                    "day_number": 7,
+                    "topic": "Practice: Mini Problems",
+                    "learning_objectives": [
+                        "Apply the knowledge gained in the first week to solve mini problems.",
+                        "Practice problem-solving and logical thinking.",
+                        "Build confidence in writing basic Python programs."
+                    ],
+                    "youtube_video_title": "Python Programming Exercises",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=DLn3jOsK7Sc",
+                    "reference_content": "This day is dedicated to practicing the concepts you've learned throughout the first week. Work on the following mini-problems to reinforce your understanding and build confidence.\n\n**1. Pattern Printing**\n\nWrite a program to print the following pattern:\n\n```\n*\n**\n***\n****\n*****\n```\n\n```python\n#Pattern printing\n\nfor i in range(1, 6):\n    print(\"*\" * i)\n```\n\n**2. Simple Calculator**\n\nWrite a program to perform basic arithmetic operations (addition, subtraction, multiplication, division) based on user input.\n\n```python\n#Simple Calculator\n\nnum1 = float(input(\"Enter first number: \"))\nnum2 = float(input(\"Enter second number: \"))\noperation = input(\"Enter operation (+, -, *, /): \")\n\nif operation == \"+\":\n    result = num1 + num2\nelif operation == \"-\":\n    result = num1 - num2\nelif operation == \"*\":\n    result = num1 * num2\nelif operation == \"/\":\n    if num2 == 0:\n        result = \"Cannot divide by zero\"\n    else:\n        result = num1 / num2\nelse:\n    result = \"Invalid operation\"\n\nprint(\"Result:\", result)\n```\n\n**3. Factorial Calculation**\n\nWrite a program to calculate the factorial of a given number.\n\n```python\n#Factorial Calculation\n\nnum = int(input(\"Enter a number: \"))\nfactorial = 1\n\nif num < 0:\n    print(\"Factorial cannot be calculated for negative numbers\")\nelif num == 0:\n    print(\"Factorial of 0 is 1\")\nelse:\n    for i in range(1, num + 1):\n        factorial = factorial * i\n    print(\"Factorial of\", num, \"is\", factorial)\n```\n\n**4. Number Guessing Game**\n\nCreate a simple number guessing game where the computer generates a random number, and the user has to guess it.\n\n```python\n#Number Guessing Game\nimport random\n\nnumber = random.randint(1, 100)\nguess = 0\n\nwhile guess != number:\n    guess = int(input(\"Guess a number between 1 and 100: \"))\n    if guess < number:\n        print(\"Too low!\")\n    elif guess > number:\n        print(\"Too high!\")\n    else:\n        print(\"Congratulations! You guessed the number.\")\n```\n\nThese exercises will help you solidify your understanding of the basic concepts and improve your problem-solving skills in Python.",
+                    "questions": [
+                        {
+                            "question": "Write a program to print a pyramid pattern using nested loops.",
+                            "type": "application",
+                            "hint": "Use nested loops to control the rows and columns of the pattern."
+                        },
+                        {
+                            "question": "Create a program that checks if a given number is prime or not.",
+                            "type": "application",
+                            "hint": "Iterate from 2 to the square root of the number and check for divisibility."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 2,
+            "goal": "Get comfortable with Python's data structures and functions.",
+            "days": [
+                {
+                    "day_number": 8,
+                    "topic": "Lists and List Methods",
+                    "learning_objectives": [
+                        "Understand the concept of lists in Python and their characteristics.",
+                        "Learn and implement various list methods such as append, insert, remove, pop, index, and sort.",
+                        "Apply list comprehensions to create and manipulate lists efficiently."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=W8cqSzptt3s",
+                    "reference_content": "## Python Lists: A Comprehensive Guide\n\nLists are one of the most versatile and fundamental data structures in Python. They are used to store collections of items, which can be of any data type (integers, floats, strings, even other lists!). Lists are ordered, mutable (changeable), and allow duplicate values.\n\n### Creating Lists\n\nLists are created using square brackets `[]`:\n\n```python\nmy_list = []  # An empty list\nnumbers =\nfruits = ['apple', 'banana', 'orange']\nmixed_list = [1, 'hello', 3.14, True]\n```\n\n### Accessing List Elements\n\nList elements are accessed using their index, starting from 0:\n\n```python\nprint(numbers)  # Output: 1\nprint(fruits)   # Output: orange\n```\n\nNegative indexing is also supported, where -1 refers to the last element, -2 to the second last, and so on:\n\n```python\nprint(numbers[-1]) # Output: 5\nprint(fruits[-2])  # Output: banana\n```\n\nYou can also access a range of elements using slicing:\n\n```python\nprint(numbers[1:4])  # Output: (elements from index 1 up to, but not including, index 4)\nprint(fruits[:2])   # Output: ['apple', 'banana'] (elements from the beginning up to index 2)\nprint(numbers[::2])  # Output: (every other element)\n```\n\n### List Methods\n\nPython provides several built-in methods to manipulate lists:\n\n*   **`append(item)`:** Adds an item to the end of the list.\n\n    ```python\n    fruits.append('grape')\n    print(fruits) # Output: ['apple', 'banana', 'orange', 'grape']\n    ```\n\n*   **`insert(index, item)`:** Inserts an item at a specific index.\n\n    ```python\n    fruits.insert(1, 'kiwi')\n    print(fruits) # Output: ['apple', 'kiwi', 'banana', 'orange', 'grape']\n    ```\n\n*   **`remove(item)`:** Removes the first occurrence of an item.\n\n    ```python\n    fruits.remove('banana')\n    print(fruits) # Output: ['apple', 'kiwi', 'orange', 'grape']\n    ```\n\n*   **`pop(index)`:** Removes and returns the item at a specific index. If no index is specified, it removes and returns the last item.\n\n    ```python\n    removed_fruit = fruits.pop(1)\n    print(removed_fruit) # Output: kiwi\n    print(fruits)        # Output: ['apple', 'orange', 'grape']\n    ```\n\n*   **`index(item)`:** Returns the index of the first occurrence of an item.\n\n    ```python\n    index_of_orange = fruits.index('orange')\n    print(index_of_orange) # Output: 1\n    ```\n\n*   **`sort()`:** Sorts the list in ascending order (in-place).\n\n    ```python\n    numbers.sort()\n    print(numbers) # Output:\n    fruits.sort()\n    print(fruits) # Output: ['apple', 'grape', 'orange']\n    ```\n\n    You can also sort in descending order using the `reverse` parameter:\n\n    ```python\n    numbers.sort(reverse=True)\n    print(numbers) # Output:\n    ```\n\n*   **`len(list)`:** Returns the number of items in the list.\n\n    ```python\n    print(len(fruits))  # Output: 3\n    ```\n\n*   **`clear()`:** Removes all items from the list.\n\n    ```python\n    fruits.clear()\n    print(fruits) # Output: []\n    ```\n\n### List Comprehensions\n\nList comprehensions provide a concise way to create lists based on existing iterables. The basic syntax is:\n\n```python\nnew_list = [expression for item in iterable if condition]\n```\n\nFor example, to create a list of squares of numbers from 1 to 5:\n\n```python\nsquares = [x**2 for x in range(1, 6)]\nprint(squares) # Output:\n```\n\nWith a condition:\n\n```python\neven_squares = [x**2 for x in range(1, 11) if x % 2 == 0]\nprint(even_squares) # Output:\n```\n\n### Common List Operations\n\n*   **Concatenation:** Lists can be concatenated using the `+` operator.\n\n    ```python\n    list1 =\n    list2 =\n    combined_list = list1 + list2\n    print(combined_list) # Output:\n    ```\n\n*   **Repetition:** Lists can be repeated using the `*` operator.\n\n    ```python\n    repeated_list = ['hello'] * 3\n    print(repeated_list) # Output: ['hello', 'hello', 'hello']\n    ```\n\n### Conclusion\n\nLists are a powerful and flexible data structure in Python. Mastering list methods and list comprehensions will significantly improve your ability to write efficient and readable code. Experiment with the examples provided and explore more complex scenarios to solidify your understanding.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between the `append()` and `insert()` methods for lists, and provide an example of when you might use each.",
+                            "type": "recall",
+                            "hint": "`append()` adds an element to the end of the list. `insert()` adds an element at a specific index, shifting other elements to make space. Use `append()` when you want to simply add to the end, and `insert()` when the position matters."
+                        },
+                        {
+                            "question": "You are given a list of student names and their corresponding scores in two separate lists. Write Python code using list comprehensions to create a new list containing only the names of students who scored above 90.",
+                            "type": "application",
+                            "hint": "You'll need to iterate through both lists simultaneously using `zip()`. Then, use a conditional statement within the list comprehension to filter the names based on the scores. The basic structure should look like: `[name for name, score in zip(names, scores) if score > 90]`"
+                        }
+                    ],
+                    "youtube_video_title": "Python Lists Tutorial: Manipulation, Comprehension, and More!"
+                },
+                {
+                    "day_number": 9,
+                    "topic": "Tuples and Sets",
+                    "learning_objectives": [
+                        "Understand the characteristics of tuples and sets.",
+                        "Learn how to create, access, and manipulate tuples and sets.",
+                        "Distinguish between tuples and sets, and identify appropriate use cases for each."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=WKy9knGkt2E",
+                    "reference_content": "## Tuples and Sets in Python\n\nTuples and sets are fundamental data structures in Python, each offering unique characteristics and use cases. This tutorial provides a comprehensive overview of both, detailing their properties, creation, manipulation, and differences.\n\n### Tuples\n\nA tuple is an ordered, immutable sequence of elements. 'Immutable' means that once a tuple is created, its elements cannot be changed. Tuples are defined using parentheses `()`.\n\n**Creating Tuples**\n\n*   **Empty Tuple:**\n    ```python\n    empty_tuple = ()\n    print(empty_tuple)\n    ```\n*   **Tuple with elements:**\n    ```python\n    my_tuple = (1, 2, 'hello', 3.14)\n    print(my_tuple)\n    ```\n*   **Tuple with a single element:** Note the trailing comma, which is necessary to distinguish it from a simple expression in parentheses.\n    ```python\n    single_element_tuple = (42,)\n    print(single_element_tuple)\n    ```\n*   **Tuple packing:** Creating a tuple by simply listing values separated by commas.\n    ```python\n    packed_tuple = 1, 2, 'three'\n    print(packed_tuple)\n    ```\n\n**Accessing Tuple Elements**\n\nTuple elements are accessed using indexing, just like lists. Indexing starts at 0.\n\n```python\nmy_tuple = (10, 20, 30, 40)\nprint(my_tuple)  # Output: 10\nprint(my_tuple)  # Output: 30\n\n# Negative indexing\nprint(my_tuple[-1]) # Output: 40 (last element)\n```\n\n**Tuple Slicing**\n\nYou can extract a portion of a tuple using slicing.\n\n```python\nmy_tuple = (1, 2, 3, 4, 5)\nprint(my_tuple[1:4])  # Output: (2, 3, 4)\nprint(my_tuple[:3])   # Output: (1, 2, 3)\nprint(my_tuple[2:])   # Output: (3, 4, 5)\n```\n\n**Tuple Immutability**\n\nTuples are immutable, so you cannot modify their elements after creation.  Attempting to do so will raise a `TypeError`.\n\n```python\nmy_tuple = (1, 2, 3)\n# my_tuple = 10  # This will cause an error\n```\n\n**Tuple Methods**\n\nTuples have limited methods due to their immutability.\n\n*   `count(x)`: Returns the number of times `x` appears in the tuple.\n*   `index(x)`: Returns the index of the first occurrence of `x`.\n\n```python\nmy_tuple = (1, 2, 2, 3, 2)\nprint(my_tuple.count(2))   # Output: 3\nprint(my_tuple.index(3))   # Output: 3\n```\n\n**Tuple Use Cases**\n\nTuples are useful when you want to ensure that data remains constant. They are often used to represent records, coordinates, or any collection of items that should not be modified.\n\n### Sets\n\nA set is an unordered collection of unique elements. Sets are defined using curly braces `{}` or the `set()` constructor.\n\n**Creating Sets**\n\n*   **Empty Set:**  You must use `set()` to create an empty set, as `{}` creates an empty dictionary.\n    ```python\n    empty_set = set()\n    print(empty_set)\n    ```\n*   **Set with elements:**\n    ```python\n    my_set = {1, 2, 3, 4}\n    print(my_set)\n    ```\n*   **Creating a set from a list:**\n    ```python\n    my_list =\n    my_set = set(my_list)\n    print(my_set)  # Output: {1, 2, 3, 4, 5} (duplicates are removed)\n    ```\n\n**Set Operations**\n\nSets support various mathematical operations.\n\n*   **Adding elements:**\n    ```python\n    my_set = {1, 2, 3}\n    my_set.add(4)\n    print(my_set)  # Output: {1, 2, 3, 4}\n    ```\n*   **Removing elements:**\n    ```python\n    my_set = {1, 2, 3}\n    my_set.remove(2)  # Raises KeyError if element is not found\n    print(my_set)  # Output: {1, 3}\n\n    my_set.discard(5) # Does not raise an error if element is not found\n    print(my_set)  # Output: {1, 3}\n    ```\n*   **Set operations:**\n\n    ```python\n    set1 = {1, 2, 3}\n    set2 = {3, 4, 5}\n\n    print(set1 | set2)  # Union: {1, 2, 3, 4, 5}\n    print(set1 & set2)  # Intersection: {3}\n    print(set1 - set2)  # Difference: {1, 2}\n    print(set1 ^ set2)  # Symmetric difference: {1, 2, 4, 5}\n    ```\n\n**Set Membership**\n\nYou can check if an element is in a set using the `in` operator.\n\n```python\nmy_set = {1, 2, 3}\nprint(1 in my_set)  # Output: True\nprint(4 in my_set)  # Output: False\n```\n\n**Set Use Cases**\n\nSets are useful when you need to store a collection of unique elements and perform set operations like union, intersection, and difference. They are also efficient for checking membership.\n\n### Differences Between Tuples and Sets\n\n| Feature        | Tuple                                  | Set                                      |\n|----------------|----------------------------------------|------------------------------------------|\n| Ordering       | Ordered                                | Unordered                                |\n| Mutability     | Immutable                              | Mutable                                  |\n| Duplicates     | Allows duplicates                      | Does not allow duplicates                |\n| Syntax         | `()`                                   | `{}` or `set()`                           |\n| Use Cases      | Representing records, coordinates     | Storing unique elements, set operations |\n| Common Methods | `count()`, `index()`                   | `add()`, `remove()`, `discard()`, `union()`, `intersection()`, etc. |\n\nUnderstanding the characteristics of tuples and sets is essential for writing efficient and effective Python code. Choose the data structure that best suits your needs based on whether you require an ordered, immutable sequence or an unordered collection of unique elements.",
+                    "questions": [
+                        {
+                            "question": "Explain the key difference between tuples and lists in terms of mutability. How does this difference affect their use cases?",
+                            "type": "recall",
+                            "hint": "Tuples are immutable, meaning their elements cannot be changed after creation, while lists are mutable. This makes tuples suitable for storing data that should not be modified, such as database records, while lists are more flexible for dynamic data manipulation."
+                        },
+                        {
+                            "question": "You are building a program to store student information. Each student has a name (string), an ID (integer), and a fixed list of courses they are enrolled in. Would you use a tuple or a list to store the student's courses? Justify your choice, and provide a code snippet to create a student record using your chosen data structure.",
+                            "type": "application",
+                            "hint": "A tuple is suitable for storing the student's courses because the courses are a fixed list that shouldn't be changed. A list could be used, but a tuple provides better data integrity. Example: `student = ('Alice', 12345, ('Math', 'Physics', 'Chemistry'))`"
+                        }
+                    ],
+                    "youtube_video_title": "Python Tuples and Sets - Python Data Structures Tutorial"
+                },
+                {
+                    "day_number": 10,
+                    "topic": "Dictionaries",
+                    "learning_objectives": [
+                        "Understand the concept of dictionaries in Python.",
+                        "Learn how to create, access, and modify dictionaries.",
+                        "Explore common dictionary methods and their applications."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=daRqQ7H2Xmc",
+                    "reference_content": "## Python Dictionaries: Your Key to Data Storage\n\nDictionaries are a fundamental data structure in Python that allow you to store data in key-value pairs. This structure is incredibly useful for organizing and retrieving data efficiently. Unlike lists or tuples, which are indexed by numbers, dictionaries are indexed by keys, which can be of various data types (strings, numbers, tuples). Think of a dictionary as a real-world dictionary where you look up a word (the key) to find its definition (the value).\n\n### Creating Dictionaries\n\nDictionaries are created using curly braces `{}`. Each key-value pair is separated by a colon `:`, and pairs are separated by commas `,`.\n\n```python\n# Empty dictionary\nmy_dict = {}\n\n# Dictionary with initial values\nstudent = {\n    'name': 'Alice',\n    'age': 20,\n    'major': 'Computer Science'\n}\n\nprint(student)\n```\n\n### Accessing Values\n\nValues in a dictionary are accessed using their corresponding keys. You can use square brackets `[]` or the `get()` method.\n\n```python\n# Using square brackets\nname = student['name']\nprint(name)  # Output: Alice\n\n# Using get() method\nmajor = student.get('major')\nprint(major)  # Output: Computer Science\n\n# get() with a default value if the key doesn't exist\ngpa = student.get('gpa', 'Not Available')\nprint(gpa)  # Output: Not Available\n```\n\nUsing `get()` is safer than using square brackets because it avoids a `KeyError` if the key is not found. Instead, it returns `None` (or a specified default value).\n\n### Modifying Dictionaries\n\nDictionaries are mutable, meaning you can add, modify, or delete key-value pairs after the dictionary is created.\n\n```python\n# Adding a new key-value pair\nstudent['gpa'] = 3.8\nprint(student)\n\n# Modifying an existing value\nstudent['age'] = 21\nprint(student)\n\n# Deleting a key-value pair\ndel student['major']\nprint(student)\n\n# Removing with pop() - returns the value of the removed key\nage = student.pop('age')\nprint(student)\nprint(age)\n```\n\n### Common Dictionary Methods\n\nPython provides several useful methods for working with dictionaries:\n\n*   `keys()`: Returns a view object that displays a list of all the keys in the dictionary.\n*   `values()`: Returns a view object that displays a list of all the values in the dictionary.\n*   `items()`: Returns a view object that displays a list of a dictionary's key-value tuple pairs.\n*   `copy()`: Returns a shallow copy of the dictionary.\n*   `clear()`: Removes all items from the dictionary.\n*   `update()`: Updates the dictionary with the elements from another dictionary or iterable of key-value pairs.\n\n```python\nstudent = {'name': 'Alice', 'age': 20, 'major': 'Computer Science'}\n\n# keys()\nprint(student.keys())  # Output: dict_keys(['name', 'age', 'major'])\n\n# values()\nprint(student.values()) # Output: dict_values(['Alice', 20, 'Computer Science'])\n\n# items()\nprint(student.items())  # Output: dict_items([('name', 'Alice'), ('age', 20), ('major', 'Computer Science')])\n\n# copy()\nstudent_copy = student.copy()\nprint(student_copy)\n\n# clear()\n# student.clear()\n# print(student) # Output: {}\n\n# update()\nnew_data = {'gpa': 3.9, 'courses': ['CS101', 'Math201']}\nstudent.update(new_data)\nprint(student)\n```\n\n### Dictionary Comprehension\n\nSimilar to list comprehensions, dictionary comprehensions provide a concise way to create dictionaries.\n\n```python\n# Create a dictionary with numbers as keys and their squares as values\nsquares = {x: x**2 for x in range(6)}\nprint(squares)  # Output: {0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25}\n```\n\n### Applications of Dictionaries\n\nDictionaries are used in a wide variety of applications:\n\n*   **Storing configuration settings:** Representing application settings as key-value pairs.\n*   **Counting occurrences:** Counting the frequency of words in a text.\n*   **Representing objects:** Storing object attributes and their values.\n*   **Caching data:** Storing computed values for quick retrieval.\n\nDictionaries are a powerful and versatile data structure in Python. Mastering their use is essential for writing efficient and maintainable code.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between accessing a dictionary value using square brackets `[]` and the `get()` method. What happens if the key does not exist in the dictionary in each case?",
+                            "type": "recall",
+                            "hint": "Using square brackets raises a KeyError if the key doesn't exist, while the get() method returns None (or a default value if specified)."
+                        },
+                        {
+                            "question": "You are building a program to count the frequency of words in a text file. How would you use a dictionary to store and update the word counts? Provide example code.",
+                            "type": "application",
+                            "hint": "Use the words as keys and their counts as values. Increment the count each time a word appears. Use get() with a default value of 0 to handle new words."
+                        }
+                    ],
+                    "youtube_video_title": "Python Dictionaries - Comprehensive Tutorial"
+                },
+                {
+                    "day_number": 11,
+                    "topic": "Functions \u2013 def, return, parameters",
+                    "learning_objectives": [
+                        "Understand the syntax and purpose of defining functions using 'def'.",
+                        "Learn how to pass parameters to functions and use them within the function body.",
+                        "Grasp the concept of 'return' statements and how functions can return values.",
+                        "Differentiate between local and global scope within functions."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=9Os0o3wzS_I",
+                    "reference_content": "## Python Functions: Definition, Parameters, and Return Values\n\nFunctions are fundamental building blocks in Python programming, enabling you to organize code into reusable and modular units. They encapsulate a specific task or a set of related tasks, making your code more readable, maintainable, and efficient.\n\n### Defining Functions with `def`\n\nIn Python, you define a function using the `def` keyword, followed by the function name, parentheses `()`, and a colon `:`. The function name should be descriptive and follow Python's naming conventions (e.g., using lowercase letters and underscores). Inside the parentheses, you can specify parameters (also known as arguments) that the function will accept as input. The code block indented below the `def` line constitutes the function's body.\n\n```python\ndef greet(name):\n    \"\"\"This function greets the person passed in as a parameter.\"\"\"\n    print(f\"Hello, {name}!\")\n\n# Calling the function\ngreet(\"Alice\")  # Output: Hello, Alice!\ngreet(\"Bob\")    # Output: Hello, Bob!\n```\n\nIn this example, `greet` is the function name, `name` is a parameter, and the indented block is the function's body. The docstring (the text enclosed in triple quotes) is optional but highly recommended to document the function's purpose.\n\n### Parameters and Arguments\n\nParameters are variables listed inside the parentheses in the function definition. Arguments are the actual values passed to the function when it is called.  A function can have zero or more parameters.  When calling a function, you must provide arguments that match the number and order of parameters (unless default values are defined, as explained below).\n\n```python\ndef add(x, y):\n    \"\"\"This function adds two numbers and returns the sum.\"\"\"\n    sum_result = x + y\n    return sum_result\n\nresult = add(5, 3)\nprint(result)  # Output: 8\n```\n\n**Default Parameter Values:** You can specify default values for parameters in the function definition. If a caller doesn't provide an argument for a parameter with a default value, the default value is used.\n\n```python\ndef power(base, exponent=2):\n    \"\"\"This function raises a base to the power of an exponent (default is 2).\"\"\"\n    return base ** exponent\n\nsquare = power(5)      # exponent is 2 (default)\ncube = power(5, 3)    # exponent is 3\n\nprint(square)  # Output: 25\nprint(cube)    # Output: 125\n```\n\n**Keyword Arguments:**  When calling a function, you can specify arguments by parameter name using the `keyword=value` syntax. This allows you to pass arguments in any order.\n\n```python\ndef describe_person(name, age, city):\n    \"\"\"Describes a person's name, age, and city.\"\"\"\n    print(f\"Name: {name}, Age: {age}, City: {city}\")\n\ndescribe_person(age=30, name=\"Charlie\", city=\"London\")\n```\n\n### The `return` Statement\n\nThe `return` statement is used to exit a function and optionally return a value to the caller. If a function doesn't have a `return` statement, or if the `return` statement doesn't specify a value, the function implicitly returns `None`.\n\n```python\ndef multiply(a, b):\n    \"\"\"Multiplies two numbers and returns the result.\"\"\"\n    return a * b\n\nproduct = multiply(4, 6)\nprint(product)  # Output: 24\n\ndef no_return_value(x):\n    print(\"This function doesn't explicitly return a value.\")\n\nresult = no_return_value(10)\nprint(result)  # Output: None\n```\n\n### Scope of Variables\n\nThe scope of a variable refers to the region of the code where the variable is accessible. Variables defined inside a function have local scope, meaning they are only accessible within that function. Variables defined outside of any function have global scope and are accessible throughout the program.\n\n```python\nglobal_variable = 100  # Global variable\n\ndef my_function():\n    local_variable = 50  # Local variable\n    print(f\"Inside function: global_variable = {global_variable}\")\n    print(f\"Inside function: local_variable = {local_variable}\")\n\nmy_function()\nprint(f\"Outside function: global_variable = {global_variable}\")\n# print(f\"Outside function: local_variable = {local_variable}\")  # Error: NameError: name 'local_variable' is not defined\n```\n\nIn this example, `global_variable` is accessible both inside and outside the function, while `local_variable` is only accessible within `my_function`. Attempting to access `local_variable` outside the function will result in a `NameError`.\n\nUnderstanding and effectively using functions is crucial for writing well-structured and maintainable Python code.  Mastering the concepts of parameters, return values, and scope will enable you to create more complex and powerful programs.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between a parameter and an argument in the context of Python functions.",
+                            "type": "recall",
+                            "hint": "A parameter is a variable in the function definition, while an argument is the actual value passed to the function when it's called.  Think of parameters as placeholders and arguments as the values that fill those placeholders."
+                        },
+                        {
+                            "question": "You are tasked with creating a function that calculates the area of a rectangle. The function should accept the length and width as input. However, if only one value is provided, the function should assume that the rectangle is a square and use the provided value for both length and width. How would you implement this function using default parameter values?",
+                            "type": "application",
+                            "hint": "Define the function with two parameters: length and width. Assign a default value to the width parameter so that if it's not explicitly provided, it defaults to the value of the length parameter. Then, calculate the area using length * width and return the result."
+                        }
+                    ],
+                    "youtube_video_title": "Python Functions Tutorial - Python for Beginners"
+                },
+                {
+                    "day_number": 12,
+                    "topic": "Lambda functions, map(), filter(), reduce()",
+                    "learning_objectives": [
+                        "Understand the concept of lambda functions and their syntax.",
+                        "Learn how to use the map() function to apply a function to each item in an iterable.",
+                        "Learn how to use the filter() function to select items from an iterable based on a condition.",
+                        "Learn how to use the reduce() function to apply a function cumulatively to the items of an iterable."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=2kw5m962V7c",
+                    "reference_content": "## Lambda Functions, Map, Filter, and Reduce in Python\n\nThese are powerful tools in Python for writing concise and efficient code, especially when working with collections of data.\n\n### Lambda Functions\n\nLambda functions, also known as anonymous functions, are small, single-expression functions that don't need a name. They are defined using the `lambda` keyword.\n\n**Syntax:**\n\n```python\nlambda arguments: expression\n```\n\n*   **arguments:** The input arguments to the function (can be zero or more).\n*   **expression:** A single expression that is evaluated and returned. Lambda functions can only contain a single expression. No statements (like `return`, `if`, `for`, etc.) are allowed inside a lambda function.  The expression is implicitly returned.\n\n**Example:**\n\n```python\n# A lambda function that adds two numbers\nadd = lambda x, y: x + y\n\nprint(add(5, 3))  # Output: 8\n```\n\n**Use Cases:**\n\n*   Lambda functions are often used as arguments to higher-order functions like `map()`, `filter()`, and `reduce()` because these functions expect a function as an argument.\n*   They can be used for simple operations where defining a full function using `def` would be overkill.\n\n### Map Function\n\nThe `map()` function applies a given function to each item in an iterable (e.g., list, tuple) and returns a map object (an iterator) that yields the results.  You can convert the map object to a list or other iterable type to view the results directly.\n\n**Syntax:**\n\n```python\nmap(function, iterable, ...)\n```\n\n*   **function:** The function to apply to each item in the iterable.\n*   **iterable:** The iterable to process.\n*   `map()` can take multiple iterables as input if the function takes multiple arguments.  It applies the function element-wise to corresponding elements from each iterable.\n\n**Example:**\n\n```python\nnumbers =\n\n# Square each number in the list using map and a lambda function\nsquared_numbers = list(map(lambda x: x**2, numbers))\n\nprint(squared_numbers)  # Output:\n```\n\n### Filter Function\n\nThe `filter()` function constructs an iterator from elements of an iterable for which a function returns true. It filters the elements based on a given condition.\n\n**Syntax:**\n\n```python\nfilter(function, iterable)\n```\n\n*   **function:** A function that tests whether each element of the iterable should be included.  It should return `True` if the element should be included and `False` otherwise. If the function is `None`, all items that are true are returned.\n*   **iterable:** The iterable to filter.\n\n**Example:**\n\n```python\nnumbers =\n\n# Filter out even numbers using filter and a lambda function\neven_numbers = list(filter(lambda x: x % 2 == 0, numbers))\n\nprint(even_numbers)  # Output:\n```\n\n### Reduce Function\n\nThe `reduce()` function applies a function cumulatively to the items of an iterable, from left to right, to reduce the iterable to a single value.  It's part of the `functools` module, so you need to import it.\n\n**Syntax:**\n\n```python\nfrom functools import reduce\n\nreduce(function, iterable, initializer=None)\n```\n\n*   **function:** A function of two arguments that is applied cumulatively to the items of the iterable.\n*   **iterable:** The iterable to reduce.\n*   **initializer (optional):**  If provided, the initializer is placed before the items of the iterable in the calculation, and serves as a default when the iterable is empty.\n\n**Example:**\n\n```python\nfrom functools import reduce\n\nnumbers =\n\n# Calculate the product of all numbers in the list using reduce and a lambda function\nproduct = reduce(lambda x, y: x * y, numbers)\n\nprint(product)  # Output: 120\n\n#Example with an intializer\nsum_with_initial = reduce(lambda x, y: x + y, numbers, 10) #Starts the sum at 10\nprint(sum_with_initial) #Output: 25\n```\n\n**Important Notes:**\n\n*   `map()` and `filter()` return iterators in Python 3. You need to convert them to lists (or other iterable types) to see the results directly.\n*   `reduce()` is in the `functools` module in Python 3.\n*   Lambda functions are limited to a single expression.  For more complex logic, use a regular `def` function.\n*   These functions can significantly improve code readability and conciseness when used appropriately.\n",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between a lambda function and a regular function defined with `def` in Python.",
+                            "type": "recall",
+                            "hint": "Lambda functions are anonymous, single-expression functions, while `def` functions can have multiple statements and a name. Lambda functions implicitly return the expression's value, while `def` functions require an explicit `return` statement. Lambda functions are typically used for short, simple operations."
+                        },
+                        {
+                            "question": "You have a list of dictionaries, where each dictionary represents a product with 'name' and 'price' keys.  Use `map` and a lambda function to create a new list containing only the names of the products with prices greater than $50.",
+                            "type": "application",
+                            "hint": "First, filter the list of dictionaries to keep only the products with price > 50. Then, map the filtered list to extract the names. Example:\n```python\nproducts = [{'name': 'Laptop', 'price': 1200}, {'name': 'Mouse', 'price': 25}, {'name': 'Keyboard', 'price': 75}]\nfiltered_products = filter(lambda x: x['price'] > 50, products)\nnames = map(lambda x: x['name'], filtered_products)\nprint(list(names))\n```"
+                        }
+                    ],
+                    "youtube_video_title": "Python Lambda Functions, Map, Filter, Reduce - Programming Tutorial"
+                },
+                {
+                    "day_number": 13,
+                    "topic": "Recursion basics",
+                    "learning_objectives": [
+                        "Understand the concept of recursion and its applications.",
+                        "Learn to identify the base case and recursive step in a recursive function.",
+                        "Implement recursive functions to solve problems like factorial and Fibonacci sequences."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=zuegQmMj2nM",
+                    "reference_content": "## Recursion in Python\n\nRecursion is a powerful programming technique where a function calls itself in its definition. It's a method of solving problems that involves breaking a problem down into smaller and smaller subproblems until you get to a small enough problem that it can be solved trivially. The solution to each subproblem is then used to solve the original problem.  Every recursive function must have a base case, which is a condition that stops the recursion. Without a base case, the function will call itself indefinitely, leading to a stack overflow error.\n\n**Key Concepts:**\n\n*   **Base Case:** The condition that stops the recursion. When the base case is reached, the function returns a value without making any further recursive calls.\n*   **Recursive Step:** The part of the function where it calls itself with a modified input. This step should move the problem closer to the base case.\n\n**Syntax:**\n\n```python\ndef recursive_function(input):\n    if base_case_condition:\n        return base_case_value\n    else:\n        # Modify input and call the function again\n        return recursive_function(modified_input)\n```\n\n**Example 1: Factorial Calculation**\n\nThe factorial of a non-negative integer n, denoted by n!, is the product of all positive integers less than or equal to n. For example, 5! = 5 * 4 * 3 * 2 * 1 = 120.  We can define factorial recursively:\n\n*   If n = 0, then n! = 1 (base case).\n*   If n > 0, then n! = n * (n-1)! (recursive step).\n\n```python\ndef factorial(n):\n    if n == 0:\n        return 1  # Base case\n    else:\n        return n * factorial(n-1)  # Recursive step\n\n# Example usage:\nprint(factorial(5))  # Output: 120\nprint(factorial(0))  # Output: 1\n```\n\n**Example 2: Fibonacci Sequence**\n\nThe Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones, usually starting with 0 and 1. The sequence goes: 0, 1, 1, 2, 3, 5, 8, 13, 21, ...\n\nWe can define the nth Fibonacci number recursively:\n\n*   If n = 0, then Fibonacci(n) = 0 (base case).\n*   If n = 1, then Fibonacci(n) = 1 (base case).\n*   If n > 1, then Fibonacci(n) = Fibonacci(n-1) + Fibonacci(n-2) (recursive step).\n\n```python\ndef fibonacci(n):\n    if n <= 0:\n        return 0  # Base case\n    elif n == 1:\n        return 1  # Base case\n    else:\n        return fibonacci(n-1) + fibonacci(n-2)  # Recursive step\n\n# Example usage:\nprint(fibonacci(7))  # Output: 13\nprint(fibonacci(0))  # Output: 0\n```\n\n**Advantages of Recursion:**\n\n*   **Elegance:** Recursive solutions can be more concise and easier to read for certain problems.\n*   **Natural Fit:** Some problems are inherently recursive, making a recursive solution more intuitive.\n\n**Disadvantages of Recursion:**\n\n*   **Overhead:** Recursive calls can be more expensive than iterative loops due to the function call overhead (stack management).\n*   **Stack Overflow:** If the recursion depth is too large (i.e., the base case is not reached or the input doesn't lead to the base case), it can lead to a stack overflow error.  Python has a default recursion limit to prevent this. You can check and modify this limit using `sys.getrecursionlimit()` and `sys.setrecursionlimit()` from the `sys` module, but it's generally better to refactor the code to avoid deep recursion.\n\n**When to use recursion:**\n\n*   When the problem can be naturally broken down into smaller, self-similar subproblems.\n*   When the recursive solution is easier to understand than an iterative solution.\n*   When the depth of recursion is relatively small to avoid stack overflow errors.\n\nIn many cases, an iterative solution (using loops) can be more efficient than a recursive solution. However, recursion is a valuable tool to have in your programming arsenal, especially for problems involving tree traversal, graph algorithms, and divide-and-conquer strategies.\n",
+                    "questions": [
+                        {
+                            "question": "Explain the purpose of a base case in a recursive function. What happens if a recursive function does not have a base case?",
+                            "type": "recall",
+                            "hint": "The base case provides a stopping condition for the recursion. Without it, the function will call itself infinitely, leading to a stack overflow error."
+                        },
+                        {
+                            "question": "You are tasked with writing a function to calculate the sum of digits of a non-negative integer recursively. For example, the sum of digits of 123 is 1 + 2 + 3 = 6. How would you approach this problem using recursion? Provide the code and explain the base case and recursive step.",
+                            "type": "application",
+                            "hint": "Think about how to break down the problem into smaller subproblems. The base case could be when the number is a single digit (less than 10). The recursive step involves extracting the last digit and recursively calling the function with the remaining digits."
+                        }
+                    ],
+                    "youtube_video_title": "Python Recursion - Simply Explained"
+                },
+                {
+                    "day_number": 14,
+                    "topic": "Build a mini-project",
+                    "learning_objectives": [
+                        "Apply Python fundamentals to create a practical project.",
+                        "Understand the structure and workflow of a simple Python application.",
+                        "Practice debugging and problem-solving in a real-world context."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=8ext9G7xspg",
+                    "reference_content": "## Mini-Project: Number Guessing Game\n\nThis project will guide you through creating a simple number guessing game in Python. The game will randomly select a number within a specified range, and the player will have a limited number of attempts to guess the number. This project reinforces fundamental concepts like variables, loops, conditional statements, and user input.\n\n**1. Setting up the Game**\n\nFirst, import the `random` module, which will be used to generate the random number. Define the range within which the number will be chosen (e.g., 1 to 100). Also, set the maximum number of attempts the player has.\n\n```python\nimport random\n\ndef number_guessing_game():\n    # Define the range for the random number\n    lower_bound = 1\n    upper_bound = 100\n\n    # Generate a random number within the range\n    secret_number = random.randint(lower_bound, upper_bound)\n\n    # Set the maximum number of attempts\n    max_attempts = 7\n\n    print(f\"Welcome to the Number Guessing Game!\\nI'm thinking of a number between {lower_bound} and {upper_bound}.\")\n```\n\n**2. Getting User Input and Checking the Guess**\n\nNow, create a loop that allows the player to guess the number. Inside the loop, prompt the player for their guess, convert it to an integer, and check if it matches the secret number. Provide feedback to the player if their guess is too high or too low.\n\n```python\n    attempts = 0\n    while attempts < max_attempts:\n        attempts += 1\n\n        try:\n            guess = int(input(f\"Attempt #{attempts}: Enter your guess: \"))\n        except ValueError:\n            print(\"Invalid input. Please enter a number.\")\n            continue\n\n        if guess < secret_number:\n            print(\"Too low!\")\n        elif guess > secret_number:\n            print(\"Too high!\")\n        else:\n            print(f\"Congratulations! You guessed the number {secret_number} in {attempts} attempts.\")\n            return  # Exit the function if the guess is correct\n```\n\n**3. Handling the End of the Game**\n\nIf the player runs out of attempts without guessing the number, reveal the secret number and inform them that they have lost.\n\n```python\n    print(f\"You ran out of attempts. The number was {secret_number}.\")\n\n# Start the game\nif __name__ == \"__main__\":\n    number_guessing_game()\n```\n\n**Complete Code:**\n\n```python\nimport random\n\ndef number_guessing_game():\n    # Define the range for the random number\n    lower_bound = 1\n    upper_bound = 100\n\n    # Generate a random number within the range\n    secret_number = random.randint(lower_bound, upper_bound)\n\n    # Set the maximum number of attempts\n    max_attempts = 7\n\n    print(f\"Welcome to the Number Guessing Game!\\nI'm thinking of a number between {lower_bound} and {upper_bound}.\")\n\n    attempts = 0\n    while attempts < max_attempts:\n        attempts += 1\n\n        try:\n            guess = int(input(f\"Attempt #{attempts}: Enter your guess: \"))\n        except ValueError:\n            print(\"Invalid input. Please enter a number.\")\n            continue\n\n        if guess < secret_number:\n            print(\"Too low!\")\n        elif guess > secret_number:\n            print(\"Too high!\")\n        else:\n            print(f\"Congratulations! You guessed the number {secret_number} in {attempts} attempts.\")\n            return  # Exit the function if the guess is correct\n\n    print(f\"You ran out of attempts. The number was {secret_number}.\")\n\n# Start the game\nif __name__ == \"__main__\":\n    number_guessing_game()\n```\n\n**Explanation:**\n\n*   **`import random`**: Imports the `random` module for generating random numbers.\n*   **`random.randint(lower_bound, upper_bound)`**: Generates a random integer between `lower_bound` and `upper_bound` (inclusive).\n*   **`input()`**: Prompts the user to enter their guess.\n*   **`int()`**: Converts the user's input to an integer.\n*   **`try...except ValueError`**: Handles the case where the user enters non-numeric input.\n*   **`while attempts < max_attempts`**: Creates a loop that continues until the player runs out of attempts.\n*   **`if...elif...else`**: Checks if the player's guess is too low, too high, or correct.\n*   **`return`**: Exits the function when the player guesses correctly.\n*   **`if __name__ == \"__main__\"`**: Ensures that the `number_guessing_game()` function is called only when the script is executed directly, not when it's imported as a module.\n\n**Key Concepts Reinforced:**\n\n*   **Variables:** Storing data such as the secret number, the player's guess, and the number of attempts.\n*   **Data Types:** Using integers for the random number and the player's guess.\n*   **Loops:** Repeating the guessing process until the player guesses correctly or runs out of attempts.\n*   **Conditional Statements:** Checking if the player's guess is too low, too high, or correct.\n*   **User Input:** Getting input from the player using the `input()` function.\n*   **Error Handling:** Handling invalid input using `try...except`.\n*   **Functions:** Organizing the code into a reusable function.\n\n**Further Exploration:**\n\n*   Implement difficulty levels by changing the range of the random number or the number of attempts.\n*   Add a scoring system.\n*   Allow the player to play multiple rounds.\n*   Implement a graphical user interface (GUI) for the game.\n",
+                    "questions": [
+                        {
+                            "question": "What is the purpose of the `random.randint()` function in the number guessing game?",
+                            "type": "recall",
+                            "hint": "The `random.randint()` function generates a random integer within a specified range, which is used as the secret number in the game."
+                        },
+                        {
+                            "question": "How would you modify the number guessing game to allow the user to choose the range of numbers?",
+                            "type": "application",
+                            "hint": "Prompt the user to enter the lower and upper bounds of the range at the beginning of the game, and then use those values in the `random.randint()` function."
+                        }
+                    ],
+                    "youtube_video_title": "Python Project - Build a Number Guessing Game"
+                }
+            ]
+        },
+        {
+            "week_number": 3,
+            "goal": "Learn intermediate Python concepts including OOP, error handling, and file handling.",
+            "days": [
+                {
+                    "day_number": 15,
+                    "topic": "File Handling",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 16,
+                    "topic": "Error Handling",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 17,
+                    "topic": "Modules and Packages",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 18,
+                    "topic": "Object-Oriented Programming (OOP)",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 19,
+                    "topic": "Classes and Objects",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 20,
+                    "topic": "Inheritance and Polymorphism",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 21,
+                    "topic": "Build a mini-project",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                }
+            ]
+        },
+        {
+            "week_number": 4,
+            "goal": "Apply Python to real-world tasks (data analysis, web development).",
+            "days": [
+                {
+                    "day_number": 22,
+                    "topic": "Introduction to NumPy",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 23,
+                    "topic": "NumPy Arrays and Operations",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 24,
+                    "topic": "Introduction to Pandas",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 25,
+                    "topic": "Pandas DataFrames",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 26,
+                    "topic": "Data Analysis with Pandas",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 27,
+                    "topic": "Web Development with Flask or Django",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 28,
+                    "topic": "Build a final project",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 29,
+                    "topic": "Further Learning",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 30,
+                    "topic": "Review and Reflection",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                }
+            ]
+        }
+    ],
+    "id": "01c59481-23ef-4a34-97a3-815f06f753b8",
+    "session_id": "default",
+    "created_at": "2026-02-27T16:55:09.244430",
+    "status": "active",
+    "days_completed": 7,
+    "progress_percentage": 23.333333333333332,
+    "completed_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+    ]
+}
