@@ -37,6 +37,10 @@ export const RemedialModal: React.FC<RemedialModalProps> = ({
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [localCooldown, setLocalCooldown] = useState<number>(cooldownRemaining);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const authHeaders = () => {
+        const token = localStorage.getItem('cote_auth_token');
+        return token ? { Authorization: `Bearer ${token}` } : {};
+    };
 
     // Timer Logic
     useEffect(() => {
@@ -64,7 +68,7 @@ export const RemedialModal: React.FC<RemedialModalProps> = ({
         try {
             const res = await fetch('http://localhost:8000/api/remedial/complete', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', ...authHeaders() },
                 body: JSON.stringify({ session_id: sessionId })
             });
             const data = await res.json();

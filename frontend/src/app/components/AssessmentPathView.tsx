@@ -49,14 +49,23 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
     const [isRemedialOpen, setIsRemedialOpen] = useState(false);
+    const authHeaders = () => {
+        const token = localStorage.getItem('cote_auth_token');
+        return token ? { Authorization: `Bearer ${token}` } : {};
+    };
 
-    // Fetch Classrooms on mount
+    const getClassroomDisplayName = (classroomId: string) => {
+        const matchingTopic = topics?.find((topic: any) => topic.id === classroomId);
+        return matchingTopic?.title || classroomId;
+    };
+
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/api/classrooms')
-            .then(res => res.json())
-            .then(data => setClassrooms(data.classrooms || []))
-            .catch(err => console.error("Failed to load classrooms", err));
-    }, []);
+        const ids = (topics || []).map((topic: any) => topic.id);
+        setClassrooms(ids);
+        if (selectedClassroom && !ids.includes(selectedClassroom)) {
+            setSelectedClassroom(null);
+        }
+    }, [topics, selectedClassroom]);
 
     // Fetch Progress when classroom is selected
     useEffect(() => {
@@ -67,7 +76,9 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
 
     const fetchProgress = () => {
         if (!selectedClassroom) return;
-        fetch(`http://127.0.0.1:8000/api/progress/${selectedClassroom}`)
+        fetch(`http://127.0.0.1:8000/api/progress/${selectedClassroom}`, {
+            headers: authHeaders()
+        })
             .then(res => res.json())
             .then(data => {
                 setProgress(data);
@@ -164,7 +175,7 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
                                     <BookOpen size={64} />
                                 </div>
                                 <h3 className="text-xl font-black mb-2 text-primary dark:text-purple-400 drop-shadow-sm">
-                                    Artificial Intelligence
+                                    {getClassroomDisplayName(cls)}
                                 </h3>
                                 <div className="flex items-center text-primary font-medium">
                                     <span>Enter Path</span>
@@ -190,7 +201,7 @@ export const AssessmentPathView: React.FC<AssessmentPathViewProps> = ({ userRole
             <header className="flex items-center justify-between mb-12 bg-card p-6 rounded-2xl border border-border shadow-sm">
                 <div className="flex-1">
                     <h2 className="text-2xl font-black text-primary dark:text-purple-400">
-                        Artificial Intelligence
+                        {getClassroomDisplayName(selectedClassroom)}
                     </h2>
                     {progress?.current_chapter_title && (
                         <div className="flex items-center gap-3 mt-3 text-primary bg-primary/10 px-4 py-2 rounded-xl w-fit border border-primary/20">

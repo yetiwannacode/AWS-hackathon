@@ -36,12 +36,12 @@ const Mermaid = ({ chart }: { chart: string }) => {
 interface ChatbotProps {
     sessionId: string | null;
     track?: 'institution' | 'individual';
+    classrooms?: { id: string; title: string }[];
 }
 
-export const Chatbot: React.FC<ChatbotProps> = ({ sessionId, track = 'institution' }) => {
+export const Chatbot: React.FC<ChatbotProps> = ({ sessionId, track = 'institution', classrooms = [] }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [language, setLanguage] = useState<'english' | 'hindi' | 'telugu' | null>(null);
-    const [classrooms, setClassrooms] = useState<string[]>([]);
     const [selectedClassroom, setSelectedClassroom] = useState<string | null>(null);
     const [messages, setMessages] = useState([
         { id: '1', role: 'assistant', content: 'Hi! I\'m your Study Assistant Bot. Please select your preferred language to begin!' }
@@ -49,16 +49,6 @@ export const Chatbot: React.FC<ChatbotProps> = ({ sessionId, track = 'institutio
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
-
-    // Fetch classrooms when chatbot opens
-    useEffect(() => {
-        if (isOpen && !sessionId) {
-            fetch('http://localhost:8000/api/classrooms')
-                .then(res => res.json())
-                .then(data => setClassrooms(data.classrooms || []))
-                .catch(err => console.error("Failed to load classrooms", err));
-        }
-    }, [isOpen, sessionId]);
 
     // Auto-select classroom if sessionId is provided
     useEffect(() => {
@@ -83,12 +73,13 @@ export const Chatbot: React.FC<ChatbotProps> = ({ sessionId, track = 'institutio
         setMessages(prev => [...prev, welcomeMsg]);
     };
 
-    const handleClassroomSelect = (classroom: string) => {
-        setSelectedClassroom(classroom);
+    const handleClassroomSelect = (classroomId: string) => {
+        setSelectedClassroom(classroomId);
+        const classroomName = classrooms.find((cls) => cls.id === classroomId)?.title || classroomId;
         const classroomMsg = {
             id: Date.now().toString(),
             role: 'assistant',
-            content: `Perfect! I'm now connected to the **${classroom}** classroom. What would you like to know?`
+            content: `Perfect! I'm now connected to the **${classroomName}** classroom. What would you like to know?`
         };
         setMessages(prev => [...prev, classroomMsg]);
     };
@@ -247,11 +238,11 @@ export const Chatbot: React.FC<ChatbotProps> = ({ sessionId, track = 'institutio
                                 <div className="flex flex-col gap-2">
                                     {classrooms.map((classroom) => (
                                         <button
-                                            key={classroom}
-                                            onClick={() => handleClassroomSelect(classroom)}
+                                            key={classroom.id}
+                                            onClick={() => handleClassroomSelect(classroom.id)}
                                             className="py-2.5 px-4 bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/20 rounded-xl text-sm font-bold transition-all text-left"
                                         >
-                                            {classroom}
+                                            {classroom.title}
                                         </button>
                                     ))}
                                 </div>

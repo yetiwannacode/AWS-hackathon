@@ -13,8 +13,11 @@ import { TeacherReviewModal } from './components/TeacherReviewModal';
 import { JoinClassModal } from './components/JoinClassModal';
 import { CoursePageView } from './components/CoursePageView';
 import { DailyDetailView } from './components/DailyDetailView';
+import { toast } from 'sonner';
 
 import { useEffect } from 'react';
+
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
 
 export interface Material {
     id: string;
@@ -34,16 +37,45 @@ export interface Topic {
     flashcards: { id: string; question: string; answer: string }[];
     questions: { id: string; question: string; options: string[]; correctAnswer: number }[];
     enrolledStudentIds?: string[];
+    joinedStudentCount?: number;
     teacherId?: string;
     enrollmentCode?: string;
+}
+
+interface AuthUser {
+    name: string;
+    email: string;
+    role: 'teacher' | 'student';
+    track: 'institution' | 'individual';
+}
+
+interface ApiClassroom {
+    id: string;
+    title: string;
+    description: string;
+    enrollmentCode?: string;
+    teacherId?: string;
+    joinedStudentCount?: number;
+    track: 'institution' | 'individual';
 }
 
 export default function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
-    const [userRole, setUserRole] = useState<'teacher' | 'student' | null>(null);
+    const [authUser, setAuthUser] = useState<AuthUser | null>(() => {
+        const saved = localStorage.getItem('cote_auth_user');
+        if (!saved) return null;
+        try {
+            return JSON.parse(saved);
+        } catch {
+            return null;
+        }
+    });
+    const [authToken, setAuthToken] = useState<string | null>(() => localStorage.getItem('cote_auth_token'));
+    const userRole = authUser && authToken ? authUser.role : null;
     const [track, setTrack] = useState<'institution' | 'individual'>(() => {
+        if (authUser?.track) return authUser.track;
         return (localStorage.getItem('cote_track') as 'institution' | 'individual') || 'institution';
     });
     const [selectedRoadmapId, setSelectedRoadmapId] = useState<string | null>(null);
@@ -65,41 +97,76 @@ export default function App() {
             setSelectedRoadmap(null);
         }
     }, [selectedRoadmapId]);
-    const [topics, setTopics] = useState<Record<string, Topic>>(() => {
-        const saved = localStorage.getItem('cote_topics');
-        if (!saved) return {};
-
-        try {
-            const parsed = JSON.parse(saved);
-            // Migration Logic: Convert legacy pdfUrl to materials array
-            Object.keys(parsed).forEach(key => {
-                const topic = parsed[key];
-                if (!topic.materials) topic.materials = [];
-
-                // If there's a legacy PDF and no materials yet, migrate it
-                if (topic.pdfUrl && topic.materials.length === 0) {
-                    topic.materials.push({
-                        id: Math.random().toString(36).substring(2, 9),
-                        title: 'Course Material (Legacy)',
-                        url: topic.pdfUrl,
-                        type: 'pdf',
-                        date: new Date().toISOString(),
-                        description: 'Materials uploaded previously.'
-                    });
-                    // distinct delete to avoid TS issues if strictly typed, but here it's any at runtime
-                    delete topic.pdfUrl;
-                }
-            });
-            return parsed;
-        } catch (e) {
-            console.error("Failed to migrate data", e);
-            return {};
-        }
-    });
+    const [topics, setTopics] = useState<Record<string, Topic>>({});
 
     useEffect(() => {
-        localStorage.setItem('cote_topics', JSON.stringify(topics));
-    }, [topics]);
+        if (!authToken) {
+            setAuthUser(null);
+            setTopics({});
+            localStorage.removeItem('cote_auth_user');
+            return;
+        }
+        fetch('http://localhost:8000/api/auth/me', {
+            headers: { Authorization: `Bearer ${authToken}` }
+        })
+            .then(async (res) => {
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Session expired');
+                setAuthUser(data.user);
+                setTrack(data.user.track || 'institution');
+                localStorage.setItem('cote_auth_user', JSON.stringify(data.user));
+                localStorage.setItem('cote_track', data.user.track || 'institution');
+            })
+            .catch(() => {
+                setAuthToken(null);
+                setAuthUser(null);
+                localStorage.removeItem('cote_auth_token');
+                localStorage.removeItem('cote_auth_user');
+            });
+    }, [authToken]);
+
+    const syncTopicsFromClassrooms = (classrooms: ApiClassroom[]) => {
+        setTopics((prev) => {
+            const next: Record<string, Topic> = {};
+            classrooms.forEach((cls) => {
+                const existing = prev[cls.id];
+                next[cls.id] = {
+                    id: cls.id,
+                    title: cls.title,
+                    description: cls.description || 'Institution Classroom',
+                    materials: existing?.materials || [],
+                    flashcards: existing?.flashcards || [],
+                    questions: existing?.questions || [],
+                    enrollmentCode: cls.enrollmentCode,
+                    teacherId: cls.teacherId,
+                    joinedStudentCount: cls.joinedStudentCount || 0,
+                    enrolledStudentIds: existing?.enrolledStudentIds || []
+                };
+            });
+            return next;
+        });
+    };
+
+    const fetchMyClassrooms = async () => {
+        if (!authToken || !authUser || track !== 'institution') {
+            setTopics({});
+            return;
+        }
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/classrooms/mine`, {
+                headers: { Authorization: `Bearer ${authToken}` }
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || 'Failed to load classrooms.');
+            syncTopicsFromClassrooms(data.classrooms || []);
+        } catch (error) {
+            console.error('Failed to fetch classrooms:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchMyClassrooms();
+    }, [authToken, authUser, track]);
 
     const handleSelectTopic = (id: string) => {
         setSelectedTopicId(id);
@@ -109,38 +176,56 @@ export default function App() {
         setSelectedTopicId(null);
     };
 
-    const handleCreateClassroom = (name: string, batch?: string, grade?: string) => {
-        const id = Math.random().toString(36).substring(2, 9);
-        const code = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const newTopic: Topic = {
-            id,
-            title: name,
-            description: `${grade} - ${batch}`,
-            materials: [],
-            flashcards: [],
-            questions: [],
-            enrollmentCode: code,
-            teacherId: 'teacher-1'
-        };
-        setTopics(prev => ({ ...prev, [id]: newTopic }));
-        return code;
+    const handleCreateClassroom = async (name: string, batch?: string, grade?: string) => {
+        if (!authToken) {
+            toast.error('Please login again.');
+            return '';
+        }
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/classrooms`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${authToken}`
+                },
+                body: JSON.stringify({
+                    name,
+                    batch: batch || '',
+                    grade: grade || ''
+                })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.detail || 'Failed to create classroom.');
+            await fetchMyClassrooms();
+            return data.classroom?.enrollmentCode || '';
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to create classroom.');
+            return '';
+        }
     };
 
-    const handleJoinClassroom = (code: string) => {
-        const topicId = Object.keys(topics).find(id => topics[id].enrollmentCode === code.toUpperCase());
-        if (topicId) {
-            // Persist locally for prototype synchronization
-            setTopics(prev => ({
-                ...prev,
-                [topicId]: { ...prev[topicId] }
-            }));
+    const handleJoinClassroom = async (code: string) => {
+        if (!authToken) return false;
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/classrooms/join`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${authToken}`
+                },
+                body: JSON.stringify({ code })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.detail || 'Failed to join classroom.');
+            await fetchMyClassrooms();
             return true;
+        } catch (error) {
+            return false;
         }
-        return false;
     };
 
     const handleUploadComplete = (topicId: string, fileName: string) => {
-        const pdfUrl = `http://localhost:8000/uploads/${topicId}/${fileName}`;
+        const pdfUrl = `${API_BASE_URL}/uploads/${topicId}/${fileName}`;
         const newMaterial: Material = {
             id: Math.random().toString(36).substring(2, 9),
             title: fileName,
@@ -150,24 +235,30 @@ export default function App() {
             description: 'Posted a new material'
         };
 
-        setTopics(prev => ({
-            ...prev,
-            [topicId]: {
-                ...prev[topicId],
-                materials: [newMaterial, ...(prev[topicId].materials || [])] // Prepend to show newest first
-            }
-        }));
+        setTopics(prev => {
+            const existing = prev[topicId];
+            if (!existing) return prev;
+            return {
+                ...prev,
+                [topicId]: {
+                    ...existing,
+                    materials: [newMaterial, ...(existing.materials || [])]
+                }
+            };
+        });
     };
 
     if (!userRole) {
         return (
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                 <div className="bg-background text-foreground">
-                    <LoginView onLogin={(role, track) => {
-                        // Combined update to minimize re-renders and potential race conditions
-                        setUserRole(role);
-                        setTrack(track);
-                        localStorage.setItem('cote_track', track);
+                    <LoginView onLogin={(user, token) => {
+                        setAuthUser(user);
+                        setAuthToken(token);
+                        setTrack(user.track);
+                        localStorage.setItem('cote_auth_token', token);
+                        localStorage.setItem('cote_auth_user', JSON.stringify(user));
+                        localStorage.setItem('cote_track', user.track);
                         setSelectedTopicId(null);
                         setSelectedRoadmapId(null);
                         setSelectedDayNumber(null);
@@ -239,7 +330,17 @@ export default function App() {
                     track={track}
                     setTrack={handleTrackChange}
                     onLogout={() => {
-                        setUserRole(null);
+                        if (authToken) {
+                            fetch('http://localhost:8000/api/auth/logout', {
+                                method: 'POST',
+                                headers: { Authorization: `Bearer ${authToken}` }
+                            }).catch(() => { });
+                        }
+                        setAuthUser(null);
+                        setAuthToken(null);
+                        setTopics({});
+                        localStorage.removeItem('cote_auth_token');
+                        localStorage.removeItem('cote_auth_user');
                         setSelectedTopicId(null);
                         setActiveTab('dashboard');
                     }}
@@ -319,7 +420,11 @@ export default function App() {
                     </main>
                 </div>
 
-                <Chatbot sessionId={selectedTopicId || selectedRoadmapId || 'general'} track={track} />
+                <Chatbot
+                    sessionId={selectedTopicId || (track === 'individual' ? (selectedRoadmapId || 'general') : null)}
+                    track={track}
+                    classrooms={Object.values(topics).map((topic) => ({ id: topic.id, title: topic.title }))}
+                />
                 <Toaster position="top-right" />
                 {userRole === 'teacher' && (
                     <TeacherReviewModal

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Clock, CheckCircle, AlertCircle, ArrowRight, Eye, Lightbulb } from 'lucide-react';
+import { X, Clock, CheckCircle, AlertCircle, Eye, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -28,6 +28,71 @@ interface Result {
     score: number;
 }
 
+const normalizeText = (value?: string) =>
+    (value || '')
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .replace(/^[a-d][\)\.\:\-\s]+/i, '')
+        .trim();
+
+const getAnswerLetter = (value?: string): string | null => {
+    if (!value) return null;
+    const trimmed = value.trim();
+    if (/^[a-d]$/i.test(trimmed)) {
+        return trimmed.toUpperCase();
+    }
+    const match = trimmed.match(/^([a-d])[\)\.\:\-\s]/i);
+    return match ? match[1].toUpperCase() : null;
+};
+
+const isAnswerCorrect = (question: Question, selectedAnswer: string) => {
+    if (!question.correct_answer) {
+        if (question.type === 'short_answer') {
+            return (selectedAnswer || '').trim().length > 5;
+        }
+        return false;
+    }
+
+    const selectedNormalized = normalizeText(selectedAnswer);
+    const correctNormalized = normalizeText(question.correct_answer);
+
+    if (selectedNormalized === correctNormalized) {
+        return true;
+    }
+
+    if (!question.options || question.options.length === 0) {
+        return false;
+    }
+
+    const correctLetter = getAnswerLetter(question.correct_answer);
+    if (correctLetter) {
+        const optionIndex = correctLetter.charCodeAt(0) - 65; // A=0, B=1...
+        if (optionIndex >= 0 && optionIndex < question.options.length) {
+            return normalizeText(question.options[optionIndex]) === selectedNormalized;
+        }
+    }
+
+    const matchingOption = question.options.find(
+        (option) => normalizeText(option) === correctNormalized
+    );
+    return matchingOption ? normalizeText(matchingOption) === selectedNormalized : false;
+};
+
+const resolveCorrectOptionText = (question: Question) => {
+    if (!question.correct_answer || !question.options?.length) {
+        return question.correct_answer || '';
+    }
+
+    const letter = getAnswerLetter(question.correct_answer);
+    if (!letter) return question.correct_answer;
+
+    const idx = letter.charCodeAt(0) - 65;
+    if (idx >= 0 && idx < question.options.length) {
+        return question.options[idx];
+    }
+    return question.correct_answer;
+};
+
 export const AssessmentModal: React.FC<AssessmentModalProps> = ({
     isOpen,
     onClose,
@@ -35,6 +100,11 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
     sessionId,
     onComplete
 }) => {
+    const authHeaders = () => {
+        const token = localStorage.getItem('cote_auth_token');
+        return token ? { Authorization: `Bearer ${token}` } : {};
+    };
+
     const [loading, setLoading] = useState(false);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -90,7 +160,9 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
 
     const loadXP = async () => {
         try {
-            const res = await fetch(`http://localhost:8000/api/progress/${sessionId}`);
+            const res = await fetch(`http://localhost:8000/api/progress/${sessionId}`, {
+                headers: authHeaders()
+            });
             const data = await res.json();
             setUserXP(data.xp || 0);
         } catch (e) {
@@ -117,7 +189,7 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
             try {
                 const res = await fetch('http://localhost:8000/api/spend_xp', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
                     body: JSON.stringify({ session_id: sessionId, amount: cost })
                 });
                 const data = await res.json();
@@ -141,7 +213,7 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
         try {
             const res = await fetch('http://localhost:8000/api/assessment/generate', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', ...authHeaders() },
                 body: JSON.stringify({ session_id: sessionId, level })
             });
             const data = await res.json();
@@ -160,7 +232,7 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
         if (result || feedback) return; // Prevent multiple clicks
 
         const currentQ = questions[currentIndex];
-        const isCorrect = answer === currentQ.correct_answer;
+        const isCorrect = isAnswerCorrect(currentQ, answer);
 
         setUserAnswers(prev => ({
             ...prev,
@@ -173,7 +245,7 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
             setFeedback({ type: 'error', message: 'got it wrong, but its okay keep going!' });
             setWrongQuestions(prev => [...prev, {
                 question: currentQ.question,
-                correct_answer: currentQ.correct_answer,
+                correct_answer: resolveCorrectOptionText(currentQ),
                 explanation: (currentQ as any).explanation,
                 user_answer: answer
             }]);
@@ -195,7 +267,7 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
         // Calculate basic score locally for display, strict validation happens backend
         let score = 0;
         questions.forEach(q => {
-            if (q.correct_answer && userAnswers[q.id] === q.correct_answer) {
+            if (isAnswerCorrect(q, userAnswers[q.id])) {
                 score++;
             } else if (q.type === 'short_answer' && userAnswers[q.id]?.length > 5) {
                 // Heuristic for open ended
@@ -206,7 +278,7 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
         try {
             const res = await fetch('http://localhost:8000/api/assessment/submit', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', ...authHeaders() },
                 body: JSON.stringify({
                     session_id: sessionId,
                     level,
@@ -317,7 +389,8 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
                         <div className="space-y-8">
                             {questions.map((q, idx) => {
                                 const userAnswer = userAnswers[q.id];
-                                const isCorrect = userAnswer === q.correct_answer;
+                                const isCorrect = isAnswerCorrect(q, userAnswer || '');
+                                const resolvedCorrectAnswer = resolveCorrectOptionText(q);
                                 return (
                                     <div key={q.id} className={`p-6 rounded-xl border ${isCorrect ? 'border-green-500/30 bg-green-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
                                         <div className="flex gap-3 mb-4">
@@ -330,7 +403,7 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
                                                 <div
                                                     key={opt}
                                                     className={`p-3 rounded-lg border text-sm font-medium
-                                                        ${opt === q.correct_answer ? 'bg-green-500 text-white border-green-600' :
+                                                        ${normalizeText(opt) === normalizeText(resolvedCorrectAnswer) ? 'bg-green-500 text-white border-green-600' :
                                                             opt === userAnswer ? 'bg-red-500 text-white border-red-600' : 'bg-card border-border opacity-50'}
                                                     `}
                                                 >
@@ -403,12 +476,25 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
 
                                             {/* Short Answer Fallback */}
                                             {!questions[currentIndex].options && (
-                                                <textarea
-                                                    className="w-full p-4 rounded-xl border border-border bg-background min-h-[150px] focus:ring-2 focus:ring-primary outline-none"
-                                                    placeholder="Type your answer here..."
-                                                    value={userAnswers[questions[currentIndex].id] || ''}
-                                                    onChange={(e) => handleAnswerInitial(e.target.value)}
-                                                />
+                                                <div className="space-y-3">
+                                                    <textarea
+                                                        className="w-full p-4 rounded-xl border border-border bg-background min-h-[150px] focus:ring-2 focus:ring-primary outline-none"
+                                                        placeholder="Type your answer here..."
+                                                        value={userAnswers[questions[currentIndex].id] || ''}
+                                                        onChange={(e) => setUserAnswers(prev => ({
+                                                            ...prev,
+                                                            [questions[currentIndex].id]: e.target.value
+                                                        }))}
+                                                        disabled={!!feedback}
+                                                    />
+                                                    <button
+                                                        onClick={() => handleAnswerInitial(userAnswers[questions[currentIndex].id] || '')}
+                                                        disabled={!!feedback || !(userAnswers[questions[currentIndex].id] || '').trim()}
+                                                        className="px-5 py-2 rounded-lg bg-primary text-primary-foreground font-semibold disabled:opacity-50"
+                                                    >
+                                                        Submit Answer
+                                                    </button>
+                                                </div>
                                             )}
                                         </div>
 
@@ -458,31 +544,10 @@ export const AssessmentModal: React.FC<AssessmentModalProps> = ({
 
                 {/* FOOTER */}
                 {!result && !isReviewMode && !loading && (
-                    <div className="p-6 border-t border-border flex items-center justify-between bg-muted/20">
-                        <button
-                            onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
-                            disabled={currentIndex === 0}
-                            className="px-4 py-2 text-muted-foreground hover:text-foreground disabled:opacity-50"
-                        >
-                            Previous
-                        </button>
-
-                        {currentIndex === questions.length - 1 ? (
-                            <button
-                                onClick={submitAssessment}
-                                className="px-8 py-3 bg-primary text-primary-foreground rounded-xl font-bold shadow-lg hover:shadow-primary/25 transition-all flex items-center gap-2"
-                            >
-                                Complete Quest <CheckCircle size={18} />
-                            </button>
-                        ) : (
-                            <button
-                                onClick={() => setCurrentIndex(prev => Math.min(questions.length - 1, prev + 1))}
-                                disabled={!userAnswers[questions[currentIndex]?.id]}
-                                className="px-6 py-3 bg-foreground text-background rounded-xl font-bold disabled:opacity-50 flex items-center gap-2"
-                            >
-                                Next Question <ArrowRight size={18} />
-                            </button>
-                        )}
+                    <div className="p-4 border-t border-border bg-muted/20 text-center">
+                        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                            Questions auto-advance after each attempt. Back navigation is disabled.
+                        </p>
                     </div>
                 )}
             </motion.div>

@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 interface JoinClassModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onJoin: (code: string) => boolean;
+    onJoin: (code: string) => Promise<boolean>;
 }
 
 export const JoinClassModal: React.FC<JoinClassModalProps> = ({
@@ -25,18 +25,15 @@ export const JoinClassModal: React.FC<JoinClassModalProps> = ({
         }
 
         setIsSubmitting(true);
-        // Artificial delay for UX
-        setTimeout(() => {
-            const success = onJoin(joinCode);
-            setIsSubmitting(false);
-            if (success) {
-                toast.success("Successfully joined the class!");
-                setJoinCode('');
-                onClose();
-            } else {
-                toast.error("Invalid enrollment code. Please check and try again.");
-            }
-        }, 600);
+        const success = await onJoin(joinCode);
+        setIsSubmitting(false);
+        if (success) {
+            toast.success("Successfully joined the class!");
+            setJoinCode('');
+            onClose();
+        } else {
+            toast.error("Invalid enrollment code. Please check and try again.");
+        }
     };
 
     return (

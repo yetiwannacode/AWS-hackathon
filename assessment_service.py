@@ -2,7 +2,7 @@ import os
 import json
 import random
 import time
-from typing import List, Dict, Optional
+from collections import Counter
 from typing import List, Dict, Optional
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -476,64 +476,75 @@ def get_progress(session_id: str):
     
     return user_data
 
-def get_teacher_analytics(session_id: str):
+def get_teacher_analytics(session_id: str, enrolled_student_ids: Optional[List[str]] = None):
     """
-    Generates class-wide analytics.
-    For demo purposes, generates synthetic data for 'other students' 
-    and blends with the real user's progress.
+    Generates class analytics using only students enrolled in the classroom.
     """
-    progress = load_user_progress().get(session_id, {})
-    
-    # Real User Data
-    user_level = progress.get("unlocked_level", 1)
-    user_xp = progress.get("xp", 0)
-    user_mistakes = progress.get("mistakes", [])
-    
-    # Synthetic Class Data (Mocking 20 students)
-    total_students = 20
-    
-    # Distribution of levels (Mock)
-    level_dist = {1: 0, 2: 0, 3: 0, "completed": 0}
-    
-    # Randomly assign 19 other students
-    import random
-    for _ in range(19):
-        lvl = random.choice([1, 1, 1, 2, 2, 3, "completed"]) # weighted towards 1 & 2
-        level_dist[lvl] += 1
-    
-    # Add real user
-    if progress.get("current_chapter_index", 0) > 0: # simplifiction
-        level_dist["completed"] += 1
-    else:
-        level_dist[user_level] += 1
+    progress = load_user_progress()
+    total_chapters = len(get_sorted_files(session_id))
+    enrolled_student_ids = enrolled_student_ids or []
+    total_students = len(enrolled_student_ids)
 
-    # Calculate Stuck % (Students at L1/L2 for > 3 days - mock)
-    stuck_percent = random.randint(15, 30)
+    student_records: List[Dict] = []
+    for student_id in enrolled_student_ids:
+        scoped_key = f"{session_id}::{student_id}"
+        student_records.append(progress.get(scoped_key, {
+            "xp": 0,
+            "unlocked_level": 1,
+            "current_chapter_index": 0,
+            "history": [],
+            "mistakes": []
+        }))
 
-    # Common Mistakes (Clustered from real mistakes + mock)
-    common_mistakes = []
-    if user_mistakes:
-        for m in user_mistakes[:3]:
-            common_mistakes.append({
-                "concept": m.get("question", "Unknown Concept")[:50] + "...",
-                "frequency": random.randint(3, 12)
-            })
-    else:
-        common_mistakes = [
-            {"concept": "Difference between Supervised and Unsupervised Learning", "frequency": 8},
-            {"concept": "Overfitting vs Underfitting definitions", "frequency": 6},
-            {"concept": "Calculus chain rule application", "frequency": 5}
-        ]
+    level_dist: Dict = {1: 0, 2: 0, 3: 0, "completed": 0}
+    level_attempt_totals = {1: 0, 2: 0, 3: 0}
+    mistake_counter: Counter = Counter()
+    lagging_count = 0
+
+    chapter_files = get_sorted_files(session_id)
+    for record in student_records:
+        chapter_index = int(record.get("current_chapter_index", 0) or 0)
+        unlocked_level = int(record.get("unlocked_level", 1) or 1)
+
+        if total_chapters > 0 and chapter_index >= total_chapters:
+            level_dist["completed"] += 1
+        else:
+            normalized_level = unlocked_level if unlocked_level in (1, 2, 3) else 1
+            level_dist[normalized_level] += 1
+
+        if chapter_index < len(chapter_files):
+            chapter_deadline = chapter_files[chapter_index]["timestamp"] + (5 * 24 * 3600)
+            if time.time() > chapter_deadline:
+                lagging_count += 1
+
+        history = record.get("history", []) or []
+        for attempt in history:
+            level = attempt.get("level")
+            if level in (1, 2, 3):
+                level_attempt_totals[level] += 1
+
+        for mistake in (record.get("mistakes", []) or []):
+            concept = (mistake.get("question") or "Unknown Concept").strip()
+            if concept:
+                mistake_counter[concept] += 1
+
+    denominator = total_students if total_students > 0 else 1
+    average_attempts = {
+        "level_1": round(level_attempt_totals[1] / denominator, 2),
+        "level_2": round(level_attempt_totals[2] / denominator, 2),
+        "level_3": round(level_attempt_totals[3] / denominator, 2),
+    }
+
+    common_mistakes = [
+        {"concept": concept[:80], "frequency": frequency}
+        for concept, frequency in mistake_counter.most_common(3)
+    ]
 
     return {
         "total_students": total_students,
         "level_distribution": level_dist,
-        "stuck_percent": stuck_percent,
-        "average_attempts": {
-            "level_1": 1.2,
-            "level_2": 2.5,
-            "level_3": 3.1
-        },
+        "stuck_percent": round((lagging_count / denominator) * 100) if total_students > 0 else 0,
+        "average_attempts": average_attempts,
         "common_mistakes": common_mistakes
     }
 

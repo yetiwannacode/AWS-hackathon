@@ -21,8 +21,12 @@ export const TeacherAnalyticsDashboard: React.FC<TeacherAnalyticsDashboardProps>
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await fetch(`http://localhost:8000/api/teacher/analytics/${sessionId}`);
+                const token = localStorage.getItem('cote_auth_token');
+                const res = await fetch(`http://localhost:8000/api/teacher/analytics/${sessionId}`, {
+                    headers: token ? { Authorization: `Bearer ${token}` } : {}
+                });
                 const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Failed to load analytics');
                 setStats(data);
             } catch (e) {
                 toast.error("Failed to load analytics");
@@ -36,7 +40,7 @@ export const TeacherAnalyticsDashboard: React.FC<TeacherAnalyticsDashboardProps>
     if (loading) return <div className="p-8 text-center animate-pulse">Loading class insights...</div>;
     if (!stats) return <div className="p-8 text-center">No data available</div>;
 
-    const maxLevelCount = Math.max(...Object.values(stats.level_distribution));
+    const maxLevelCount = Math.max(...Object.values(stats.level_distribution), 1);
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">

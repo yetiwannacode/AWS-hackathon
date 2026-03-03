@@ -20,7 +20,7 @@ interface DashboardProps {
     topics: Topic[];
     onSelectTopic: (id: string) => void;
     userRole: 'teacher' | 'student';
-    onJoinClass: (code: string) => boolean;
+    onJoinClass: (code: string) => Promise<boolean>;
     onUploadComplete: (topicId: string, pdfUrl: string) => void;
     onNavigateToCreateClass?: () => void;
     onOpenReviewModal?: () => void;
@@ -138,7 +138,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
             // For now, checking the first enrolled topic as a demo
             const checkStatus = async () => {
                 try {
-                    const response = await fetch(`http://localhost:8000/api/progress/${topics[0].id}`);
+                    const token = localStorage.getItem('cote_auth_token');
+                    const response = await fetch(`http://localhost:8000/api/progress/${topics[0].id}`, {
+                        headers: token ? { Authorization: `Bearer ${token}` } : {}
+                    });
                     const data = await response.json();
                     if (data.status === 'lagging') {
                         setAlertMessage(data.deadline_message);
@@ -479,8 +482,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                             maxLength={5}
                                         />
                                         <button
-                                            onClick={() => {
-                                                const success = onJoinClass(joinCode);
+                                            onClick={async () => {
+                                                const success = await onJoinClass(joinCode);
                                                 if (success) {
                                                     toast.success("Succesfully joined the class!");
                                                     setJoinCode('');

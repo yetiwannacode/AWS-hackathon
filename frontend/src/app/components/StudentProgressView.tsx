@@ -17,7 +17,7 @@ import { useActivityTracker } from '../hooks/useActivityTracker';
 import { TeacherAnalyticsDashboard } from './TeacherAnalyticsDashboard';
 
 interface StudentProgressViewProps {
-    onCreateClass: (name: string, batch?: string, grade?: string) => string;
+    onCreateClass: (name: string, batch?: string, grade?: string) => Promise<string>;
     topics: Topic[];
     userRole: 'teacher' | 'student';
 }
@@ -140,10 +140,12 @@ export const StudentProgressView: React.FC<StudentProgressViewProps> = ({ onCrea
         );
     }
 
-    const handleCreateClass = (e: React.FormEvent) => {
+    const handleCreateClass = async (e: React.FormEvent) => {
         e.preventDefault();
-        const code = onCreateClass(formData.subjectName, formData.batchYear, formData.grade);
-        setCreatedCode(code);
+        const code = await onCreateClass(formData.subjectName, formData.batchYear, formData.grade);
+        if (code) {
+            setCreatedCode(code);
+        }
     };
 
     const resetForm = () => {
@@ -293,7 +295,7 @@ export const StudentProgressView: React.FC<StudentProgressViewProps> = ({ onCrea
                                 <GraduationCap size={30} />
                             </div>
                             <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-muted-foreground bg-muted px-3 py-1.5 rounded-xl">
-                                <Users size={14} /> 0 Students
+                                <Users size={14} /> {cls.joinedStudentCount || 0} Students
                             </span>
                         </div>
 

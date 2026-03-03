@@ -22,6 +22,10 @@ export const MistakesView: React.FC<MistakesViewProps> = ({ sessionId, onBack })
     const [mistakes, setMistakes] = useState<Mistake[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingComment, setEditingComment] = useState<{ question: string, text: string } | null>(null);
+    const authHeaders = () => {
+        const token = localStorage.getItem('cote_auth_token');
+        return token ? { Authorization: `Bearer ${token}` } : {};
+    };
 
     useEffect(() => {
         fetchMistakes();
@@ -30,7 +34,9 @@ export const MistakesView: React.FC<MistakesViewProps> = ({ sessionId, onBack })
     const fetchMistakes = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:8000/api/mistakes/${sessionId}`);
+            const res = await fetch(`http://localhost:8000/api/mistakes/${sessionId}`, {
+                headers: authHeaders()
+            });
             const data = await res.json();
             setMistakes(data);
         } catch (error) {
@@ -46,7 +52,7 @@ export const MistakesView: React.FC<MistakesViewProps> = ({ sessionId, onBack })
         try {
             const res = await fetch('http://localhost:8000/api/mistakes/comment', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', ...authHeaders() },
                 body: JSON.stringify({
                     session_id: sessionId,
                     question: question,

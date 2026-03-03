@@ -1,0 +1,177 @@
+{
+    "level": 2,
+    "timer_seconds": 600,
+    "questions": [
+        {
+            "id": 1,
+            "question": "A student observes that a language model consistently produces grammatically correct but factually incorrect summaries of news articles. Which of the following techniques would be MOST effective in addressing this issue?",
+            "options": [
+                "A) Increasing the model size to improve its general knowledge.",
+                "B) Fine-tuning the model on a dataset of factually correct summaries.",
+                "C) Decreasing the temperature parameter to make the model more deterministic.",
+                "D) Implementing Retrieval-Augmented Generation (RAG) to provide the model with relevant context during summarization."
+            ],
+            "correct_answer": "D",
+            "explanation": "RAG allows the model to access external knowledge sources, ensuring the summaries are grounded in factual information. Fine-tuning on correct summaries (B) is also a good approach, but RAG provides a more dynamic and scalable solution.",
+            "hints": [
+                "Consider the model's access to external information.",
+                "Think about methods that can ground the model's output in reality.",
+                "Recall the benefits of using external knowledge sources."
+            ]
+        },
+        {
+            "id": 2,
+            "question": "If a company wants to build a customer service chatbot that can understand and respond to a wide range of customer inquiries, but has limited computational resources, which type of language model architecture would be the MOST suitable starting point?",
+            "options": [
+                "A) A large generative model like GPT-3, fine-tuned on a massive customer service dataset.",
+                "B) A smaller, pre-trained representation model like BERT, fine-tuned for intent classification and response selection.",
+                "C) Training a Transformer model from scratch on a small, domain-specific dataset.",
+                "D) Using a bag-of-words model for simple keyword matching and predefined responses."
+            ],
+            "correct_answer": "B",
+            "explanation": "BERT is a representation model that is smaller and requires less computational power than generative models. Fine-tuning it for intent classification and response selection allows the chatbot to understand customer inquiries and provide appropriate responses without generating text from scratch.",
+            "hints": [
+                "Consider the trade-off between model size and computational resources.",
+                "Think about the specific tasks required for a customer service chatbot.",
+                "Recall the differences between representation and generative models."
+            ]
+        },
+        {
+            "id": 3,
+            "question": "A researcher is working on a project that requires identifying the topics discussed in a large collection of research papers. Which of the following Language AI techniques would be the MOST appropriate for this task?",
+            "options": [
+                "A) Sentiment analysis using a pre-trained BERT model.",
+                "B) Text clustering and topic modeling using embedding models.",
+                "C) Machine translation using a Transformer model.",
+                "D) Text generation using a GPT model."
+            ],
+            "correct_answer": "B",
+            "explanation": "Text clustering and topic modeling are specifically designed to identify underlying themes and topics within a collection of documents. Embedding models can be used to represent the documents in a vector space, allowing for efficient clustering and topic extraction.",
+            "hints": [
+                "Consider the goal of identifying topics in a collection of documents.",
+                "Think about techniques that can group similar documents together.",
+                "Recall the purpose of text clustering and topic modeling."
+            ]
+        },
+        {
+            "id": 4,
+            "question": "A developer is building a system that needs to determine whether a given piece of text expresses a positive, negative, or neutral sentiment. Which of the following Language AI techniques would be MOST suitable for this task?",
+            "options": [
+                "A) Semantic search using embedding models.",
+                "B) Supervised classification using a pre-trained language model fine-tuned for sentiment analysis.",
+                "C) Text summarization using a generative language model.",
+                "D) Tokenization using bag-of-words."
+            ],
+            "correct_answer": "B",
+            "explanation": "Supervised classification, specifically with a pre-trained language model fine-tuned for sentiment analysis, is the most effective approach for determining the sentiment expressed in a piece of text. This involves training the model on a labeled dataset of text and their corresponding sentiments.",
+            "hints": [
+                "Consider the task of classifying text into predefined categories.",
+                "Think about techniques that involve training a model on labeled data.",
+                "Recall the purpose of supervised classification."
+            ]
+        },
+        {
+            "id": 5,
+            "question": "A data scientist is tasked with improving the accuracy of a search engine. They want to implement a feature that allows users to find documents that are semantically similar to their search query, even if the documents don't contain the exact keywords. Which of the following Language AI techniques would be MOST effective for this purpose?",
+            "options": [
+                "A) Keyword matching using a bag-of-words model.",
+                "B) Semantic search using embedding models.",
+                "C) Text generation using a generative language model.",
+                "D) Machine translation using a Transformer model."
+            ],
+            "correct_answer": "B",
+            "explanation": "Semantic search using embedding models allows the search engine to understand the meaning of the search query and find documents that are semantically similar, even if they don't contain the exact keywords. Embedding models represent text as vectors in a high-dimensional space, where documents with similar meanings are located close to each other.",
+            "hints": [
+                "Consider the goal of finding documents with similar meaning.",
+                "Think about techniques that can represent text as vectors.",
+                "Recall the purpose of semantic search."
+            ]
+        },
+        {
+            "id": 6,
+            "question": "A company wants to create a system that can automatically generate product descriptions based on a few keywords. Which of the following Language AI techniques would be MOST suitable for this task?",
+            "options": [
+                "A) Text classification using a pre-trained BERT model.",
+                "B) Text clustering using embedding models.",
+                "C) Text generation using a generative language model.",
+                "D) Semantic search using embedding models."
+            ],
+            "correct_answer": "C",
+            "explanation": "Text generation using a generative language model is the most appropriate technique for automatically creating product descriptions based on keywords. Generative models are designed to produce new text that is similar in style and content to the training data.",
+            "hints": [
+                "Consider the goal of generating new text.",
+                "Think about techniques that are designed to create new content.",
+                "Recall the purpose of text generation."
+            ]
+        },
+        {
+            "id": 7,
+            "question": "A team is working on a project that requires translating text from English to Spanish. They want to use a Language AI model for this task. Which of the following architectures would be the MOST suitable?",
+            "options": [
+                "A) An encoder-only model like BERT.",
+                "B) A decoder-only model like GPT.",
+                "C) An encoder-decoder model like the original Transformer.",
+                "D) A bag-of-words model."
+            ],
+            "correct_answer": "C",
+            "explanation": "Encoder-decoder models, like the original Transformer, are specifically designed for sequence-to-sequence tasks such as machine translation. The encoder processes the input sequence (English text), and the decoder generates the output sequence (Spanish text).",
+            "hints": [
+                "Consider the task of translating text from one language to another.",
+                "Think about architectures that are designed for sequence-to-sequence tasks.",
+                "Recall the purpose of encoder-decoder models."
+            ]
+        },
+        {
+            "id": 8,
+            "question": "A student is experimenting with different tokenization methods and notices that one method consistently produces a very large vocabulary. What is a potential downside of having a very large vocabulary in a language model?",
+            "options": [
+                "A) It can lead to faster training times.",
+                "B) It can improve the model's ability to generalize to new data.",
+                "C) It can increase the computational cost of training and inference.",
+                "D) It can reduce the risk of overfitting."
+            ],
+            "correct_answer": "C",
+            "explanation": "A very large vocabulary increases the number of parameters in the model, which in turn increases the computational cost of training and inference. It also makes the model more prone to overfitting, as it has more capacity to memorize the training data.",
+            "hints": [
+                "Consider the relationship between vocabulary size and model parameters.",
+                "Think about the impact of model size on computational cost.",
+                "Recall the potential downsides of overfitting."
+            ]
+        },
+        {
+            "id": 9,
+            "question": "If a language model is struggling to understand the context of a sentence and is producing incoherent outputs, which of the following techniques might be MOST helpful in improving its performance?",
+            "options": [
+                "A) Reducing the size of the model.",
+                "B) Using a bag-of-words representation.",
+                "C) Incorporating an attention mechanism.",
+                "D) Removing the embeddings layer."
+            ],
+            "correct_answer": "C",
+            "explanation": "Attention mechanisms allow the model to focus on the most relevant parts of the input sequence, which helps it to understand the context of the sentence and produce more coherent outputs. Attention enables the model to weigh the importance of different words in the sentence and capture long-range dependencies.",
+            "hints": [
+                "Consider the importance of understanding context in language modeling.",
+                "Think about techniques that can help the model focus on relevant information.",
+                "Recall the purpose of attention mechanisms."
+            ]
+        },
+        {
+            "id": 10,
+            "question": "A company wants to build a system that can automatically answer questions based on a given document. They are considering using Retrieval-Augmented Generation (RAG). What is the primary benefit of using RAG compared to simply fine-tuning a language model on the document?",
+            "options": [
+                "A) RAG requires significantly more computational resources.",
+                "B) RAG allows the model to access and incorporate new information without retraining.",
+                "C) RAG always produces more accurate answers.",
+                "D) RAG is simpler to implement than fine-tuning."
+            ],
+            "correct_answer": "B",
+            "explanation": "RAG allows the model to access and incorporate new information without retraining, which is a significant advantage when dealing with frequently updated documents or knowledge bases. Fine-tuning requires retraining the model every time the document changes, which can be time-consuming and computationally expensive.",
+            "hints": [
+                "Consider the challenges of keeping a language model up-to-date with new information.",
+                "Think about the benefits of accessing external knowledge sources.",
+                "Recall the purpose of Retrieval-Augmented Generation."
+            ]
+        }
+    ],
+    "chapter_name": "_OceanofPDF.com_Hands-On_Large_Language_Models_-_Jay_Alammar.pdf"
+}
