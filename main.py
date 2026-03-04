@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, BackgroundTasks, HTTPException, Form, Header
+from fastapi import FastAPI, UploadFile, File, BackgroundTasks, HTTPException, Form, Header, Query
 from typing import List
 import os
 import shutil
@@ -8,6 +8,8 @@ import hashlib
 import secrets
 import sqlite3
 from datetime import datetime
+from urllib.parse import quote, unquote
+from glob import glob
 
 try:
     import boto3
@@ -103,6 +105,18 @@ def _find_user_by_username(users: Dict[str, Any], username: str) -> Optional[Dic
     return None
 
 
+def _resolve_user_display_name(users: Dict[str, Any], user_key: str) -> str:
+    user = users.get(user_key, {})
+    if isinstance(user, dict):
+        name = str(user.get("name", "")).strip()
+        if name:
+            return name
+        username = str(user.get("username", "")).strip()
+        if username:
+            return username
+    return user_key
+
+
 def _get_s3_client():
     if not S3_BUCKET_NAME or boto3 is None:
         return None
@@ -152,6 +166,25 @@ def _init_app_db():
         conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_enrollments_student ON classroom_enrollments(student_user_key)"
         )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS classroom_materials (
+                id TEXT PRIMARY KEY,
+                classroom_id TEXT NOT NULL,
+                filename TEXT NOT NULL,
+                file_path TEXT NOT NULL,
+                url_path TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                uploaded_by TEXT,
+                s3_object_key TEXT,
+                UNIQUE (classroom_id, filename),
+                FOREIGN KEY (classroom_id) REFERENCES classrooms(id)
+            )
+            """
+        )
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_materials_classroom ON classroom_materials(classroom_id)"
+        )
         conn.commit()
     finally:
         conn.close()
@@ -169,17 +202,143 @@ def _generate_enrollment_code(conn: sqlite3.Connection) -> str:
             return code
 
 
-def _format_classroom_row(row: sqlite3.Row) -> Dict[str, Any]:
+def _upsert_material_record(
+    conn: sqlite3.Connection,
+    classroom_id: str,
+    filename: str,
+    uploaded_by: str = "",
+    s3_object_key: str = ""
+) -> Dict[str, Any]:
+    file_path = os.path.join(UPLOAD_ROOT, classroom_id, filename)
+    if not os.path.isfile(file_path):
+        raise FileNotFoundError(f"Material not found on disk: {file_path}")
+
+    created_at = datetime.utcfromtimestamp(os.path.getmtime(file_path)).isoformat() + "Z"
+    url_path = f"/uploads/{classroom_id}/{quote(filename)}"
+
+    existing = conn.execute(
+        """
+        SELECT id FROM classroom_materials
+        WHERE classroom_id = ? AND filename = ?
+        """,
+        (classroom_id, filename)
+    ).fetchone()
+    material_id = existing["id"] if existing else uuid.uuid4().hex[:12]
+
+    conn.execute(
+        """
+        INSERT INTO classroom_materials(id, classroom_id, filename, file_path, url_path, created_at, uploaded_by, s3_object_key)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(classroom_id, filename)
+        DO UPDATE SET
+            file_path = excluded.file_path,
+            url_path = excluded.url_path,
+            created_at = excluded.created_at,
+            uploaded_by = excluded.uploaded_by,
+            s3_object_key = CASE
+                WHEN excluded.s3_object_key != '' THEN excluded.s3_object_key
+                ELSE classroom_materials.s3_object_key
+            END
+        """,
+        (material_id, classroom_id, filename, file_path, url_path, created_at, uploaded_by, s3_object_key)
+    )
+    return {
+        "id": material_id,
+        "filename": filename,
+        "url_path": url_path,
+        "created_at": created_at
+    }
+
+
+def _sync_material_records_for_classroom(conn: sqlite3.Connection, classroom_id: str):
+    session_dir = os.path.join(UPLOAD_ROOT, classroom_id)
+    if not os.path.isdir(session_dir):
+        return
+
+    for filename in os.listdir(session_dir):
+        if not is_allowed_file(filename):
+            continue
+        file_path = os.path.join(session_dir, filename)
+        if not os.path.isfile(file_path):
+            continue
+        try:
+            _upsert_material_record(conn, classroom_id, filename)
+        except Exception as e:
+            print(f"Material sync failed ({classroom_id}/{filename}): {e}")
+
+
+def _list_session_materials(session_id: str, conn: sqlite3.Connection) -> List[Dict[str, Any]]:
+    _sync_material_records_for_classroom(conn, session_id)
+    rows = conn.execute(
+        """
+        SELECT id, filename, url_path, created_at
+        FROM classroom_materials
+        WHERE classroom_id = ?
+        ORDER BY created_at DESC
+        """,
+        (session_id,)
+    ).fetchall()
+    return [
+        {
+            "id": row["id"],
+            "title": row["filename"],
+            "url": row["url_path"],
+            "type": "pdf",
+            "date": row["created_at"],
+            "description": f"Posted new material: {row['filename']}"
+        }
+        for row in rows
+    ]
+
+
+def _remove_material_from_vector_store(session_id: str, filename: str):
+    try:
+        from langchain_chroma import Chroma
+        from ingestion_pipeline import LOCAL_EMBEDDINGS, CHROMA_PATH
+        db = Chroma(
+            persist_directory=CHROMA_PATH,
+            embedding_function=LOCAL_EMBEDDINGS,
+            collection_name="hackathon_collection"
+        )
+        db.delete(where={"$and": [{"session_id": session_id}, {"source": filename}]})
+    except Exception as e:
+        print(f"Vector cleanup skipped ({session_id}/{filename}): {e}")
+
+
+def _invalidate_classroom_caches(session_id: str):
+    session_dir = os.path.join(UPLOAD_ROOT, session_id)
+    for flashcard_file in glob(os.path.join(session_dir, "flashcards_v*.json")):
+        try:
+            os.remove(flashcard_file)
+        except Exception as e:
+            print(f"Flashcard cache cleanup failed ({flashcard_file}): {e}")
+
+    assessments_dir = os.path.join(DATA_ROOT, "assessments")
+    for assessment_file in glob(os.path.join(assessments_dir, f"{session_id}_*.json")):
+        try:
+            os.remove(assessment_file)
+        except Exception as e:
+            print(f"Assessment cache cleanup failed ({assessment_file}): {e}")
+
+
+def _format_classroom_row(row: sqlite3.Row, conn: Optional[sqlite3.Connection] = None) -> Dict[str, Any]:
+    own_conn = None
+    if conn is None:
+        own_conn = _get_db_connection()
+        conn = own_conn
     payload = {
         "id": row["id"],
         "title": row["title"],
         "description": row["description"],
         "enrollmentCode": row["enrollment_code"],
         "teacherId": row["teacher_user_key"],
-        "track": row["track"]
+        "track": row["track"],
+        "materials": _list_session_materials(row["id"], conn)
     }
     if "joined_students" in row.keys():
         payload["joinedStudentCount"] = row["joined_students"]
+    if own_conn is not None:
+        own_conn.close()
     return payload
 
 
@@ -448,7 +607,8 @@ async def ask_question(session_id: str, query: str, language: str = "english", t
 async def upload_files(
     files: List[UploadFile] = File(...),
     session_id: str = Form("default"),
-    background_tasks: BackgroundTasks = BackgroundTasks()
+    background_tasks: BackgroundTasks = BackgroundTasks(),
+    authorization: Optional[str] = Header(default=None)
 ):
     if not files:
         raise HTTPException(status_code=400, detail="No files uploaded")
@@ -461,38 +621,49 @@ async def upload_files(
     saved_files = []
     rejected_files = []
     s3_uploaded_keys = []
+    uploader_auth = _try_get_current_user_from_token(authorization)
+    uploader_key = uploader_auth["user_key"] if uploader_auth else ""
+    conn = _get_db_connection()
 
-    for file in files:
-        if not is_allowed_file(file.filename):
-            rejected_files.append(file.filename)
-            continue
+    try:
+        for file in files:
+            if not is_allowed_file(file.filename):
+                rejected_files.append(file.filename)
+                continue
 
-        file_path = os.path.join(session_dir, file.filename)
+            file_path = os.path.join(session_dir, file.filename)
 
-        try:
-            with open(file_path, "wb") as buffer:
-                shutil.copyfileobj(file.file, buffer)
+            try:
+                with open(file_path, "wb") as buffer:
+                    shutil.copyfileobj(file.file, buffer)
 
-            saved_files.append(file.filename)
-            s3_key = _upload_file_to_s3(
-                local_path=file_path,
-                object_key=f"sessions/{session_id}/{datetime.utcnow().strftime('%Y%m%dT%H%M%S')}_{file.filename}",
-                content_type=file.content_type or "application/pdf"
-            )
-            if s3_key:
-                s3_uploaded_keys.append(s3_key)
+                _remove_material_from_vector_store(session_id, file.filename)
+                saved_files.append(file.filename)
+                s3_key = _upload_file_to_s3(
+                    local_path=file_path,
+                    object_key=f"sessions/{session_id}/{datetime.utcnow().strftime('%Y%m%dT%H%M%S')}_{file.filename}",
+                    content_type=file.content_type or "application/pdf"
+                )
+                if s3_key:
+                    s3_uploaded_keys.append(s3_key)
+                _upsert_material_record(conn, session_id, file.filename, uploaded_by=uploader_key, s3_object_key=s3_key or "")
 
-        except Exception as e:
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to save file {file.filename}: {str(e)}"
-            )
+            except Exception as e:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Failed to save file {file.filename}: {str(e)}"
+                )
+        conn.commit()
+    finally:
+        conn.close()
 
     if not saved_files:
         raise HTTPException(
             status_code=400,
             detail="No valid PDF files were uploaded"
         )
+
+    _invalidate_classroom_caches(session_id)
 
     # Trigger ingestion in background
     try:
@@ -563,7 +734,7 @@ async def get_my_classrooms(authorization: Optional[str] = Header(default=None))
                 (user_key,)
             ).fetchall()
 
-        return {"classrooms": [_format_classroom_row(row) for row in rows]}
+        return {"classrooms": [_format_classroom_row(row, conn) for row in rows]}
     finally:
         conn.close()
 
@@ -612,7 +783,7 @@ async def create_classroom(request: CreateClassroomRequest, authorization: Optio
             """,
             (classroom_id,)
         ).fetchone()
-        return {"classroom": _format_classroom_row(row)}
+        return {"classroom": _format_classroom_row(row, conn)}
     finally:
         conn.close()
 
@@ -654,9 +825,162 @@ async def join_classroom(request: JoinClassroomRequest, authorization: Optional[
         )
         conn.commit()
 
-        return {"classroom": _format_classroom_row(classroom)}
+        return {"classroom": _format_classroom_row(classroom, conn)}
     finally:
         conn.close()
+
+
+@app.delete("/api/classrooms/{classroom_id}/materials/{material_id}")
+async def delete_classroom_material(
+    classroom_id: str,
+    material_id: str,
+    filename: Optional[str] = Query(default=None),
+    authorization: Optional[str] = Header(default=None)
+):
+    auth = _get_current_user_from_token(authorization)
+    if auth["user"].get("role") != "teacher":
+        raise HTTPException(status_code=403, detail="Only teachers can delete materials.")
+
+    conn = _get_db_connection()
+    try:
+        owned = conn.execute(
+            "SELECT id FROM classrooms WHERE id = ? AND teacher_user_key = ?",
+            (classroom_id, auth["user_key"])
+        ).fetchone()
+        if not owned:
+            raise HTTPException(status_code=404, detail="Classroom not found or not owned by teacher.")
+
+        # Ensure DB rows exist for legacy files present on disk.
+        _sync_material_records_for_classroom(conn, classroom_id)
+
+        material = conn.execute(
+            """
+            SELECT id, filename, file_path, s3_object_key
+            FROM classroom_materials
+            WHERE id = ? AND classroom_id = ?
+            """,
+            (material_id, classroom_id)
+        ).fetchone()
+        if not material:
+            if filename:
+                normalized_filename = os.path.basename(unquote(filename)).strip()
+                material = conn.execute(
+                    """
+                    SELECT id, filename, file_path, s3_object_key
+                    FROM classroom_materials
+                    WHERE classroom_id = ? AND filename = ?
+                    """,
+                    (classroom_id, normalized_filename)
+                ).fetchone()
+                if not material:
+                    material = conn.execute(
+                        """
+                        SELECT id, filename, file_path, s3_object_key
+                        FROM classroom_materials
+                        WHERE classroom_id = ? AND lower(filename) = lower(?)
+                        """,
+                        (classroom_id, normalized_filename)
+                    ).fetchone()
+            if not material:
+                raise HTTPException(status_code=404, detail="Material not found.")
+
+        if material["file_path"] and os.path.exists(material["file_path"]):
+            try:
+                os.remove(material["file_path"])
+            except Exception as e:
+                print(f"Failed to delete local material file: {e}")
+
+        if material["s3_object_key"]:
+            try:
+                s3_client = _get_s3_client()
+                if s3_client is not None:
+                    s3_client.delete_object(Bucket=S3_BUCKET_NAME, Key=material["s3_object_key"])
+            except Exception as e:
+                print(f"Failed to delete S3 object ({material['s3_object_key']}): {e}")
+
+        conn.execute(
+            "DELETE FROM classroom_materials WHERE id = ? AND classroom_id = ?",
+            (material["id"], classroom_id)
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+    _remove_material_from_vector_store(classroom_id, material["filename"])
+    _invalidate_classroom_caches(classroom_id)
+    return {"success": True, "deleted_material_id": material["id"]}
+
+
+@app.get("/api/classrooms/{classroom_id}/people")
+async def get_classroom_people(
+    classroom_id: str,
+    authorization: Optional[str] = Header(default=None)
+):
+    auth = _get_current_user_from_token(authorization)
+    user_key = auth["user_key"]
+    role = auth["user"].get("role", "student")
+
+    conn = _get_db_connection()
+    try:
+        classroom = conn.execute(
+            """
+            SELECT id, teacher_user_key
+            FROM classrooms
+            WHERE id = ?
+            """,
+            (classroom_id,)
+        ).fetchone()
+        if not classroom:
+            raise HTTPException(status_code=404, detail="Classroom not found.")
+
+        if role == "teacher":
+            if classroom["teacher_user_key"] != user_key:
+                raise HTTPException(status_code=403, detail="Not allowed to view this classroom.")
+        else:
+            enrolled = conn.execute(
+                """
+                SELECT 1
+                FROM classroom_enrollments
+                WHERE classroom_id = ? AND student_user_key = ?
+                """,
+                (classroom_id, user_key)
+            ).fetchone()
+            if not enrolled:
+                raise HTTPException(status_code=403, detail="Not enrolled in this classroom.")
+
+        student_rows = conn.execute(
+            """
+            SELECT student_user_key
+            FROM classroom_enrollments
+            WHERE classroom_id = ?
+            """,
+            (classroom_id,)
+        ).fetchall()
+    finally:
+        conn.close()
+
+    users = _load_json_file(USERS_FILE)
+    progress = assessment_service.load_user_progress()
+    students = []
+    for row in student_rows:
+        sid = row["student_user_key"]
+        scoped_key = f"{classroom_id}::{sid}"
+        student_progress = progress.get(scoped_key, {})
+        students.append({
+            "id": sid,
+            "name": _resolve_user_display_name(users, sid),
+            "xp": int(student_progress.get("xp", 0) or 0)
+        })
+
+    students.sort(key=lambda s: s["xp"], reverse=True)
+    teacher_key = classroom["teacher_user_key"]
+    return {
+        "teacher": {
+            "id": teacher_key,
+            "name": _resolve_user_display_name(users, teacher_key)
+        },
+        "students": students
+    }
 
 
 @app.get("/api/classrooms")
@@ -677,7 +1001,9 @@ async def generate_assessment_endpoint(request: AssessmentRequest, authorization
     """Generate or retrieve an assessment for a specific level."""
     from assessment_service import generate_assessment
     resolved_session_id = _resolve_progress_session_id(request.session_id, authorization)
-    result = generate_assessment(resolved_session_id, request.level)
+    progress = assessment_service.load_user_progress().get(resolved_session_id, {})
+    chapter_index = int(progress.get("current_chapter_index", 0) or 0)
+    result = generate_assessment(request.session_id, request.level, chapter_index=chapter_index)
     if "error" in result:
         raise HTTPException(status_code=500, detail=result["error"])
     return result
@@ -726,10 +1052,10 @@ async def get_progress_endpoint(session_id: str, authorization: Optional[str] = 
     return get_progress(_resolve_progress_session_id(session_id, authorization))
 
 @app.get("/api/flashcards/{session_id}")
-async def get_flashcards(session_id: str, language: str = "english"):
+async def get_flashcards(session_id: str, language: str = "english", source: Optional[str] = None):
     """Get topic-wise revision flashcards with language support."""
     try:
-        cards = flashcard_service.generate_flashcards(session_id, language)
+        cards = flashcard_service.generate_flashcards(session_id, language, source)
         return cards
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -739,6 +1065,7 @@ class FlashcardUpdateRequest(BaseModel):
     language: str
     index: int
     updated_card: Dict[str, str]
+    source: Optional[str] = None
 
 @app.post("/api/flashcards/update")
 async def update_flashcard(request: FlashcardUpdateRequest):
@@ -747,7 +1074,8 @@ async def update_flashcard(request: FlashcardUpdateRequest):
         request.session_id, 
         request.language, 
         request.index, 
-        request.updated_card
+        request.updated_card,
+        request.source
     )
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
@@ -758,6 +1086,7 @@ class FlashcardAIEditRequest(BaseModel):
     language: str
     index: int
     instruction: str
+    source: Optional[str] = None
 
 @app.post("/api/flashcards/ai-edit")
 async def ai_edit_flashcard(request: FlashcardAIEditRequest):
@@ -766,7 +1095,8 @@ async def ai_edit_flashcard(request: FlashcardAIEditRequest):
         request.session_id, 
         request.language, 
         request.index, 
-        request.instruction
+        request.instruction,
+        request.source
     )
     if "error" in result:
         raise HTTPException(status_code=500, detail=result["error"])
@@ -866,32 +1196,51 @@ class RoadmapGenerateRequest(BaseModel):
     session_id: str
 
 @app.post("/api/roadmap/generate")
-async def generate_roadmap_endpoint(request: RoadmapGenerateRequest):
+async def generate_roadmap_endpoint(request: RoadmapGenerateRequest, authorization: Optional[str] = Header(default=None)):
     """Generate a new learning roadmap."""
-    result = roadmap_service.generate_roadmap(request.prompt, request.session_id)
+    auth = _try_get_current_user_from_token(authorization)
+    effective_session_id = request.session_id
+    if auth and auth["user"].get("track") == "individual":
+        effective_session_id = auth["user_key"]
+    result = roadmap_service.generate_roadmap(request.prompt, effective_session_id)
     if "error" in result:
         raise HTTPException(status_code=500, detail=result["error"])
     return result
 
 @app.get("/api/roadmaps/{session_id}")
-async def list_roadmaps_endpoint(session_id: str):
+async def list_roadmaps_endpoint(session_id: str, authorization: Optional[str] = Header(default=None)):
     """List all roadmaps for a user/session."""
-    return roadmap_service.list_roadmaps(session_id)
+    auth = _try_get_current_user_from_token(authorization)
+    effective_session_id = session_id
+    if auth and auth["user"].get("track") == "individual":
+        effective_session_id = auth["user_key"]
+    return roadmap_service.list_roadmaps(effective_session_id)
 
 @app.get("/api/roadmap/{roadmap_id}")
-async def get_roadmap_endpoint(roadmap_id: str):
+async def get_roadmap_endpoint(roadmap_id: str, authorization: Optional[str] = Header(default=None)):
     """Get full details of a specific roadmap."""
     roadmap = roadmap_service.get_roadmap(roadmap_id)
     if not roadmap:
         raise HTTPException(status_code=404, detail="Roadmap not found")
+    auth = _try_get_current_user_from_token(authorization)
+    if auth and auth["user"].get("track") == "individual":
+        if not roadmap_service.roadmap_belongs_to_user(roadmap, auth["user_key"]):
+            raise HTTPException(status_code=403, detail="Not allowed to access this roadmap.")
     return roadmap
 
 class ProgressUpdateRequest(BaseModel):
     day_number: int
 
 @app.post("/api/roadmap/{roadmap_id}/complete_day")
-async def complete_day_endpoint(roadmap_id: str, request: ProgressUpdateRequest):
+async def complete_day_endpoint(roadmap_id: str, request: ProgressUpdateRequest, authorization: Optional[str] = Header(default=None)):
     """Mark a specific day in the roadmap as completed."""
+    roadmap = roadmap_service.get_roadmap(roadmap_id)
+    if not roadmap:
+        raise HTTPException(status_code=404, detail="Roadmap not found")
+    auth = _try_get_current_user_from_token(authorization)
+    if auth and auth["user"].get("track") == "individual":
+        if not roadmap_service.roadmap_belongs_to_user(roadmap, auth["user_key"]):
+            raise HTTPException(status_code=403, detail="Not allowed to update this roadmap.")
     result = roadmap_service.update_progress(roadmap_id, request.day_number)
     if not result:
         raise HTTPException(status_code=404, detail="Roadmap not found")
@@ -901,8 +1250,15 @@ class WeekGenerateRequest(BaseModel):
     week_number: int
 
 @app.post("/api/roadmap/{roadmap_id}/generate_week")
-async def generate_week_endpoint(roadmap_id: str, request: WeekGenerateRequest):
+async def generate_week_endpoint(roadmap_id: str, request: WeekGenerateRequest, authorization: Optional[str] = Header(default=None)):
     """Generate deep content for a specific week in an existing roadmap."""
+    roadmap = roadmap_service.get_roadmap(roadmap_id)
+    if not roadmap:
+        raise HTTPException(status_code=404, detail="Roadmap not found")
+    auth = _try_get_current_user_from_token(authorization)
+    if auth and auth["user"].get("track") == "individual":
+        if not roadmap_service.roadmap_belongs_to_user(roadmap, auth["user_key"]):
+            raise HTTPException(status_code=403, detail="Not allowed to update this roadmap.")
     result = roadmap_service.generate_week_content(roadmap_id, request.week_number)
     if "error" in result:
         raise HTTPException(status_code=500, detail=result["error"])

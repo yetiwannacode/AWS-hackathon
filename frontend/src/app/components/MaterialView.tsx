@@ -24,9 +24,10 @@ interface MaterialViewProps {
     onBack: () => void;
     userRole: 'teacher' | 'student';
     onUploadComplete?: (topicId: string, pdfUrl: string) => void;
+    onDeleteMaterial?: (topicId: string, materialId: string, materialTitle?: string) => Promise<boolean>;
 }
 
-export const MaterialView: React.FC<MaterialViewProps> = ({ topic, onBack, userRole, onUploadComplete }) => {
+export const MaterialView: React.FC<MaterialViewProps> = ({ topic, onBack, userRole, onUploadComplete, onDeleteMaterial }) => {
     const [view, setView] = useState<'stream' | 'classwork' | 'people' | 'reading' | 'flashcards' | 'assessment'>('stream');
     const { setIsStudying } = useActivityTracker();
     const [isSharing, setIsSharing] = useState(false);
@@ -53,6 +54,12 @@ export const MaterialView: React.FC<MaterialViewProps> = ({ topic, onBack, userR
     const [assessmentScore, setAssessmentScore] = useState<number | null>(null);
     const [selectedStudentForComment, setSelectedStudentForComment] = useState<any | null>(null);
     const [commentText, setCommentText] = useState('');
+    const [openActionMaterialId, setOpenActionMaterialId] = useState<string | null>(null);
+    const [classroomPeople, setClassroomPeople] = useState<{ teacher: { id: string; name: string } | null; students: Array<{ id: string; name: string; xp: number }> }>({
+        teacher: null,
+        students: []
+    });
+    const [peopleLoading, setPeopleLoading] = useState(false);
 
     const isTeacher = userRole === 'teacher';
 
@@ -64,6 +71,51 @@ export const MaterialView: React.FC<MaterialViewProps> = ({ topic, onBack, userR
     const handleAssessmentFinish = () => {
         setAssessmentScore(Math.floor(Math.random() * 40) + 60); // Mock score
     };
+
+    const handleDeleteMaterial = async (material: any) => {
+        if (!isTeacher || !onDeleteMaterial) return;
+        const confirmed = window.confirm(`Delete "${material.title}" from this classroom?`);
+        if (!confirmed) return;
+        setOpenActionMaterialId(null);
+        const filenameFromUrl = material?.url ? decodeURIComponent(String(material.url).split('/').pop() || '') : '';
+        const filename = material.title || filenameFromUrl;
+        const ok = await onDeleteMaterial(topic.id, material.id, filename);
+        if (ok) {
+            toast.success('Material deleted.');
+            if (activeMaterial?.id === material.id) {
+                setActiveMaterial(null);
+                setView('stream');
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (view !== 'people') return;
+        const token = localStorage.getItem('cote_auth_token');
+        if (!token || token.startsWith('offline-demo::')) {
+            setClassroomPeople({ teacher: null, students: [] });
+            return;
+        }
+
+        setPeopleLoading(true);
+        fetch(`http://localhost:8000/api/classrooms/${topic.id}/people`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(async (res) => {
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || 'Failed to load classroom people.');
+                setClassroomPeople({
+                    teacher: data.teacher || null,
+                    students: data.students || []
+                });
+            })
+            .catch((error: any) => {
+                toast.error(error.message || 'Failed to load classroom people.');
+            })
+            .finally(() => setPeopleLoading(false));
+    }, [view, topic.id]);
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -261,9 +313,30 @@ export const MaterialView: React.FC<MaterialViewProps> = ({ topic, onBack, userR
                                                     <p className="text-xs text-muted-foreground">{new Date(material.date).toLocaleDateString()}</p>
                                                 </div>
                                             </div>
-                                            <button className="p-2 hover:bg-secondary rounded-full">
-                                                <MoreVertical size={20} className="text-muted-foreground" />
-                                            </button>
+                                            <div className="relative">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setOpenActionMaterialId((prev) => prev === material.id ? null : material.id);
+                                                    }}
+                                                    className="p-2 hover:bg-secondary rounded-full"
+                                                >
+                                                    <MoreVertical size={20} className="text-muted-foreground" />
+                                                </button>
+                                                {isTeacher && onDeleteMaterial && openActionMaterialId === material.id && (
+                                                    <div className="absolute right-0 top-10 z-20 min-w-[140px] rounded-lg border border-border bg-card shadow-lg">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleDeleteMaterial(material);
+                                                            }}
+                                                            className="w-full px-3 py-2 text-left text-xs font-bold text-red-500 hover:bg-secondary"
+                                                        >
+                                                            Delete material
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
                                         {/* Post Body */}
@@ -351,12 +424,18 @@ export const MaterialView: React.FC<MaterialViewProps> = ({ topic, onBack, userR
                         <div className="space-y-4">
                             <div className="flex items-center justify-between border-b border-primary py-4">
                                 <h4 className="text-2xl font-black text-primary">Teachers</h4>
-                                <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">1 Teacher</span>
+                                <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">{classroomPeople.teacher ? '1 Teacher' : '0 Teacher'}</span>
                             </div>
-                            <div className="flex items-center gap-4 p-2">
-                                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-black">T</div>
-                                <span className="font-bold text-lg">Professor C.O.T.E</span>
-                            </div>
+                            {classroomPeople.teacher ? (
+                                <div className="flex items-center gap-4 p-2">
+                                    <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-black">
+                                        {classroomPeople.teacher.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase() || 'T'}
+                                    </div>
+                                    <span className="font-bold text-lg">{classroomPeople.teacher.name}</span>
+                                </div>
+                            ) : (
+                                <p className="text-sm text-muted-foreground">No teacher information available.</p>
+                            )}
                         </div>
 
                         {/* Students List */}
@@ -368,22 +447,22 @@ export const MaterialView: React.FC<MaterialViewProps> = ({ topic, onBack, userR
                                 </span>
                             </div>
 
-                            <div className="space-y-2">
-                                {[
-                                    { name: 'Sarah Wilson', xp: 2450, lastActive: '2 mins ago', color: 'bg-green-500' },
-                                    { name: 'James Miller', xp: 2100, lastActive: '15 mins ago', color: 'bg-blue-500' },
-                                    { name: 'Elena Rodriguez', xp: 1850, lastActive: '1 hour ago', color: 'bg-purple-500' },
-                                    { name: 'David Chen', xp: 1200, lastActive: 'Yesterday', color: 'bg-orange-500' },
-                                    { name: 'Aisha Gupta', xp: 950, lastActive: '2 days ago', color: 'bg-red-500' },
-                                ].sort((a, b) => b.xp - a.xp).map((student, idx) => (
-                                    <div key={idx} className="flex items-center justify-between p-4 bg-card border border-border rounded-2xl hover:border-primary/50 transition-all group">
+                            {peopleLoading ? (
+                                <p className="text-sm text-muted-foreground">Loading classroom members...</p>
+                            ) : (
+                                <div className="space-y-2">
+                                    {classroomPeople.students.length === 0 && (
+                                        <p className="text-sm text-muted-foreground">No students have joined this classroom yet.</p>
+                                    )}
+                                    {classroomPeople.students.map((student, idx) => (
+                                        <div key={student.id || idx} className="flex items-center justify-between p-4 bg-card border border-border rounded-2xl hover:border-primary/50 transition-all group">
                                         <div className="flex items-center gap-4">
-                                            <div className={`w-10 h-10 ${student.color} rounded-full flex items-center justify-center text-white font-black uppercase`}>
-                                                {student.name.split(' ').map(n => n[0]).join('')}
+                                            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-black uppercase">
+                                                {student.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
                                             </div>
                                             <div className="text-left">
                                                 <p className="font-bold group-hover:text-primary transition-colors">{student.name}</p>
-                                                <p className="text-xs text-muted-foreground font-medium">Last active: {student.lastActive}</p>
+                                                <p className="text-xs text-muted-foreground font-medium">Enrolled Student</p>
                                             </div>
                                         </div>
                                         {isTeacher && (
@@ -400,9 +479,10 @@ export const MaterialView: React.FC<MaterialViewProps> = ({ topic, onBack, userR
                                                 </button>
                                             </div>
                                         )}
-                                    </div>
-                                ))}
-                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* Comment Modal */}
@@ -412,7 +492,7 @@ export const MaterialView: React.FC<MaterialViewProps> = ({ topic, onBack, userR
                                     <div className="p-8 space-y-6">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
-                                                <div className={`w-12 h-12 ${selectedStudentForComment.color} rounded-2xl flex items-center justify-center text-white font-black`}>
+                                                <div className="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center text-white font-black">
                                                     {selectedStudentForComment.name.split(' ').map((n: string) => n[0]).join('')}
                                                 </div>
                                                 <div>

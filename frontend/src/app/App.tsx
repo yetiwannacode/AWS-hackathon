@@ -18,6 +18,17 @@ import { toast } from 'sonner';
 import { useEffect } from 'react';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+const AUTH_ME_TIMEOUT_MS = 8000;
+
+const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeoutMs = AUTH_ME_TIMEOUT_MS) => {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+        window.clearTimeout(timeoutId);
+    }
+};
 
 export interface Material {
     id: string;
@@ -57,7 +68,15 @@ interface ApiClassroom {
     teacherId?: string;
     joinedStudentCount?: number;
     track: 'institution' | 'individual';
+    materials?: Material[];
 }
+
+const normalizeMaterialUrl = (url: string): string => {
+    if (!url) return url;
+    if (/^https?:\/\//i.test(url)) return url;
+    if (url.startsWith('/')) return `${API_BASE_URL}${url}`;
+    return `${API_BASE_URL}/${url}`;
+};
 
 export default function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -86,7 +105,9 @@ export default function App() {
 
     useEffect(() => {
         if (selectedRoadmapId) {
-            fetch(`http://localhost:8000/api/roadmap/${selectedRoadmapId}`)
+            fetch(`http://localhost:8000/api/roadmap/${selectedRoadmapId}`, {
+                headers: authToken ? { Authorization: `Bearer ${authToken}` } : {}
+            })
                 .then(res => res.json())
                 .then(data => setSelectedRoadmap(data && !data.detail ? data : null))
                 .catch(err => {
@@ -96,7 +117,7 @@ export default function App() {
         } else {
             setSelectedRoadmap(null);
         }
-    }, [selectedRoadmapId]);
+    }, [selectedRoadmapId, authToken]);
     const [topics, setTopics] = useState<Record<string, Topic>>({});
 
     useEffect(() => {
@@ -106,7 +127,10 @@ export default function App() {
             localStorage.removeItem('cote_auth_user');
             return;
         }
-        fetch('http://localhost:8000/api/auth/me', {
+        if (authToken.startsWith('offline-demo::')) {
+            return;
+        }
+        fetchWithTimeout(`${API_BASE_URL}/api/auth/me`, {
             headers: { Authorization: `Bearer ${authToken}` }
         })
             .then(async (res) => {
@@ -117,7 +141,13 @@ export default function App() {
                 localStorage.setItem('cote_auth_user', JSON.stringify(data.user));
                 localStorage.setItem('cote_track', data.user.track || 'institution');
             })
-            .catch(() => {
+            .catch((error: any) => {
+                if (error?.name === 'AbortError' || /failed to fetch|network/i.test(String(error?.message || ''))) {
+                    if (authUser) {
+                        toast.warning('Server is slow/unreachable. Continuing with cached session.');
+                        return;
+                    }
+                }
                 setAuthToken(null);
                 setAuthUser(null);
                 localStorage.removeItem('cote_auth_token');
@@ -130,11 +160,15 @@ export default function App() {
             const next: Record<string, Topic> = {};
             classrooms.forEach((cls) => {
                 const existing = prev[cls.id];
+                const apiMaterials = (cls.materials || []).map((material) => ({
+                    ...material,
+                    url: normalizeMaterialUrl(material.url)
+                }));
                 next[cls.id] = {
                     id: cls.id,
                     title: cls.title,
                     description: cls.description || 'Institution Classroom',
-                    materials: existing?.materials || [],
+                    materials: apiMaterials.length > 0 ? apiMaterials : (existing?.materials || []),
                     flashcards: existing?.flashcards || [],
                     questions: existing?.questions || [],
                     enrollmentCode: cls.enrollmentCode,
@@ -248,6 +282,45 @@ export default function App() {
         });
     };
 
+    const handleDeleteMaterial = async (topicId: string, materialId: string, materialTitle?: string) => {
+        if (!authToken) {
+            toast.error('Please login again.');
+            return false;
+        }
+        try {
+            const deleteUrl = new URL(`${API_BASE_URL}/api/classrooms/${topicId}/materials/${materialId}`);
+            if (materialTitle) {
+                deleteUrl.searchParams.set('filename', materialTitle);
+            }
+            const response = await fetch(deleteUrl.toString(), {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.detail || 'Failed to delete material.');
+            }
+
+            setTopics((prev) => {
+                const existing = prev[topicId];
+                if (!existing) return prev;
+                return {
+                    ...prev,
+                    [topicId]: {
+                        ...existing,
+                        materials: (existing.materials || []).filter((m) => m.id !== materialId)
+                    }
+                };
+            });
+            return true;
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to delete material.');
+            return false;
+        }
+    };
+
     if (!userRole) {
         return (
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -277,7 +350,9 @@ export default function App() {
 
     const handleCompleteDay = () => {
         // Refresh roadmap data to get updated progress
-        fetch(`http://localhost:8000/api/roadmap/${selectedRoadmapId}`)
+        fetch(`http://localhost:8000/api/roadmap/${selectedRoadmapId}`, {
+            headers: authToken ? { Authorization: `Bearer ${authToken}` } : {}
+        })
             .then(res => res.json())
             .then(data => setSelectedRoadmap(data))
             .catch(err => console.error(err));
@@ -286,7 +361,9 @@ export default function App() {
     const handleRoadmapRefresh = () => {
         // Re-fetch the current roadmap after week content is generated
         if (!selectedRoadmapId) return;
-        fetch(`http://localhost:8000/api/roadmap/${selectedRoadmapId}`)
+        fetch(`http://localhost:8000/api/roadmap/${selectedRoadmapId}`, {
+            headers: authToken ? { Authorization: `Bearer ${authToken}` } : {}
+        })
             .then(res => res.json())
             .then(data => setSelectedRoadmap(data && !data.detail ? data : null))
             .catch(err => console.error('Failed to refresh roadmap:', err));
@@ -308,15 +385,6 @@ export default function App() {
         setSelectedDayNumber(null);
     };
 
-    const handleTrackChange = (newTrack: 'institution' | 'individual') => {
-        setTrack(newTrack);
-        localStorage.setItem('cote_track', newTrack);
-        setSelectedTopicId(null);
-        setSelectedRoadmapId(null);
-        setSelectedDayNumber(null);
-        setActiveTab('dashboard');
-    };
-
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="min-h-screen bg-background text-foreground flex">
@@ -328,10 +396,9 @@ export default function App() {
                     setActiveTab={handleTabChange}
                     userRole={userRole}
                     track={track}
-                    setTrack={handleTrackChange}
                     onLogout={() => {
-                        if (authToken) {
-                            fetch('http://localhost:8000/api/auth/logout', {
+                        if (authToken && !authToken.startsWith('offline-demo::')) {
+                            fetch(`${API_BASE_URL}/api/auth/logout`, {
                                 method: 'POST',
                                 headers: { Authorization: `Bearer ${authToken}` }
                             }).catch(() => { });
@@ -390,6 +457,7 @@ export default function App() {
                                 onBack={handleBackToDashboard}
                                 userRole={userRole}
                                 onUploadComplete={handleUploadComplete}
+                                onDeleteMaterial={handleDeleteMaterial}
                             />
                         ) : activeTab === 'progress' ? (
                             <StudentProgressView

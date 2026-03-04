@@ -1,0 +1,706 @@
+{
+    "title": "Python Mastery in 30 Days: From Beginner to Advanced",
+    "description": "A comprehensive 30-day roadmap to mastering Python, covering fundamental concepts to advanced topics. Each week focuses on a specific area, with daily lessons, practice exercises, and in-depth tutorials to ensure a solid understanding.",
+    "total_days": 30,
+    "weeks": [
+        {
+            "week_number": 1,
+            "goal": "Establish a strong foundation in Python fundamentals.",
+            "days": [
+                {
+                    "day_number": 1,
+                    "topic": "Introduction to Python and Setting up the Environment",
+                    "learning_objectives": [
+                        "Understand what Python is and its applications",
+                        "Set up a Python development environment",
+                        "Write and execute your first Python program"
+                    ],
+                    "youtube_video_title": "Python Tutorial for Beginners 1 - Introduction",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=Y76za66XjAQ",
+                    "practice_url": "",
+                    "reference_content": "Python is a high-level, interpreted, general-purpose programming language. Its design philosophy emphasizes code readability with the use of significant indentation. Python is dynamically-typed and garbage-collected. It supports multiple programming paradigms, including structured (particularly procedural), object-oriented, and functional programming. Python is often described as a 'batteries included' language due to its comprehensive standard library.\n\n**Setting up the Environment:**\n\n1.  **Download Python:** Go to the official Python website (python.org) and download the latest version of Python for your operating system. Ensure you select the appropriate installer for your system (32-bit or 64-bit).\n2.  **Install Python:** Run the downloaded installer. During the installation, make sure to check the box that says 'Add Python to PATH'. This will allow you to run Python from the command line.\n3.  **Verify Installation:** Open a command prompt or terminal and type `python --version` or `python3 --version`. This should display the version of Python you installed.\n4.  **Choose an IDE (Integrated Development Environment):** While you can write Python code in a simple text editor, an IDE provides features like syntax highlighting, code completion, and debugging. Popular options include:\n    *   **VS Code:** A versatile and customizable editor with excellent Python support through extensions.\n    *   **PyCharm:** A dedicated Python IDE with advanced features like code analysis and refactoring.\n    *   **Jupyter Notebook:** An interactive environment ideal for data science and experimentation.\n\n**Your First Python Program:**\n\nOpen your chosen IDE or text editor and create a new file named `hello.py`. Type the following code into the file:\n\n```python\nprint(\"Hello, World!\")\n```\n\nSave the file. Open a command prompt or terminal, navigate to the directory where you saved `hello.py`, and run the program by typing `python hello.py` or `python3 hello.py`. You should see the output `Hello, World!` printed to the console.\n\n**Key Concepts:**\n\n*   `print()`: This is a built-in function that displays output to the console. You can pass any text or variables to the `print()` function to display their values.\n*   String Literals: Text enclosed in single quotes ('...') or double quotes (\"...\") is called a string literal. Strings are used to represent text in Python.\n\n",
+                    "questions": [
+                        {
+                            "question": "What is the primary design philosophy of Python?",
+                            "type": "recall",
+                            "hint": "Emphasis on code readability with significant indentation."
+                        },
+                        {
+                            "question": "Describe the steps to set up a Python development environment on your computer.",
+                            "type": "application",
+                            "hint": "Download and install Python, add Python to PATH, verify installation, and choose an IDE."
+                        }
+                    ]
+                },
+                {
+                    "day_number": 2,
+                    "topic": "Variables, Data Types, and Operators",
+                    "learning_objectives": [
+                        "Understand different data types in Python",
+                        "Declare and use variables",
+                        "Use arithmetic, comparison, and logical operators"
+                    ],
+                    "youtube_video_title": "Python Tutorial for Beginners 2 - Variables and Data Types",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=jaKQu_nlhJU",
+                    "practice_url": "",
+                    "reference_content": "**Variables:**\n\nA variable is a named storage location in a computer's memory. You can store data in variables and access it later by referring to the variable's name. In Python, you don't need to explicitly declare the data type of a variable; Python automatically infers the type based on the value assigned to it.\n\n**Data Types:**\n\n*   **Integers (int):** Whole numbers, both positive and negative (e.g., 10, -5, 0).\n*   **Floating-point Numbers (float):** Numbers with a decimal point (e.g., 3.14, -2.5, 0.0).\n*   **Strings (str):** Sequences of characters (e.g., \"Hello\", 'Python'). Strings are immutable, meaning they cannot be changed after they are created.\n*   **Booleans (bool):** Represents truth values, either `True` or `False`.\n*   **Lists (list):** Ordered collections of items. Lists are mutable, meaning you can add, remove, or change items in a list (e.g., `[1, 2, 3]`, `['apple', 'banana', 'cherry']`).\n*   **Tuples (tuple):** Similar to lists, but tuples are immutable (e.g., `(1, 2, 3)`, `('apple', 'banana', 'cherry')`).\n*   **Dictionaries (dict):** Collections of key-value pairs (e.g., `{'name': 'John', 'age': 30}`).\n*   **Sets (set):** Unordered collections of unique items (e.g., `{1, 2, 3}`).\n\n**Operators:**\n\n*   **Arithmetic Operators:** Used for performing mathematical operations:\n    *   `+` (Addition)\n    *   `-` (Subtraction)\n    *   `*` (Multiplication)\n    *   `/` (Division)\n    *   `//` (Floor Division - returns the integer part of the division)\n    *   `%` (Modulo - returns the remainder of the division)\n    *   `**` (Exponentiation)\n*   **Comparison Operators:** Used for comparing values:\n    *   `==` (Equal to)\n    *   `!=` (Not equal to)\n    *   `>` (Greater than)\n    *   `<` (Less than)\n    *   `>=` (Greater than or equal to)\n    *   `<=` (Less than or equal to)\n*   **Logical Operators:** Used for combining boolean expressions:\n    *   `and` (Returns `True` if both operands are `True`)\n    *   `or` (Returns `True` if at least one operand is `True`)\n    *   `not` (Returns the opposite of the operand)\n\n**Example:**\n\n```python\nage = 30  # Integer variable\nname = \"John\"  # String variable\nheight = 5.9  # Float variable\nis_student = True  # Boolean variable\n\nprint(age + 5)  # Addition\nprint(name == \"John\")  # Comparison\nprint(is_student and age > 18)  # Logical AND\n```",
+                    "questions": [
+                        {
+                            "question": "What are the key differences between a list and a tuple in Python?",
+                            "type": "recall",
+                            "hint": "Lists are mutable, while tuples are immutable."
+                        },
+                        {
+                            "question": "Write a Python program that calculates the area of a rectangle given its length and width.",
+                            "type": "application",
+                            "hint": "Area = length * width"
+                        }
+                    ]
+                },
+                {
+                    "day_number": 3,
+                    "topic": "Control Flow: If Statements",
+                    "learning_objectives": [
+                        "Understand the syntax of if, elif, and else statements",
+                        "Write conditional statements to control program flow",
+                        "Use nested if statements"
+                    ],
+                    "youtube_video_title": "Python Tutorial for Beginners 3 - If Else Statements",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=Y_SiEcaVn9o",
+                    "practice_url": "",
+                    "reference_content": "**If Statements:**\n\n`if` statements allow you to execute different blocks of code based on whether a condition is true or false. The basic syntax is:\n\n```python\nif condition:\n    # Code to execute if the condition is True\n```\n\n*   The `condition` is an expression that evaluates to either `True` or `False`.\n*   The code inside the `if` block is indented. Indentation is crucial in Python to define code blocks.\n\n**Elif Statements:**\n\n`elif` (short for 'else if') allows you to check multiple conditions in sequence. The syntax is:\n\n```python\nif condition1:\n    # Code to execute if condition1 is True\nelif condition2:\n    # Code to execute if condition1 is False and condition2 is True\n...\n```\n\n**Else Statements:**\n\n`else` provides a block of code to execute if none of the preceding `if` or `elif` conditions are true. The syntax is:\n\n```python\nif condition:\n    # Code to execute if the condition is True\nelse:\n    # Code to execute if the condition is False\n```\n\n**Nested If Statements:**\n\nYou can nest `if` statements inside other `if` statements to create more complex decision-making logic. For example:\n\n```python\nif age >= 18:\n    if has_license:\n        print(\"You are eligible to drive.\")\n    else:\n        print(\"You are old enough to drive, but you need a license.\")\nelse:\n    print(\"You are not old enough to drive.\")\n```\n\n**Example:**\n\n```python\nage = 20\n\nif age >= 18:\n    print(\"You are an adult.\")\nelse:\n    print(\"You are a minor.\")\n```",
+                    "questions": [
+                        {
+                            "question": "Explain the purpose of an `elif` statement in Python.",
+                            "type": "recall",
+                            "hint": "To check multiple conditions in sequence."
+                        },
+                        {
+                            "question": "Write a Python program that checks if a number is positive, negative, or zero.",
+                            "type": "application",
+                            "hint": "Use `if`, `elif`, and `else` statements."
+                        }
+                    ]
+                },
+                {
+                    "day_number": 4,
+                    "topic": "Control Flow: For and While Loops",
+                    "learning_objectives": [
+                        "Understand the syntax of for and while loops",
+                        "Iterate over sequences using for loops",
+                        "Repeat code blocks using while loops",
+                        "Use break and continue statements"
+                    ],
+                    "youtube_video_title": "Python Tutorial for Beginners 4 - For and While Loops",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=6iF8XbX1WM0",
+                    "practice_url": "",
+                    "reference_content": "**For Loops:**\n\n`for` loops are used to iterate over a sequence (e.g., a list, tuple, string, or range). The syntax is:\n\n```python\nfor item in sequence:\n    # Code to execute for each item in the sequence\n```\n\n*   `item` is a variable that takes on the value of each element in the `sequence` during each iteration.\n*   The code inside the `for` loop is indented.\n\n**While Loops:**\n\n`while` loops are used to repeatedly execute a block of code as long as a condition is true. The syntax is:\n\n```python\nwhile condition:\n    # Code to execute as long as the condition is True\n```\n\n*   The `condition` is an expression that evaluates to either `True` or `False`.\n*   The code inside the `while` loop is indented.\n*   It's important to ensure that the `condition` eventually becomes `False` to avoid an infinite loop.\n\n**Break and Continue Statements:**\n\n*   `break`: Terminates the loop immediately and transfers control to the next statement after the loop.\n*   `continue`: Skips the rest of the current iteration and proceeds to the next iteration of the loop.\n\n**Example (For Loop):**\n\n```python\nnumbers =\nfor number in numbers:\n    print(number)\n```\n\n**Example (While Loop):**\n\n```python\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1\n```\n\n",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between a `for` loop and a `while` loop in Python.",
+                            "type": "recall",
+                            "hint": "`for` loops iterate over a sequence, while `while` loops repeat code based on a condition."
+                        },
+                        {
+                            "question": "Write a Python program that prints the numbers from 1 to 10 using a `while` loop.",
+                            "type": "application",
+                            "hint": "Initialize a counter variable and increment it in the loop."
+                        }
+                    ]
+                },
+                {
+                    "day_number": 5,
+                    "topic": "Functions",
+                    "learning_objectives": [
+                        "Define and call functions",
+                        "Pass arguments to functions",
+                        "Return values from functions",
+                        "Understand scope of variables"
+                    ],
+                    "youtube_video_title": "Python Tutorial for Beginners 5 - Functions",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=9Os0o3wzS_I",
+                    "practice_url": "",
+                    "reference_content": "**Defining Functions:**\n\nA function is a block of organized, reusable code that performs a specific task. You can define a function using the `def` keyword. The syntax is:\n\n```python\ndef function_name(parameters):\n    # Code to execute\n    return value  # Optional\n```\n\n*   `function_name` is the name of the function.\n*   `parameters` are the inputs to the function (optional).\n*   The code inside the function is indented.\n*   `return` is used to return a value from the function (optional).\n\n**Calling Functions:**\n\nTo call a function, simply use its name followed by parentheses. If the function takes arguments, you must provide them in the parentheses.\n\n```python\nresult = function_name(arguments)\n```\n\n**Scope of Variables:**\n\n*   **Local Variables:** Variables defined inside a function are local to that function and cannot be accessed from outside the function.\n*   **Global Variables:** Variables defined outside any function are global and can be accessed from anywhere in the program.\n\n**Example:**\n\n```python\ndef add(x, y):\n    \"\"\"This function adds two numbers.\"\"\"\n    result = x + y\n    return result\n\nsum_result = add(5, 3)\nprint(sum_result)  # Output: 8\n```",
+                    "questions": [
+                        {
+                            "question": "What is the purpose of a function in programming?",
+                            "type": "recall",
+                            "hint": "To perform a specific task and reuse code."
+                        },
+                        {
+                            "question": "Write a Python function that calculates the factorial of a number.",
+                            "type": "application",
+                            "hint": "Factorial of n = n * (n-1) * (n-2) * ... * 1"
+                        }
+                    ]
+                },
+                {
+                    "day_number": 6,
+                    "topic": "Data Structures: Lists",
+                    "learning_objectives": [
+                        "Create and manipulate lists",
+                        "Access elements in a list",
+                        "Use list methods (append, insert, remove, etc.)",
+                        "Understand list comprehensions"
+                    ],
+                    "youtube_video_title": "Python Tutorial for Beginners 6 - Lists",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=W8AeOXa_FvU",
+                    "practice_url": "",
+                    "reference_content": "**Creating Lists:**\n\nA list is an ordered collection of items. You can create a list by enclosing a comma-separated sequence of items in square brackets.\n\n```python\nmy_list = [1, 2, 3, 'apple', 'banana']\n```\n\n**Accessing Elements:**\n\nYou can access elements in a list using their index. The index starts at 0 for the first element.\n\n```python\nprint(my_list)  # Output: 1\nprint(my_list)  # Output: apple\n```\n\nYou can also use negative indices to access elements from the end of the list. `-1` refers to the last element.\n\n```python\nprint(my_list[-1])  # Output: banana\n```\n\n**List Methods:**\n\n*   `append(item)`: Adds an item to the end of the list.\n*   `insert(index, item)`: Inserts an item at a specific index.\n*   `remove(item)`: Removes the first occurrence of an item from the list.\n*   `pop(index)`: Removes and returns the item at a specific index (or the last item if no index is specified).\n*   `index(item)`: Returns the index of the first occurrence of an item.\n*   `count(item)`: Returns the number of times an item appears in the list.\n*   `sort()`: Sorts the list in ascending order (in-place).\n*   `reverse()`: Reverses the list (in-place).\n\n**List Comprehensions:**\n\nList comprehensions provide a concise way to create lists based on existing lists or other iterables.\n\n```python\nsquares = [x**2 for x in range(10)]  # Creates a list of squares from 0 to 9\neven_numbers = [x for x in range(20) if x % 2 == 0]  # Creates a list of even numbers from 0 to 19\n```\n\n**Example:**\n\n```python\nnumbers =\nnumbers.append(6)\nprint(numbers)  # Output:\n```",
+                    "questions": [
+                        {
+                            "question": "How do you access the third element in a list?",
+                            "type": "recall",
+                            "hint": "Using index 2."
+                        },
+                        {
+                            "question": "Write a Python program that creates a list of the first 10 even numbers using list comprehension.",
+                            "type": "application",
+                            "hint": "Use `range` and a conditional statement."
+                        }
+                    ]
+                },
+                {
+                    "day_number": 7,
+                    "topic": "Data Structures: Dictionaries",
+                    "learning_objectives": [
+                        "Create and manipulate dictionaries",
+                        "Access values in a dictionary",
+                        "Use dictionary methods (keys, values, items, etc.)"
+                    ],
+                    "youtube_video_title": "Python Tutorial for Beginners 7 - Dictionaries",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=daefaLmjpT4",
+                    "practice_url": "",
+                    "reference_content": "**Creating Dictionaries:**\n\nA dictionary is a collection of key-value pairs. You can create a dictionary by enclosing a comma-separated sequence of key-value pairs in curly braces.\n\n```python\nmy_dict = {'name': 'John', 'age': 30, 'city': 'New York'}\n```\n\n**Accessing Values:**\n\nYou can access values in a dictionary using their corresponding keys.\n\n```python\nprint(my_dict['name'])  # Output: John\nprint(my_dict['age'])  # Output: 30\n```\n\n**Dictionary Methods:**\n\n*   `keys()`: Returns a view object that displays a list of all the keys in the dictionary.\n*   `values()`: Returns a view object that displays a list of all the values in the dictionary.\n*   `items()`: Returns a view object that displays a list of all the key-value pairs in the dictionary as tuples.\n*   `get(key, default)`: Returns the value for the specified key. If the key does not exist, it returns the `default` value (or `None` if no default is specified).\n*   `update(other_dict)`: Updates the dictionary with the key-value pairs from another dictionary.\n*   `pop(key, default)`: Removes and returns the value associated with the specified key. If the key does not exist, it returns the `default` value (or raises a `KeyError` if no default is specified).\n\n**Example:**\n\n```python\nperson = {'name': 'John', 'age': 30}\nprint(person.keys())  # Output: dict_keys(['name', 'age'])\nprint(person.values()) # Output: dict_values(['John', 30])\n```",
+                    "questions": [
+                        {
+                            "question": "How do you access the value associated with a key in a dictionary?",
+                            "type": "recall",
+                            "hint": "Using the key in square brackets."
+                        },
+                        {
+                            "question": "Write a Python program that creates a dictionary to store the names and scores of students, and then prints the average score.",
+                            "type": "application",
+                            "hint": "Iterate over the values and calculate the average."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 2,
+            "goal": "Dive into Object-Oriented Programming (OOP) and Modules.",
+            "days": [
+                {
+                    "day_number": 8,
+                    "topic": "Introduction to Object-Oriented Programming (OOP)",
+                    "learning_objectives": [
+                        "Understand the core principles of Object-Oriented Programming (OOP)",
+                        "Learn to define classes and create objects in Python",
+                        "Explore the concepts of inheritance, encapsulation, and polymorphism"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=ZDa-Z5JzLYM",
+                    "practice_url": "https://www.hackerrank.com/challenges/class-1-dealing-with-complex-numbers/problem",
+                    "reference_content": "Object-Oriented Programming (OOP) is a programming paradigm based on the concept of \"objects\", which can contain data, in the form of fields (often known as attributes), and code, in the form of procedures (often known as methods). A central feature of OOP is the idea of combining data and methods that operate on that data into a single unit. \n\n**Core Principles of OOP**\n\n1.  **Encapsulation:** Bundling of data and methods that operate on that data into a single unit (i.e., a class). It restricts direct access to some of the object's components and can prevent the accidental modification of data. In Python, encapsulation is achieved through the use of naming conventions (e.g., using a single underscore `_` or double underscore `__` to denote protected or private members, respectively). \n\n    ```python\n    class BankAccount:\n        def __init__(self, account_number, balance):\n            self._account_number = account_number  # Protected attribute\n            self.__balance = balance  # Private attribute\n\n        def deposit(self, amount):\n            self.__balance += amount\n\n        def get_balance(self):\n            return self.__balance\n    \n    account = BankAccount(\"12345\", 1000)\n    account.deposit(500)\n    print(account.get_balance()) # Output: 1500\n    # print(account.__balance) # This will raise an AttributeError because it's a private attribute\n    ```\n\n2.  **Inheritance:** A mechanism where a new class (a \"child class\" or \"subclass\") inherits properties and behavior from another class (a \"parent class\" or \"superclass\"). Inheritance promotes code reuse and establishes a hierarchical relationship between classes.\n\n    ```python\n    class Animal:\n        def __init__(self, name):\n            self.name = name\n\n        def speak(self):\n            print(\"Generic animal sound\")\n\n    class Dog(Animal):\n        def speak(self):\n            print(\"Woof!\")\n\n    class Cat(Animal):\n        def speak(self):\n            print(\"Meow!\")\n\n    dog = Dog(\"Buddy\")\n    cat = Cat(\"Whiskers\")\n    dog.speak()  # Output: Woof!\n    cat.speak()  # Output: Meow!\n    ```\n\n3.  **Polymorphism:** The ability of different classes to respond to the same method call in their own specific ways. Polymorphism allows you to write code that can work with objects of different classes in a uniform manner. This is often achieved through inheritance and method overriding.\n\n    ```python\n    class Shape:\n        def area(self):\n            pass\n\n    class Rectangle(Shape):\n        def __init__(self, width, height):\n            self.width = width\n            self.height = height\n\n        def area(self):\n            return self.width * self.height\n\n    class Circle(Shape):\n        def __init__(self, radius):\n            self.radius = radius\n\n        def area(self):\n            return 3.14159 * self.radius * self.radius\n\n    shapes = [Rectangle(5, 10), Circle(7)]\n    for shape in shapes:\n        print(f\"Area: {shape.area()}\")\n    # Output:\n    # Area: 50\n    # Area: 153.93791\n    ```\n\n**Defining Classes and Creating Objects in Python**\n\n*   A class is a blueprint for creating objects. Use the `class` keyword to define a class.\n*   An object is an instance of a class. Create an object by calling the class as if it were a function.\n*   The `__init__` method is a special method (constructor) that is automatically called when an object is created. It's used to initialize the object's attributes.\n*   `self` refers to the instance of the class.\n\n```python\nclass Person:\n    def __init__(self, name, age):\n        self.name = name\n        self.age = age\n\n    def greet(self):\n        print(f\"Hello, my name is {self.name} and I am {self.age} years old.\")\n\n\nperson1 = Person(\"Alice\", 30)\nperson1.greet()  # Output: Hello, my name is Alice and I am 30 years old.\n```\n\nBy understanding and applying these OOP principles, you can write more modular, maintainable, and reusable code. Python's object-oriented features are powerful and widely used in various applications, making a solid grasp of OOP essential for any Python developer.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between a class and an object.",
+                            "type": "recall",
+                            "hint": "A class is a blueprint or template, while an object is a specific instance of that blueprint."
+                        },
+                        {
+                            "question": "Design a class representing a 'Car' with attributes like 'model', 'color', and 'speed'. Include methods to accelerate and brake. How would you ensure that the speed never goes below zero?",
+                            "type": "application",
+                            "hint": "Use encapsulation (e.g., a private attribute for speed) and control access to it through methods that include validation."
+                        }
+                    ],
+                    "youtube_video_title": "Python OOP Tutorial 1: Classes and Instances",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 9,
+                    "topic": "Classes and Objects",
+                    "learning_objectives": [
+                        "Understand the principles of object-oriented programming (OOP)",
+                        "Define classes and create objects in Python",
+                        "Implement methods and attributes within classes",
+                        "Explore inheritance and polymorphism"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=ZDa-Z5JzLYk",
+                    "practice_url": "https://www.hackerrank.com/challenges/class-1-dealing-with-complex-numbers/problem",
+                    "reference_content": "Object-oriented programming (OOP) is a programming paradigm based on the concept of \"objects\", which contain data, in the form of fields (often known as attributes or properties), and code, in the form of procedures (often known as methods). A central tenet of OOP is to bind together the data and the functions that operate on that data.\n\n**Classes and Objects**\nA class is a blueprint or a template for creating objects. An object is an instance of a class. Think of a class as a cookie cutter and the objects as the cookies.\n\n**Syntax**\n```python\nclass ClassName:\n    # class attributes (variables)\n    attribute1 = value1\n    attribute2 = value2\n\n    # class methods (functions)\n    def __init__(self, parameter1, parameter2):\n        # constructor: initializes the object\n        self.attribute1 = parameter1\n        self.attribute2 = parameter2\n\n    def method_name(self, parameter):\n        # performs an action\n        return result\n```\n\n**Example**\n```python\nclass Dog:\n    # Class attribute\n    species = 'Canis familiaris'\n\n    # Instance attributes\n    def __init__(self, name, age):\n        self.name = name\n        self.age = age\n\n    # Instance method\n    def bark(self):\n        return \"Woof!\"\n\n# Creating objects\ndog1 = Dog(\"Buddy\", 3)\ndog2 = Dog(\"Lucy\", 5)\n\nprint(dog1.name)  # Output: Buddy\nprint(dog2.bark())  # Output: Woof!\n```\n\n**Key Concepts**\n*   `__init__` method: This is the constructor. It's called when an object is created from the class.  It initializes the object's attributes.  The `self` parameter refers to the instance of the object.\n*   `self`:  Represents the instance of the class.  By using the \u201cself\u201d keyword we can access the attributes and methods of the class in python. It binds the attributes with the given arguments.\n*   Attributes: Variables that belong to the object. They store the object's data.\n*   Methods: Functions that belong to the object. They define the object's behavior.\n\n**Inheritance**\nInheritance allows a new class (subclass or derived class) to inherit attributes and methods from an existing class (superclass or base class). This promotes code reuse and creates a hierarchy of classes.\n\n**Syntax**\n```python\nclass SubclassName(SuperclassName):\n    def __init__(self, parameter1, parameter2, parameter3):\n        super().__init__(parameter1, parameter2)\n        self.attribute3 = parameter3\n\n    def new_method(self):\n        # performs a new action\n        return result\n```\n\n**Example**\n```python\nclass Animal:\n    def __init__(self, name):\n        self.name = name\n\n    def speak(self):\n        print(\"Generic animal sound\")\n\nclass Dog(Animal):\n    def __init__(self, name, breed):\n        super().__init__(name)\n        self.breed = breed\n\n    def speak(self):\n        print(\"Woof!\")\n\nmy_dog = Dog(\"Rover\", \"Golden Retriever\")\nmy_dog.speak() #Prints Woof!\n```\n\n**Polymorphism**\nPolymorphism means \"many forms\". In OOP, it refers to the ability of objects of different classes to respond to the same method call in their own way. This can be achieved through inheritance and method overriding.\n\n**Example**\nIn the previous example with `Animal` and `Dog`, both classes have a `speak()` method. Polymorphism allows us to call `speak()` on different objects and get different results.\n\n```python\ndef animal_sound(animal):\n    animal.speak()\n\nanimal = Animal(\"Generic\")\ndog = Dog(\"Rover\", \"Golden Retriever\")\n\nanimal_sound(animal) # Prints Generic animal sound\nanimal_sound(dog) # Prints Woof!\n```",
+                    "questions": [
+                        {
+                            "question": "What is the purpose of the `__init__` method in a Python class?",
+                            "type": "recall",
+                            "hint": "The `__init__` method is a constructor that initializes the object's attributes when an object is created."
+                        },
+                        {
+                            "question": "You are building a system to manage different types of vehicles (cars, trucks, motorcycles). How would you use inheritance to create a hierarchy of classes representing these vehicles?",
+                            "type": "application",
+                            "hint": "Create a base class `Vehicle` with common attributes (e.g., `model`, `year`, `color`). Then, create subclasses `Car`, `Truck`, and `Motorcycle` that inherit from `Vehicle` and add specific attributes for each type (e.g., `num_doors` for `Car`, `load_capacity` for `Truck`)."
+                        }
+                    ],
+                    "youtube_video_title": "Python OOP Tutorial 1: Classes and Instances",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 10,
+                    "topic": "Inheritance and Polymorphism",
+                    "learning_objectives": [
+                        "Understand the concept of inheritance in Python",
+                        "Implement single and multiple inheritance",
+                        "Grasp the concept of polymorphism and its different forms",
+                        "Apply inheritance and polymorphism in practical scenarios"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=RZxU2Ow10j4",
+                    "practice_url": "https://www.hackerrank.com/challenges/inheritance-and-polymorphism/problem",
+                    "reference_content": "## Inheritance and Polymorphism in Python\n\nInheritance and polymorphism are fundamental concepts in object-oriented programming (OOP) that promote code reusability and flexibility. Python, being an object-oriented language, fully supports these features.\n\n### Inheritance\n\nInheritance allows a class (subclass or derived class) to inherit properties and methods from another class (superclass or base class). This establishes an IS-A relationship between the classes. For example, a `Car` IS-A `Vehicle`.  Inheritance avoids redundant code and promotes a hierarchical structure.\n\n**Syntax:**\n\n```python\nclass BaseClass:\n    # Base class attributes and methods\n    pass\n\nclass DerivedClass(BaseClass):\n    # Derived class attributes and methods\n    pass\n```\n\n**Example: Single Inheritance**\n\n```python\nclass Animal:\n    def __init__(self, name):\n        self.name = name\n\n    def speak(self):\n        print(\"Generic animal sound\")\n\nclass Dog(Animal):\n    def speak(self):\n        print(\"Woof!\")\n\nmy_dog = Dog(\"Buddy\")\nmy_dog.speak()  # Output: Woof!\nprint(my_dog.name) # Output: Buddy\n```\nIn this example, `Dog` inherits from `Animal`. The `Dog` class overrides the `speak` method of the `Animal` class, demonstrating polymorphism through method overriding.\n\n**Example: Multiple Inheritance**\n\nPython supports multiple inheritance, where a class can inherit from multiple base classes.\n\n```python\nclass Swimmer:\n    def swim(self):\n        print(\"Swimming...\")\n\nclass Walker:\n    def walk(self):\n        print(\"Walking...\")\n\nclass Duck(Swimmer, Walker):\n    pass\n\nduck = Duck()\nduck.swim()  # Output: Swimming...\nduck.walk()  # Output: Walking...\n```\nHere, `Duck` inherits from both `Swimmer` and `Walker`, gaining the ability to swim and walk.\n\n### Polymorphism\n\nPolymorphism means \"many forms.\" In OOP, it refers to the ability of objects of different classes to respond to the same method call in their own way.  There are two main types of polymorphism: method overriding (as seen in the inheritance example) and method overloading (which is not directly supported in Python in the traditional sense, but can be achieved with default arguments or variable argument lists).\n\n**Method Overriding:**\n\nAs demonstrated in the `Animal` and `Dog` example above, method overriding allows a subclass to provide a specific implementation for a method that is already defined in its superclass.\n\n**Duck Typing:** Python uses \"duck typing\", a form of polymorphism where the type or class of an object is less important than the methods it defines. If it walks like a duck and quacks like a duck, then it is a duck.\n\n```python\ndef make_sound(animal):\n    animal.speak()\n\nclass Cat:\n    def speak(self):\n        print(\"Meow!\")\n\nmy_cat = Cat()\nmake_sound(my_cat)  # Output: Meow!\nmake_sound(my_dog) # Output: Woof!\n```\nIn this case, `make_sound` doesn't care if the object is an `Animal`, `Dog`, or `Cat`. It only cares that the object has a `speak()` method.\n\n**Example: Polymorphism with a Function**\n\n```python\nclass Square:\n    def __init__(self, side):\n        self.side = side\n\n    def area(self):\n        return self.side * self.side\n\nclass Circle:\n    def __init__(self, radius):\n        self.radius = radius\n\n    def area(self):\n        return 3.14159 * self.radius * self.radius\n\ndef print_area(shape):\n    print(f\"The area is: {shape.area()}\")\n\nsquare = Square(5)\ncircle = Circle(3)\n\nprint_area(square) # Output: The area is: 25\nprint_area(circle) # Output: The area is: 28.27431\n```\nHere, `print_area` can accept either a `Square` or a `Circle` object and correctly calculate and print the area because both classes have an `area()` method.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between single and multiple inheritance, and provide an example of each.",
+                            "type": "recall",
+                            "hint": "Single inheritance involves inheriting from one base class, while multiple inheritance involves inheriting from multiple base classes. Consider examples like a Dog inheriting from Animal vs. a FlyingCar inheriting from Car and Plane."
+                        },
+                        {
+                            "question": "Design a system for a library using inheritance. Consider classes like `LibraryItem`, `Book`, `DVD`, and `Patron`. Implement methods for borrowing and returning items, and ensure that different types of items have appropriate borrowing periods.",
+                            "type": "application",
+                            "hint": "Think about the common attributes and methods that all library items share (e.g., title, item ID, is_borrowed). Then, consider the specific attributes and methods that differentiate books and DVDs (e.g., number of pages, director). Use inheritance to represent these relationships and polymorphism to handle borrowing periods differently for each item type."
+                        }
+                    ],
+                    "youtube_video_title": "Python OOP Tutorial 5 - Inheritance",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 11,
+                    "topic": "Modules and Packages",
+                    "learning_objectives": [
+                        "Understand the concept of modules and packages in Python.",
+                        "Learn how to import modules and packages.",
+                        "Create and use your own custom modules and packages."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=q-RQlfB4y_Y",
+                    "practice_url": "https://www.hackerrank.com/challenges/py-import-module/problem",
+                    "reference_content": "## Python Modules and Packages\n\nModules and packages are fundamental concepts in Python for organizing and reusing code. They allow you to break down large programs into smaller, more manageable files and directories.\n\n### Modules\n\nA module is a single file (or files) containing Python definitions and statements. These definitions can be functions, classes, or variables. Modules help in organizing code and making it reusable.\n\n**Importing Modules**\n\nTo use a module, you need to import it using the `import` statement. There are several ways to import modules:\n\n1.  **Import the entire module:**\n    ```python\n    import math\n    print(math.sqrt(16))\n    ```\n    This imports the `math` module, and you can access its functions and variables using the dot notation (e.g., `math.sqrt()`).\n\n2.  **Import specific names from a module:**\n    ```python\n    from math import sqrt, pi\n    print(sqrt(25))\n    print(pi)\n    ```\n    This imports only the `sqrt` function and the `pi` variable from the `math` module. You can then use them directly without the `math.` prefix.\n\n3.  **Import all names from a module:**\n    ```python\n    from math import *\n    print(sqrt(36))\n    print(cos(0))\n    ```\n    This imports all names from the `math` module. However, this is generally discouraged as it can lead to namespace pollution and naming conflicts.\n\n4.  **Import a module with an alias:**\n    ```python\n    import math as m\n    print(m.sqrt(49))\n    ```\n    This imports the `math` module and gives it the alias `m`. You can then use `m` to refer to the module.\n\n**Creating Your Own Modules**\n\nCreating your own modules is simple. Just create a Python file (e.g., `my_module.py`) and define functions, classes, or variables in it.\n\n```python\n# my_module.py\n\ndef greet(name):\n    print(f\"Hello, {name}!\")\n\n\nmessage = \"This is my module.\"\n```\n\nThen, you can import and use your module in another Python file:\n\n```python\nimport my_module\n\nmy_module.greet(\"Alice\")\nprint(my_module.message)\n```\n\n### Packages\n\nA package is a way of organizing related modules into a directory hierarchy. It contains a collection of module files and a special `__init__.py` file (which can be empty in newer versions of Python).\n\n**Creating a Package**\n\nTo create a package, follow these steps:\n\n1.  Create a directory for your package (e.g., `my_package`).\n2.  Inside the directory, create an `__init__.py` file (can be empty).\n3.  Create module files (e.g., `module1.py`, `module2.py`) inside the directory.\n\n```\nmy_package/\n    __init__.py\n    module1.py\n    module2.py\n```\n\n**Using a Package**\n\nTo use a package, you can import modules from it using the dot notation:\n\n```python\nimport my_package.module1\n\nmy_package.module1.some_function()\n```\n\nAlternatively, you can import specific names from a module within a package:\n\n```python\nfrom my_package.module2 import some_variable\n\nprint(some_variable)\n```\n\n**Example:**\n\n`my_package/module1.py`\n\n```python\n# my_package/module1.py\n\ndef some_function():\n    print(\"This is module1.\")\n```\n\n`my_package/module2.py`\n\n```python\n# my_package/module2.py\n\nsome_variable = \"Hello from module2!\"\n```\n\nMain script:\n\n```python\nimport my_package.module1\nfrom my_package.module2 import some_variable\n\nmy_package.module1.some_function()\nprint(some_variable)\n```\n\n### Benefits of Using Modules and Packages\n\n*   **Code Reusability:** Modules and packages allow you to reuse code in multiple programs.\n*   **Organization:** They help in organizing large codebases into smaller, manageable parts.\n*   **Namespace Management:** They prevent naming conflicts by creating separate namespaces for different modules and packages.\n*   **Modularity:** They promote modular design, making it easier to maintain and update code.\n\nBy understanding and utilizing modules and packages, you can write more organized, maintainable, and reusable Python code.",
+                    "questions": [
+                        {
+                            "question": "What is the primary purpose of using modules and packages in Python?",
+                            "type": "recall",
+                            "hint": "Modules and packages help organize code, promote reusability, and manage namespaces to prevent naming conflicts."
+                        },
+                        {
+                            "question": "You are developing a scientific application that requires various mathematical functions. How would you structure your project using modules and packages to organize the code effectively?",
+                            "type": "application",
+                            "hint": "You could create a package named 'scientific_calculations' containing modules for linear algebra, statistics, and calculus, each with relevant functions. Use the `import` statement to access these functions in your main application."
+                        }
+                    ],
+                    "youtube_video_title": "Python Tutorial: Modules - Create and Import Your Own!",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 12,
+                    "topic": "Working with Standard Library Modules (math, datetime)",
+                    "learning_objectives": [
+                        "Understand the purpose and benefits of using standard library modules.",
+                        "Learn how to import and use functions from the `math` module.",
+                        "Learn how to import and use classes and functions from the `datetime` module."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=p0nR2L4cE20",
+                    "practice_url": "https://www.hackerrank.com/challenges/python-math/problem",
+                    "reference_content": "## Working with Standard Library Modules: `math` and `datetime`\n\nPython's standard library is a collection of modules available for use in your programs. These modules provide pre-written functions and classes that perform common tasks, saving you time and effort. This lesson will focus on two particularly useful modules: `math` and `datetime`.\n\n### The `math` Module\n\nThe `math` module provides access to mathematical functions. To use it, you must first import it:\n\n```python\nimport math\n```\n\nHere are some commonly used functions from the `math` module:\n\n*   **`math.sqrt(x)`**: Returns the square root of `x`.\n\n    ```python\n    import math\n    print(math.sqrt(25))  # Output: 5.0\n    ```\n\n*   **`math.pow(x, y)`**: Returns `x` raised to the power of `y`.\n\n    ```python\n    import math\n    print(math.pow(2, 3))  # Output: 8.0\n    ```\n\n*   **`math.sin(x)`**, **`math.cos(x)`**, **`math.tan(x)`**: Returns the sine, cosine, and tangent of `x` (in radians).\n\n    ```python\n    import math\n    print(math.sin(math.pi/2))  # Output: 1.0 (approximately)\n    ```\n\n*   **`math.ceil(x)`**: Returns the smallest integer greater than or equal to `x`.\n\n    ```python\n    import math\n    print(math.ceil(4.2))  # Output: 5\n    ```\n\n*   **`math.floor(x)`**: Returns the largest integer less than or equal to `x`.\n\n    ```python\n    import math\n    print(math.floor(4.8))  # Output: 4\n    ```\n\n*   **`math.pi`**: A constant representing the mathematical constant pi (\u03c0).\n\n    ```python\n    import math\n    print(math.pi)  # Output: 3.141592653589793\n    ```\n\n*   **`math.e`**: A constant representing the mathematical constant e.\n\n    ```python\n    import math\n    print(math.e) # Output: 2.718281828459045\n    ```\n\n### The `datetime` Module\n\nThe `datetime` module provides classes for working with dates and times. To use it, you must first import it:\n\n```python\nimport datetime\n```\n\nKey classes in the `datetime` module include:\n\n*   **`datetime.date`**: Represents a date (year, month, day).\n\n    ```python\n    import datetime\n    today = datetime.date.today()\n    print(today)  # Output: 2026-03-03 (or the current date)\n\n    my_date = datetime.date(2024, 1, 1)\n    print(my_date)  # Output: 2024-01-01\n    ```\n\n*   **`datetime.time`**: Represents a time (hour, minute, second, microsecond).\n\n    ```python\n    import datetime\n    now = datetime.datetime.now().time()\n    print(now) # Output: Current time. e.g., 14:43:00.123456\n\n    my_time = datetime.time(14, 30, 0)\n    print(my_time)  # Output: 14:30:00\n    ```\n\n*   **`datetime.datetime`**: Represents a specific date and time.\n\n    ```python\n    import datetime\n    now = datetime.datetime.now()\n    print(now)  # Output: 2026-03-03 14:43:00.123456 (or the current date and time)\n\n    my_datetime = datetime.datetime(2024, 1, 1, 12, 0, 0)\n    print(my_datetime)  # Output: 2024-01-01 12:00:00\n    ```\n\nCommonly used functions and methods:\n\n*   **`datetime.datetime.now()`**: Returns the current date and time.\n\n    ```python\n    import datetime\n    now = datetime.datetime.now()\n    print(now) \n    ```\n\n*   **`datetime.timedelta`**: Represents a duration, the difference between two dates or times. This is crucial for date/time arithmetic.\n\n    ```python\n    import datetime\n    today = datetime.date.today()\n    one_week = datetime.timedelta(days=7)\n    next_week = today + one_week\n    print(next_week) # Output: Date one week from today\n    ```\n\n*   **`strftime(format)`**: Formats a `datetime` object as a string according to a specified format.\n\n    ```python\n    import datetime\n    now = datetime.datetime.now()\n    formatted_date = now.strftime(\"%Y-%m-%d %H:%M:%S\")\n    print(formatted_date)  # Output: e.g., 2026-03-03 14:43:00\n    ```\n\n*   **`strptime(date_string, format)`**: Parses a string representing a date and time into a `datetime` object, based on the given format.\n\n    ```python\n    import datetime\n    date_string = \"2024-01-01 12:00:00\"\n    date_object = datetime.datetime.strptime(date_string, \"%Y-%m-%d %H:%M:%S\")\n    print(date_object)\n    ```\n\nUnderstanding these modules is crucial for writing more complex and efficient Python programs. They allow you to perform mathematical calculations and manipulate date and time information with ease.",
+                    "questions": [
+                        {
+                            "question": "What is the purpose of the `math` and `datetime` modules in Python?",
+                            "type": "recall",
+                            "hint": "The `math` module provides mathematical functions, while the `datetime` module deals with dates and times. They are part of Python's standard library and offer pre-built functionalities."
+                        },
+                        {
+                            "question": "You need to calculate the time difference between two events logged in your system. The logs provide timestamps in the format 'YYYY-MM-DD HH:MM:SS'. How would you use the `datetime` module to achieve this?",
+                            "type": "application",
+                            "hint": "First, parse the timestamp strings into `datetime` objects using `strptime`. Then, subtract the two `datetime` objects to get a `timedelta` object, which represents the time difference. You can then extract the relevant information (e.g., total seconds) from the `timedelta` object."
+                        }
+                    ],
+                    "youtube_video_title": "Python Math Module - Full Tutorial",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 13,
+                    "topic": "Creating and Using Custom Modules",
+                    "learning_objectives": [
+                        "Understand the concept of modules and their benefits in Python",
+                        "Learn how to create custom modules",
+                        "Learn how to import and use functions and variables from custom modules"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=q-4qSJWVVvQ",
+                    "practice_url": "https://www.hackerrank.com/challenges/py-mod-divmod/problem",
+                    "reference_content": "## Creating and Using Custom Modules in Python\n\nModules are a fundamental concept in Python that allows you to organize your code into reusable blocks. They promote code reusability, maintainability, and readability. A module is simply a Python file (`.py`) containing Python definitions and statements. These definitions can include functions, classes, or variables. By creating modules, you can break down large and complex programs into smaller, more manageable units.\n\n**Creating a Module**\n\nTo create a module, simply create a Python file (e.g., `my_module.py`) and define the functions, classes, or variables you want to include in the module.\n\n```python\n# my_module.py\n\ndef greet(name):\n    \"\"\"Greets the person passed in as a parameter.\"\"\"\n    print(f\"Hello, {name}!\")\n\n\nPI = 3.14159\n\ndef area_circle(radius):\n    \"\"\"Calculates the area of a circle.\"\"\"\n    return PI * radius * radius\n\n\nclass Dog:\n    def __init__(self, name, breed):\n        self.name = name\n        self.breed = breed\n\n    def bark(self):\n        print(\"Woof!\")\n```\n\nIn this example, `my_module.py` contains a function `greet()`, a variable `PI`, another function `area_circle()`, and a class `Dog`. This is a basic structure, but you can add more complexity and features as needed.\n\n**Importing and Using a Module**\n\nTo use the definitions within a module, you need to import it into your Python script. There are several ways to import modules:\n\n1.  **Importing the entire module:**\n\n    ```python\n    import my_module\n\n    my_module.greet(\"Alice\")  # Accessing the greet function\n    print(my_module.PI)        # Accessing the PI variable\n    my_dog = my_module.Dog(\"Buddy\", \"Golden Retriever\") # Creating an object\n    my_dog.bark()\n    ```\n\n    This imports the entire `my_module` module, and you access its members using the dot notation (`module_name.member_name`).\n2.  **Importing specific members:**\n\n    ```python\n    from my_module import greet, PI, Dog\n\n    greet(\"Bob\")       # Accessing the greet function directly\n    print(PI)          # Accessing the PI variable directly\n    my_dog = Dog(\"Bella\", \"Poodle\") # Creating an object\n    my_dog.bark()\n    ```\n\n    This imports only the specified members (e.g., `greet`, `PI`, `Dog`) from the module, allowing you to use them directly without the module name prefix.\n3.  **Importing with an alias:**\n\n    ```python\n    import my_module as mm\n\n    mm.greet(\"Charlie\")\n    print(mm.PI)\n    ```\n\n    This imports the module with an alias (e.g., `mm`), which can be useful for shortening long module names or avoiding naming conflicts.\n\n4.  **Importing all members (not recommended):**\n\n    ```python\n    from my_module import *\n\n    greet(\"David\")\n    print(PI)\n    ```\n\n    This imports all members from the module directly into the current namespace. While convenient, this is generally discouraged because it can lead to naming conflicts and make your code harder to understand. It's usually better to explicitly import the members you need.\n\n**The `__name__` Variable**\n\nEvery Python module has a special attribute called `__name__`. When a module is run directly, the value of `__name__` is set to `\"__main__\"`. However, when a module is imported, the value of `__name__` is set to the module's name. This allows you to write code that is executed only when the module is run directly, but not when it is imported.\n\n```python\n# my_module.py\n\ndef main():\n    print(\"This is the main function of my_module.\")\n\nif __name__ == \"__main__\":\n    main()\n```\n\nIf you run `my_module.py` directly, the `main()` function will be executed. However, if you import `my_module` into another script, the `main()` function will not be executed.\n\n**Benefits of Using Modules**\n\n*   **Code Reusability:** Modules allow you to reuse code across multiple projects.\n*   **Organization:** Modules help you organize your code into logical units, making it easier to understand and maintain.\n*   **Namespace Management:** Modules create separate namespaces, preventing naming conflicts between different parts of your code.\n*   **Abstraction:** Modules allow you to hide the implementation details of your code, exposing only the necessary interfaces.\n\nBy mastering the creation and usage of modules, you will significantly improve the structure, maintainability, and reusability of your Python code.",
+                    "questions": [
+                        {
+                            "question": "What is the primary benefit of using modules in Python programming?",
+                            "type": "recall",
+                            "hint": "Modules promote code reusability, organization, and namespace management, leading to better-structured and maintainable code."
+                        },
+                        {
+                            "question": "Imagine you are building a complex data analysis tool. How would you utilize custom modules to organize your project, and what specific advantages would you gain?",
+                            "type": "application",
+                            "hint": "Break down the tool into functional components (e.g., data cleaning, analysis, visualization), each as a separate module. This enhances maintainability, allows for code reuse across projects, and simplifies collaborative development by assigning modules to different team members."
+                        }
+                    ],
+                    "youtube_video_title": "Python Tutorial: Modules - Creating and Importing",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 14,
+                    "topic": "Introduction to Package Management (pip)",
+                    "learning_objectives": [
+                        "Understand the purpose and benefits of package management in Python.",
+                        "Learn how to install, upgrade, and uninstall packages using pip.",
+                        "Explore virtual environments and their role in managing project dependencies."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/watch?v=m0_HYRYS-hc",
+                    "practice_url": "https://www.hackerrank.com/challenges/py-collections-deque/problem",
+                    "reference_content": "## Package Management with pip in Python\n\nPackage management is a crucial aspect of software development, especially in Python, where a vast ecosystem of libraries and modules is available for almost any task. `pip` is the standard package installer for Python. It allows you to easily install, upgrade, and manage external packages that your Python projects depend on. Without a package manager, you would have to manually download, install, and manage dependencies, which can be a tedious and error-prone process.\n\n### What is pip?\n\n`pip` stands for \"Pip Installs Packages\" or \"Preferred Installer Program.\" It's a command-line tool that simplifies the process of installing, upgrading, and uninstalling Python packages from the Python Package Index (PyPI) and other indexes.\n\n### Installing pip\n\nIn most modern Python installations (Python 3.4 and later), `pip` comes pre-installed. You can check if `pip` is installed by opening your terminal or command prompt and typing:\n\n```bash\npip --version\n```\n\nIf `pip` is not installed, you can install it using `ensurepip` module that comes with python:\n\n```bash\npython -m ensurepip --default-pip\n```\n\nOn some systems, you might need to use `python3` instead of `python`.\n\n### Basic pip Commands\n\nHere are some of the most common `pip` commands:\n\n*   **Installing a package:**\n\n    ```bash\n    pip install <package_name>\n    ```\n\n    For example, to install the `requests` library, you would use:\n\n    ```bash\n    pip install requests\n    ```\n\n*   **Upgrading a package:**\n\n    ```bash\n    pip install --upgrade <package_name>\n    ```\n\n    To upgrade the `requests` library, you would use:\n\n    ```bash\n    pip install --upgrade requests\n    ```\n\n*   **Uninstalling a package:**\n\n    ```bash\n    pip uninstall <package_name>\n    ```\n\n    To uninstall the `requests` library, you would use:\n\n    ```bash\n    pip uninstall requests\n    ```\n\n*   **Listing installed packages:**\n\n    ```bash\n    pip list\n    ```\n\n    This command will display a list of all installed packages and their versions.\n\n*   **Showing package information:**\n\n    ```bash\n    pip show <package_name>\n    ```\n\n    For example, to see information about the `requests` library, you would use:\n\n    ```bash\n    pip show requests\n    ```\n\n*   **Installing from requirements.txt:**\n    \n    It is common to keep all project dependencies within a requirements.txt file. To install all packages specified in the file, run:\n\n    ```bash\n    pip install -r requirements.txt\n    ```\n\n### Virtual Environments\n\nVirtual environments are isolated environments for Python projects. They allow you to manage dependencies for each project separately, preventing conflicts between different projects that might require different versions of the same package. `venv` is the standard module for creating virtual environments.\n\n#### Creating a Virtual Environment\n\nTo create a virtual environment, navigate to your project directory in the terminal and run:\n\n```bash\npython -m venv <environment_name>\n```\n\nReplace `<environment_name>` with the desired name for your environment (e.g., `myenv`). This will create a directory containing the virtual environment.\n\n#### Activating a Virtual Environment\n\nTo use the virtual environment, you need to activate it. The activation command depends on your operating system:\n\n*   **Windows:**\n\n    ```bash\n    <environment_name>\\Scripts\\activate\n    ```\n\n*   **macOS and Linux:**\n\n    ```bash\n    source <environment_name>/bin/activate\n    ```\n\nOnce the virtual environment is activated, your terminal prompt will change to indicate the active environment. Any packages you install with `pip` will be installed within the environment, isolated from the system-wide Python installation and other virtual environments.\n\n#### Deactivating a Virtual Environment\n\nTo deactivate the virtual environment, simply type:\n\n```bash\ndeactivate\n```\n\nThis will return your terminal to the system-wide Python environment.\n\n### Example: Using pip and Virtual Environments\n\nLet's say you're working on a project that requires the `Flask` web framework. Here's how you would use `pip` and virtual environments to manage this dependency:\n\n1.  **Create a virtual environment:**\n\n    ```bash\n    python -m venv myprojectenv\n    ```\n\n2.  **Activate the virtual environment:**\n\n    ```bash\n    source myprojectenv/bin/activate  # macOS/Linux\n    myprojectenv\\Scripts\\activate  # Windows\n    ```\n\n3.  **Install Flask:**\n\n    ```bash\n    pip install flask\n    ```\n\n4.  **Create `requirements.txt`:**\n\n    ```bash\n    pip freeze > requirements.txt\n    ```\n\n5.  **Deactivate the virtual environment when you're done:**\n\n    ```bash\n    deactivate\n    ```\n\n### Conclusion\n\n`pip` and virtual environments are essential tools for Python developers. They simplify the process of managing dependencies and ensure that your projects are isolated and reproducible. By mastering these tools, you can streamline your development workflow and avoid common dependency-related issues.",
+                    "questions": [
+                        {
+                            "question": "What is the primary purpose of `pip` in Python development?",
+                            "type": "recall",
+                            "hint": "pip is a package installer. It helps manage external packages, simplifying the process of installation, upgrade and uninstallation."
+                        },
+                        {
+                            "question": "You are working on two Python projects. One requires version 1.0 of a library, and the other requires version 2.0. How can you manage these conflicting dependencies effectively?",
+                            "type": "application",
+                            "hint": "Virtual environments create isolated spaces for each project. Install the right version within the project specific virtual environment."
+                        }
+                    ],
+                    "youtube_video_title": "Python pip Tutorial - How to Install Packages with Pip",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                }
+            ]
+        },
+        {
+            "week_number": 3,
+            "goal": "Explore File Handling, Error Handling, and Regular Expressions.",
+            "days": [
+                {
+                    "day_number": 15,
+                    "topic": "File Handling: Reading and Writing Files",
+                    "learning_objectives": [
+                        "Understand the basics of file handling in Python",
+                        "Learn to read data from files",
+                        "Learn to write data to files",
+                        "Understand different file modes and their usage",
+                        "Handle exceptions during file operations"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=coding+tutorial+tutorial+Apna+College+Coding+with+Harry+freeCodeCamp",
+                    "practice_url": "https://www.hackerrank.com/challenges/python-quest-1/problem",
+                    "reference_content": "File handling is a crucial part of any programming language. Python provides built-in functions to easily create, read, update, and delete files. In this tutorial, we'll explore how to perform these operations.\n\n**Opening a File**\n\nBefore you can perform any operation on a file, you need to open it. The `open()` function is used for this purpose. It takes the file path as an argument and returns a file object.\n\n```python\nf = open('my_file.txt', 'r') # Opens 'my_file.txt' in read mode\n```\n\nThe second argument specifies the mode in which the file is opened. Common modes include:\n\n*   `'r'` (Read): Opens the file for reading. This is the default mode. An error occurs if the file does not exist.\n*   `'w'` (Write): Opens the file for writing. If the file exists, its contents are overwritten. If the file does not exist, a new file is created.\n*   `'a'` (Append): Opens the file for appending. Data is added to the end of the file. If the file does not exist, a new file is created.\n*   `'x'` (Create): Creates a new file. If the file exists, the operation fails.\n*   `'b'` (Binary): Opens the file in binary mode.\n*   `'t'` (Text): Opens the file in text mode (default).\n*   `'+'` (Update): Opens the file for updating (reading and writing).\n\nThese modes can be combined, for example, `'rb'` opens a file in binary read mode.\n\n**Reading from a File**\n\nThere are several methods to read data from a file:\n\n*   `read()`: Reads the entire file content as a single string.\n\n    ```python\n    f = open('my_file.txt', 'r')\n    content = f.read()\n    print(content)\n    f.close()\n    ```\n\n*   `readline()`: Reads a single line from the file.\n\n    ```python\n    f = open('my_file.txt', 'r')\n    line = f.readline()\n    print(line)\n    f.close()\n    ```\n\n*   `readlines()`: Reads all lines from the file and returns them as a list of strings.\n\n    ```python\n    f = open('my_file.txt', 'r')\n    lines = f.readlines()\n    for line in lines:\n        print(line)\n    f.close()\n    ```\n\n**Writing to a File**\n\nTo write data to a file, you must open it in write (`'w'`) or append (`'a'`) mode.\n\n*   `write(string)`: Writes the given string to the file.\n\n    ```python\n    f = open('my_file.txt', 'w')\n    f.write('Hello, world!\\n')\n    f.write('This is a new line.\\n')\n    f.close()\n    ```\n\n*   `writelines(list_of_strings)`: Writes a list of strings to the file.\n\n    ```python\n    lines = ['First line\\n', 'Second line\\n']\n    f = open('my_file.txt', 'w')\n    f.writelines(lines)\n    f.close()\n    ```\n\n**Closing a File**\n\nIt's essential to close a file after you're done with it. This releases the resources used by the file and ensures that any pending operations are completed. You can close a file using the `close()` method.\n\n```python\nf = open('my_file.txt', 'r')\n# Perform operations\nf.close()\n```\n\n**Using `with` statement**\n\nA more elegant way to handle files is by using the `with` statement. This ensures that the file is automatically closed, even if exceptions occur.\n\n```python\nwith open('my_file.txt', 'r') as f:\n    content = f.read()\n    print(content)\n# File is automatically closed here\n```\n\n**Exception Handling**\n\nFile operations can raise exceptions, such as `FileNotFoundError` or `IOError`. It's good practice to handle these exceptions using `try...except` blocks.\n\n```python\ntry:\n    with open('non_existent_file.txt', 'r') as f:\n        content = f.read()\n        print(content)\nexcept FileNotFoundError:\n    print('File not found.')\nexcept IOError as e:\n    print(f'An I/O error occurred: {e}')\n```\n\nUnderstanding and implementing robust file handling is vital for developing reliable Python applications.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between opening a file in 'w' mode versus 'a' mode. What happens to the file's contents in each case?",
+                            "type": "recall",
+                            "hint": "In 'w' mode, the file is opened for writing, and its contents are overwritten if it exists. In 'a' mode, the file is opened for appending, and new data is added to the end of the file without erasing the existing content."
+                        },
+                        {
+                            "question": "You are writing a program to process log files. Each line in the log file represents a log entry. How would you read the log file, extract each log entry, and print them to the console?",
+                            "type": "application",
+                            "hint": "Use the 'with open()' statement to open the log file in read mode ('r'). Use a loop with 'readline()' or 'readlines()' to read each line, and then print each line. Handle potential FileNotFoundError exceptions."
+                        }
+                    ],
+                    "youtube_video_title": "Python Tutorial for Beginners 19: Working with Files",
+                    "youtube_search_term": "coding tutorial tutorial Apna College Coding with Harry freeCodeCamp",
+                    "youtube_fallback_url": "https://www.youtube.com/results?search_query=coding+tutorial+programming+tutorial",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 16,
+                    "topic": "File Handling: Working with Different File Formats (CSV, JSON)",
+                    "learning_objectives": [
+                        "Understand how to read data from CSV files using the `csv` module.",
+                        "Learn to write data to CSV files in different formats.",
+                        "Understand how to parse JSON data from files using the `json` module.",
+                        "Learn to serialize Python objects into JSON format and write to files."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=coding+tutorial+tutorial+Apna+College+Coding+with+Harry+freeCodeCamp",
+                    "practice_url": "https://www.hackerrank.com/challenges/detect-csv-columns/problem",
+                    "reference_content": "## File Handling in Python: CSV and JSON\n\nPython provides built-in modules to handle different file formats, including CSV (Comma Separated Values) and JSON (JavaScript Object Notation). These formats are commonly used for storing and exchanging data.\n\n### CSV Files\n\nThe `csv` module in Python allows you to read and write CSV files. A CSV file is a plain text file that contains tabular data, where values are separated by commas.\n\n**Reading CSV Files:**\n\nTo read a CSV file, you can use the `csv.reader()` function. Here's the basic syntax:\n\n```python\nimport csv\n\nwith open('data.csv', 'r') as file:\n    reader = csv.reader(file)\n    for row in reader:\n        print(row)\n```\n\nIn this example:\n\n*   `import csv` imports the csv module.\n*   `open('data.csv', 'r')` opens the CSV file in read mode (`'r'`).\n*   `csv.reader(file)` creates a reader object that iterates over lines in the file.\n*   The `for` loop iterates through each row in the CSV file, and `print(row)` prints each row as a list of strings.\n\n**Writing CSV Files:**\n\nTo write to a CSV file, you can use the `csv.writer()` function. Here's the basic syntax:\n\n```python\nimport csv\n\ndata = [['Name', 'Age', 'City'], ['Alice', '30', 'New York'], ['Bob', '25', 'London']]\n\nwith open('output.csv', 'w', newline='') as file:\n    writer = csv.writer(file)\n    writer.writerow(['Name', 'Age', 'City'])\n    writer.writerow(['Alice', '30', 'New York'])\n    writer.writerow(['Bob', '25', 'London'])\n```\n\nOr, using writerows:\n```python\nimport csv\n\ndata = [['Name', 'Age', 'City'], ['Alice', '30', 'New York'], ['Bob', '25', 'London']]\n\nwith open('output.csv', 'w', newline='') as file:\n    writer = csv.writer(file)\n    writer.writerows(data)\n```\n\nIn this example:\n\n*   `open('output.csv', 'w', newline='')` opens the CSV file in write mode (`'w'`).  The `newline=''` argument is important to prevent extra blank rows from being inserted.\n*   `csv.writer(file)` creates a writer object.\n*   `writer.writerow(row)` writes a single row to the CSV file.\n*   `writer.writerows(data)` writes multiple rows to the CSV file.\n\n**CSV Dialects:**\n\nThe `csv` module supports different dialects, which define the specific formatting of the CSV file (e.g., delimiter, quote character). You can register your own dialects using `csv.register_dialect()` or use pre-defined dialects like `csv.excel`.\n\n### JSON Files\n\nJSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write and easy for machines to parse and generate.  Python's `json` module makes working with JSON data straightforward.\n\n**Reading JSON Files:**\n\nTo read a JSON file, you can use the `json.load()` or `json.loads()` function. `json.load()` is used to read from a file, while `json.loads()` is used to read from a string.\n\n```python\nimport json\n\nwith open('data.json', 'r') as file:\n    data = json.load(file)\n    print(data)\n```\n\nIn this example:\n\n*   `import json` imports the json module.\n*   `open('data.json', 'r')` opens the JSON file in read mode.\n*   `json.load(file)` reads the JSON data from the file and parses it into a Python dictionary.\n*   `print(data)` prints the Python dictionary.\n\nIf you have a JSON string:\n\n```python\nimport json\n\njson_string = '{\"name\": \"Eve\", \"age\": 28, \"city\": \"Berlin\"}'\ndata = json.loads(json_string)\nprint(data)\n```\n\n**Writing JSON Files:**\n\nTo write to a JSON file, you can use the `json.dump()` or `json.dumps()` function. `json.dump()` is used to write to a file, while `json.dumps()` is used to write to a string.\n\n```python\nimport json\n\ndata = {'name': 'Eve', 'age': 28, 'city': 'Berlin'}\n\nwith open('output.json', 'w') as file:\n    json.dump(data, file, indent=4)\n```\n\nIn this example:\n\n*   `open('output.json', 'w')` opens the file in write mode.\n*   `json.dump(data, file, indent=4)` writes the Python dictionary to the file in JSON format. The `indent=4` argument adds indentation for readability.\n\nTo write to a JSON string:\n\n```python\nimport json\n\ndata = {'name': 'Eve', 'age': 28, 'city': 'Berlin'}\njson_string = json.dumps(data, indent=4)\nprint(json_string)\n```\n\n**Data Types:**\n\nJSON supports several basic data types:\n\n*   `string`: represents text.\n*   `number`: represents numeric values.\n*   `boolean`: represents `true` or `false`.\n*   `null`: represents a null value.\n*   `array`: represents an ordered list of values.\n*   `object`: represents a collection of key-value pairs (like a Python dictionary).\n\nPython dictionaries, lists, strings, integers, floats, booleans, and None can be easily converted to JSON equivalents.\n",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between `json.load()` and `json.loads()`.",
+                            "type": "recall",
+                            "hint": "`json.load()` reads from a file-like object, while `json.loads()` reads from a string."
+                        },
+                        {
+                            "question": "You have a list of dictionaries that needs to be saved to a CSV file. Each dictionary represents a row of data, with keys as column headers. Describe how you would accomplish this.",
+                            "type": "application",
+                            "hint": "Use `csv.DictWriter` to write dictionaries directly to the CSV file, using the dictionary keys as column headers. Remember to call `writeheader()`."
+                        }
+                    ],
+                    "youtube_video_title": "Python Tutorial: Working with CSV Files Using the csv Module",
+                    "youtube_search_term": "coding tutorial tutorial Apna College Coding with Harry freeCodeCamp",
+                    "youtube_fallback_url": "https://www.youtube.com/results?search_query=coding+tutorial+programming+tutorial",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 17,
+                    "topic": "Error Handling: Try, Except, Finally",
+                    "learning_objectives": [
+                        "Understand the concept of error handling in Python.",
+                        "Learn to use try, except, and finally blocks to handle exceptions.",
+                        "Understand different types of exceptions and how to handle them specifically."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=coding+tutorial+tutorial+Apna+College+Coding+with+Harry+freeCodeCamp",
+                    "practice_url": "https://www.hackerrank.com/challenges/py-exceptions/problem",
+                    "reference_content": "Error handling is a crucial aspect of writing robust and reliable Python code. It allows you to gracefully manage unexpected situations that may arise during program execution, preventing crashes and ensuring a smooth user experience. Python provides the `try`, `except`, `finally`, and `else` blocks for effective error handling.\n\n**1. The `try` Block:**\nThe `try` block encloses the code that might potentially raise an exception. It's like saying, 'Try running this code, and if something goes wrong, I'll be ready to handle it.'\n\n```python\ntry:\n    # Code that might raise an exception\n    result = 10 / 0  # This will cause a ZeroDivisionError\n    print(result)\nexcept:\n    print(\"An error occurred\")\n```\n\n**2. The `except` Block:**\nThe `except` block follows the `try` block and specifies how to handle a particular type of exception or a general exception. You can have multiple `except` blocks to handle different exception types. If an exception occurs in the `try` block, Python looks for a matching `except` block to execute. If no matching `except` block is found, the exception is unhandled, and the program terminates.\n\n```python\ntry:\n    num = int(input(\"Enter a number: \"))\n    result = 10 / num\n    print(result)\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero.\")\nexcept ValueError:\n    print(\"Invalid input. Please enter a number.\")\nexcept Exception as e:\n    print(f\"An unexpected error occurred: {e}\")\n```\nIn the above example:\n- `ZeroDivisionError` is handled if the user enters 0.\n- `ValueError` is handled if the user enters a non-numeric value.\n- `Exception` (a general exception) catches any other unexpected errors.\n\n**3. The `finally` Block:**\nThe `finally` block is executed regardless of whether an exception occurred or not. It's typically used to release resources, close files, or perform cleanup operations. The `finally` block always runs, even if an exception is not caught or if there's a `return`, `break`, or `continue` statement in the `try` or `except` blocks.\n\n```python\nfile = None\ntry:\n    file = open(\"my_file.txt\", \"r\")\n    content = file.read()\n    print(content)\nexcept FileNotFoundError:\n    print(\"File not found.\")\nfinally:\n    if file:\n        file.close()\n    print(\"Closing the file.\")\n```\n\n**4. The `else` Block (Optional):**\nThe `else` block can be placed after all `except` blocks. The code inside the `else` block is executed only if no exceptions occurred in the `try` block. This is useful for code that should run only when the `try` block completes successfully.\n\n```python\ntry:\n    num = int(input(\"Enter a number: \"))\nexcept ValueError:\n    print(\"Invalid input. Please enter a number.\")\nelse:\n    result = num * 2\n    print(\"Result:\", result)\n```\n\n**Example: Handling Multiple Exceptions**\n\n```python\ndef divide(x, y):\n    try:\n        result = x / y\n    except ZeroDivisionError:\n        print(\"division by zero!\")\n    except TypeError:\n        print(\"Type Error. Arguments must be integers or floats.\")\n    else:\n        print(\"result is\", result)\n    finally:\n        print(\"executing finally clause\")\n\ndivide(2, 1)\n# Output: result is 2.0\n# executing finally clause\n\ndivide(2, 0)\n# Output: division by zero!\n# executing finally clause\n\ndivide(\"2\", \"1\")\n# Output: Type Error. Arguments must be integers or floats.\n# executing finally clause\n```\nBy using `try`, `except`, and `finally` blocks, you can write more reliable and maintainable Python code that handles errors gracefully and ensures that resources are properly managed.",
+                    "questions": [
+                        {
+                            "question": "What is the purpose of the `finally` block in a `try-except` statement, and when is it executed?",
+                            "type": "recall",
+                            "hint": "The `finally` block executes regardless of whether an exception occurred or not. It is typically used for cleanup operations, such as closing files or releasing resources. It is always executed after the `try` and `except` blocks, even if an exception is not caught or if there is a `return`, `break`, or `continue` statement."
+                        },
+                        {
+                            "question": "Imagine you are writing a program that reads data from a file, processes it, and writes the results to another file. Describe how you would use `try`, `except`, and `finally` blocks to handle potential errors such as file not found, invalid data format, or write errors, ensuring that the input file is always closed properly.",
+                            "type": "application",
+                            "hint": "Use a `try` block to open, read, process and write to files. Use `except` blocks to handle `FileNotFoundError`, `ValueError` (for data format issues), and `IOError` (for write errors). In the `finally` block, ensure the input file is closed, even if an error occurred during processing."
+                        }
+                    ],
+                    "youtube_video_title": "Python Error Handling - Try, Except, Finally Blocks",
+                    "youtube_search_term": "coding tutorial tutorial Apna College Coding with Harry freeCodeCamp",
+                    "youtube_fallback_url": "https://www.youtube.com/results?search_query=coding+tutorial+programming+tutorial",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 18,
+                    "topic": "Raising Exceptions",
+                    "learning_objectives": [
+                        "Understand the purpose of exceptions and error handling in Python.",
+                        "Learn how to raise custom exceptions using the `raise` keyword.",
+                        "Differentiate between built-in exceptions and user-defined exceptions."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=coding+tutorial+tutorial+Apna+College+Coding+with+Harry+freeCodeCamp",
+                    "practice_url": "https://www.hackerrank.com/challenges/py-exceptions/problem",
+                    "reference_content": "## Raising Exceptions in Python\n\nExceptions are a fundamental part of error handling in Python. They allow you to gracefully manage unexpected situations during program execution. Instead of crashing when an error occurs, you can catch the exception, handle it appropriately, and continue the program. One powerful aspect of exception handling is the ability to raise exceptions yourself, signaling that something has gone wrong in your code.\n\n### The `raise` Keyword\n\nThe `raise` keyword is used to trigger an exception. You can raise built-in exceptions or create your own custom exceptions. The basic syntax is:\n\n```python\nraise ExceptionType(\"Error message\")\n```\n\nHere, `ExceptionType` is the type of exception you want to raise (e.g., `ValueError`, `TypeError`, `RuntimeError`), and \"Error message\" is a descriptive message that provides information about the error.\n\n**Example: Raising a `ValueError`**\n\n```python\ndef process_age(age):\n    if age < 0:\n        raise ValueError(\"Age cannot be negative\")\n    else:\n        print(\"Age is valid.\")\n\ntry:\n    process_age(-5)\nexcept ValueError as e:\n    print(f\"Error: {e}\")\n```\n\nIn this example, the `process_age` function raises a `ValueError` if the age is negative. The `try...except` block catches the exception and prints an error message.\n\n### Built-in Exceptions\n\nPython provides a variety of built-in exceptions to cover common error scenarios. Some of the most frequently used built-in exceptions include:\n\n*   `ValueError`: Raised when a function receives an argument of the correct type but an inappropriate value (e.g., `int('abc')`).\n*   `TypeError`: Raised when an operation or function is applied to an object of inappropriate type (e.g., adding a string to an integer).\n*   `IndexError`: Raised when trying to access an index that is out of range in a sequence (e.g., list, tuple).\n*   `KeyError`: Raised when trying to access a key that does not exist in a dictionary.\n*   `FileNotFoundError`: Raised when trying to open a file that does not exist.\n*   `ZeroDivisionError`: Raised when dividing by zero.\n\n**Example: Raising a `TypeError`**\n\n```python\ndef add_numbers(x, y):\n    if not isinstance(x, (int, float)) or not isinstance(y, (int, float)):\n        raise TypeError(\"Inputs must be numbers\")\n    return x + y\n\ntry:\n    result = add_numbers(5, \"abc\")\nexcept TypeError as e:\n    print(f\"Error: {e}\")\n```\n\n### User-Defined Exceptions\n\nYou can also create your own custom exception classes to represent specific errors in your application. To create a custom exception, you need to define a new class that inherits from the base `Exception` class or one of its subclasses.\n\n**Example: Creating a Custom Exception**\n\n```python\nclass InsufficientFundsError(Exception):\n    def __init__(self, message):\n        self.message = message\n        super().__init__(self.message)\n\ndef withdraw(balance, amount):\n    if amount > balance:\n        raise InsufficientFundsError(\"Insufficient funds available\")\n    else:\n        return balance - amount\n\ntry:\n    new_balance = withdraw(100, 200)\nexcept InsufficientFundsError as e:\n    print(f\"Error: {e}\")\n```\n\nIn this example, `InsufficientFundsError` is a custom exception that is raised when a withdrawal amount exceeds the available balance. This allows for more specific and meaningful error handling within the context of the application.\n\n### Exception Handling Best Practices\n\n*   **Be Specific:** Catch only the exceptions you expect and can handle appropriately. Avoid using a bare `except:` clause, as it can mask unexpected errors.\n*   **Provide Informative Error Messages:** Include clear and descriptive error messages to help with debugging.\n*   **Use `finally` Blocks:** The `finally` block is executed regardless of whether an exception is raised or caught. It is often used to clean up resources (e.g., closing files).\n*   **Consider Logging:** Use logging to record exceptions for later analysis and debugging.\n\nRaising exceptions is a powerful tool for signaling errors and handling them gracefully in your Python programs. By understanding how to use the `raise` keyword, built-in exceptions, and custom exceptions, you can create more robust and maintainable code.",
+                    "questions": [
+                        {
+                            "question": "What is the primary purpose of raising exceptions in Python?",
+                            "type": "recall",
+                            "hint": "To signal that an error or unexpected condition has occurred during program execution, allowing for controlled error handling."
+                        },
+                        {
+                            "question": "Imagine you are building a system for managing student grades. How would you use custom exceptions to handle situations like invalid grade inputs or attempts to access grades for a non-existent student?",
+                            "type": "application",
+                            "hint": "Create custom exception classes like `InvalidGradeError` and `StudentNotFoundError`. Raise these exceptions when the grade is not within the valid range (e.g., 0-100) or when the student ID does not exist in the system. Handle these exceptions in the calling code to provide appropriate feedback to the user or log the error."
+                        }
+                    ],
+                    "youtube_video_title": "Python Exception Handling | Python Tutorials For Beginners #17",
+                    "youtube_search_term": "coding tutorial tutorial Apna College Coding with Harry freeCodeCamp",
+                    "youtube_fallback_url": "https://www.youtube.com/results?search_query=coding+tutorial+programming+tutorial",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 19,
+                    "topic": "Introduction to Regular Expressions",
+                    "learning_objectives": [
+                        "Understand the basics of regular expressions and their syntax",
+                        "Learn how to use the `re` module in Python for pattern matching",
+                        "Apply regular expressions to search, replace, and validate text"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=coding+tutorial+tutorial+Apna+College+Coding+with+Harry+freeCodeCamp",
+                    "practice_url": "https://www.hackerrank.com/domains/python/py-regex",
+                    "reference_content": "## Introduction to Regular Expressions in Python\n\nRegular expressions (regex) are powerful tools for pattern matching within strings. In Python, the `re` module provides support for regular expressions. This tutorial covers the fundamental concepts, syntax, and practical applications of regular expressions in Python.\n\n### Basic Syntax and Metacharacters\n\nRegular expressions consist of ordinary characters (e.g., `a`, `b`, `c`) and special characters known as metacharacters, which define the search pattern.\n\n*   `.` (Dot): Matches any single character except a newline.\n*   `^` (Caret): Matches the start of the string.\n*   `$` (Dollar): Matches the end of the string.\n*   `*` (Asterisk): Matches zero or more occurrences of the preceding character or group.\n*   `+` (Plus): Matches one or more occurrences of the preceding character or group.\n*   `?` (Question Mark): Matches zero or one occurrence of the preceding character or group.\n*   `[]` (Square Brackets): Defines a character class, matching any character within the brackets (e.g., `[abc]` matches `a`, `b`, or `c`).\n*   `[^]` (Negated Character Class): Matches any character not within the brackets (e.g., `[^abc]` matches any character except `a`, `b`, or `c`).\n*   `()` (Parentheses): Groups characters together and captures the matched group.\n*   `|` (Pipe): Acts as an \"or\" operator, matching either the expression before or after the pipe.\n*   `\\` (Backslash): Escapes special characters or represents character classes (e.g., `\\d` matches any digit, `\\s` matches any whitespace).\n\n### The `re` Module in Python\n\nTo use regular expressions in Python, import the `re` module.\n\n```python\nimport re\n```\n\n#### Key Functions\n\n*   `re.search(pattern, string)`: Searches the string for the first occurrence of the pattern. Returns a match object if found, otherwise `None`.\n\n    ```python\n    pattern = r\"hello\"\n    string = \"hello world\"\n    match = re.search(pattern, string)\n    if match:\n        print(\"Match found:\", match.group())\n    else:\n        print(\"Match not found\")\n    # Output: Match found: hello\n    ```\n\n*   `re.match(pattern, string)`: Attempts to match the pattern at the beginning of the string. Returns a match object if successful, otherwise `None`.\n\n    ```python\n    pattern = r\"hello\"\n    string = \"hello world\"\n    match = re.match(pattern, string)\n    if match:\n        print(\"Match found:\", match.group())\n    else:\n        print(\"Match not found\")\n    # Output: Match found: hello\n\n    string = \"world hello\"\n    match = re.match(pattern, string)\n    if match:\n        print(\"Match found:\", match.group())\n    else:\n        print(\"Match not found\")\n    # Output: Match not found\n    ```\n\n*   `re.findall(pattern, string)`: Finds all non-overlapping matches of the pattern in the string and returns them as a list of strings.\n\n    ```python\n    pattern = r\"\\d+\"\n    string = \"There are 12 apples and 3 bananas\"\n    matches = re.findall(pattern, string)\n    print(matches)\n    # Output: ['12', '3']\n    ```\n\n*   `re.sub(pattern, replacement, string)`: Replaces all occurrences of the pattern in the string with the replacement string.\n\n    ```python\n    pattern = r\"\\s+\"\n    string = \"Hello   World\"\n    new_string = re.sub(pattern, \" \", string)\n    print(new_string)\n    # Output: Hello World\n    ```\n\n*   `re.compile(pattern)`: Compiles a regular expression pattern into a regex object, which can be used for multiple matching operations.\n\n    ```python\n    pattern = re.compile(r\"\\d+\")\n    string = \"12 apples and 3 bananas\"\n    matches = pattern.findall(string)\n    print(matches)\n    # Output: ['12', '3']\n    ```\n\n### Examples\n\n#### Validating Email Addresses\n\n```python\nimport re\n\ndef is_valid_email(email):\n    pattern = r\"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$\"\n    return bool(re.match(pattern, email))\n\nemail1 = \"test@example.com\"\nemail2 = \"invalid-email\"\n\nprint(is_valid_email(email1))  # Output: True\nprint(is_valid_email(email2))  # Output: False\n```\n\n#### Extracting Phone Numbers\n\n```python\nimport re\n\ndef extract_phone_numbers(text):\n    pattern = r\"\\d{3}-\\d{3}-\\d{4}\"\n    return re.findall(pattern, text)\n\ntext = \"Contact us at 123-456-7890 or 456-789-0123\"\nphone_numbers = extract_phone_numbers(text)\nprint(phone_numbers)\n# Output: ['123-456-7890', '456-789-0123']\n```\n\n### Conclusion\n\nRegular expressions are indispensable for advanced text processing tasks. Mastering the syntax and the `re` module allows you to efficiently search, manipulate, and validate strings in Python. Practice with various patterns and real-world examples to solidify your understanding.",
+                    "questions": [
+                        {
+                            "question": "What is a metacharacter in regular expressions, and can you provide three examples?",
+                            "type": "recall",
+                            "hint": "Metacharacters are special characters with specific meanings in regex. Examples include '.', '^', and '$'. Explain what each of them do."
+                        },
+                        {
+                            "question": "You have a log file and need to extract all lines that contain an IP address. How would you use regular expressions and the `re` module in Python to accomplish this?",
+                            "type": "application",
+                            "hint": "Consider using `re.findall()` with a pattern that matches the typical IP address format (e.g., four sets of digits separated by periods)."
+                        }
+                    ],
+                    "youtube_video_title": "Python Regular Expressions Tutorial: Regex, Module, Functions and Examples",
+                    "youtube_search_term": "coding tutorial tutorial Apna College Coding with Harry freeCodeCamp",
+                    "youtube_fallback_url": "https://www.youtube.com/results?search_query=coding+tutorial+programming+tutorial",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 20,
+                    "topic": "Using Regular Expressions for Pattern Matching",
+                    "learning_objectives": [
+                        "Understand the basic syntax of regular expressions.",
+                        "Learn how to use special characters and metacharacters in regular expressions.",
+                        "Apply regular expressions for pattern matching in Python using the `re` module."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=coding+tutorial+tutorial+Apna+College+Coding+with+Harry+freeCodeCamp",
+                    "practice_url": "https://www.hackerrank.com/challenges/matching-specific-string/problem",
+                    "reference_content": "Regular expressions (regex) are powerful tools for pattern matching in strings. Python provides the `re` module to work with regular expressions. Here\u2019s a comprehensive guide:\n\n**1. Importing the `re` Module:**\n   To use regular expressions in Python, you first need to import the `re` module:\n   ```python\n   import re\n   ```\n\n**2. Basic Syntax and Functions:**\n   - `re.search(pattern, string)`: Searches for the first occurrence of the pattern in the string. Returns a match object if found, otherwise None.\n   - `re.match(pattern, string)`: Tries to match the pattern at the beginning of the string. Returns a match object if successful, otherwise None.\n   - `re.findall(pattern, string)`: Finds all occurrences of the pattern in the string and returns them as a list of strings.\n   - `re.finditer(pattern, string)`: Finds all occurrences of the pattern in the string and returns them as an iterator of match objects.\n   - `re.sub(pattern, replacement, string)`: Replaces all occurrences of the pattern in the string with the replacement string.\n   - `re.split(pattern, string)`: Splits the string by the occurrences of the pattern.\n\n**3. Special Characters (Metacharacters):**\n   - `.` (Dot): Matches any single character except a newline.\n   - `^` (Caret): Matches the start of the string.\n   - `$` (Dollar): Matches the end of the string.\n   - `*` (Asterisk): Matches zero or more occurrences of the preceding character or group.\n   - `+` (Plus): Matches one or more occurrences of the preceding character or group.\n   - `?` (Question Mark): Matches zero or one occurrence of the preceding character or group.\n   - `[]` (Square Brackets): Defines a character class, matching any single character within the brackets.\n   - `[^...]` (Negated Square Brackets): Matches any single character not within the brackets.\n   - `|` (Pipe): Acts as an \"or\" operator, matching either the expression before or after the pipe.\n   - `()` (Parentheses): Groups characters or expressions together, and captures the matched group.\n   - `\\` (Backslash): Escapes special characters or represents special sequences.\n\n**4. Special Sequences:**\n   - `\\d`: Matches any digit (0-9).\n   - `\\D`: Matches any non-digit character.\n   - `\\s`: Matches any whitespace character (space, tab, newline).\n   - `\\S`: Matches any non-whitespace character.\n   - `\\w`: Matches any word character (a-z, A-Z, 0-9, _).\n   - `\\W`: Matches any non-word character.\n\n**5. Quantifiers:**\n   - `{n}`: Matches exactly n occurrences.\n   - `{n,}`: Matches n or more occurrences.\n   - `{n,m}`: Matches between n and m occurrences.\n\n**6. Examples:**\n   ```python\n   import re\n\n   text = \"The quick brown fox jumps over the lazy dog\"\n\n   # Search for the word \"fox\"\n   match = re.search(r\"fox\", text)\n   if match:\n       print(\"Found 'fox':\", match.group())\n\n   # Find all occurrences of the letter \"o\"\n   occurrences = re.findall(r\"o\", text)\n   print(\"Occurrences of 'o':\", occurrences)\n\n   # Replace \"dog\" with \"cat\"\n   new_text = re.sub(r\"dog\", \"cat\", text)\n   print(\"New text:\", new_text)\n\n   # Split the string by spaces\n   words = re.split(r\"\\s\", text)\n   print(\"Words:\", words)\n\n   # Using character classes to find vowels\n   vowels = re.findall(r\"[aeiou]\", text)\n   print(\"Vowels:\", vowels)\n\n   # Matching email addresses\n   email_text = \"Contact us at support@example.com or sales@example.net\"\n   emails = re.findall(r\"[\\w\\.-]+@[\\w\\.-]+\\.\\w+\", email_text)\n   print(\"Emails:\", emails)\n   ```\n\n**7. Compilation:**\n   For performance, especially when using the same pattern multiple times, you can compile the regex pattern:\n   ```python\n   pattern = re.compile(r\"fox\")\n   match = pattern.search(text)\n   ```\n\nUnderstanding and using regular expressions can greatly simplify many text processing tasks. Experiment with different patterns and functions to master this essential skill.",
+                    "questions": [
+                        {
+                            "question": "What is the difference between `re.search()` and `re.match()` in Python?",
+                            "type": "recall",
+                            "hint": "`re.search()` looks for the pattern anywhere in the string, while `re.match()` only checks for a match at the beginning of the string. If `re.match()` finds a match at the start, it returns a match object; otherwise, it returns `None`. `re.search()` returns a match object if it finds the pattern anywhere in the string, and `None` if not found."
+                        },
+                        {
+                            "question": "You have a log file, and you need to extract all IP addresses from it. How would you use regular expressions in Python to accomplish this?",
+                            "type": "application",
+                            "hint": "Use the `re.findall()` function with a regular expression pattern that matches the format of an IP address (e.g., `\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}`). Open the log file, read its contents, and then apply the regular expression to find all IP addresses. Consider edge cases like invalid IP addresses that might still match the pattern and refine the regex as needed."
+                        }
+                    ],
+                    "youtube_video_title": "Python Regular Expressions | Python Tutorial - Learn Python Programming",
+                    "youtube_search_term": "coding tutorial tutorial Apna College Coding with Harry freeCodeCamp",
+                    "youtube_fallback_url": "https://www.youtube.com/results?search_query=coding+tutorial+programming+tutorial",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                },
+                {
+                    "day_number": 21,
+                    "topic": "Regular Expressions: Search, Replace, and Validate",
+                    "learning_objectives": [
+                        "Understand the basics of regular expressions and their syntax.",
+                        "Learn how to use regular expressions for searching patterns in strings.",
+                        "Implement regular expressions for replacing patterns in strings.",
+                        "Apply regular expressions for validating different types of data (e.g., email addresses, phone numbers)."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=coding+tutorial+tutorial+Apna+College+Coding+with+Harry+freeCodeCamp",
+                    "practice_url": "https://www.hackerrank.com/challenges/matching-specific-string/problem",
+                    "reference_content": "Regular expressions (regex) are powerful tools for pattern matching in strings. They are used for searching, replacing, and validating text. In Python, the `re` module provides support for regular expressions. \n\n**Basic Syntax:**\n\n*   `.` (dot): Matches any single character except a newline.\n*   `^`: Matches the start of the string.\n*   `$`: Matches the end of the string.\n*   `*`: Matches zero or more occurrences of the preceding character or group.\n*   `+`: Matches one or more occurrences of the preceding character or group.\n*   `?`: Matches zero or one occurrence of the preceding character or group.\n*   `[]`: Matches any character within the brackets.\n*   `[^]`: Matches any character not within the brackets.\n*   `|`: Acts as an \"or\" operator, matching either the expression before or after the pipe.\n*   `()`: Groups the regex inside and remembers the matched text.\n*   `\\`: Used to escape special characters or represent character classes (e.g., `\\d` for digits, `\\s` for whitespace).\n\n**Commonly Used `re` Module Functions:**\n\n1.  `re.search(pattern, string)`: Searches for the first occurrence of a pattern in a string. Returns a match object if found, otherwise None.\n\n```python\nimport re\n\npattern = \"hello\"\nstring = \"hello world\"\nmatch = re.search(pattern, string)\nif match:\n    print(\"Pattern found:\", match.group())\nelse:\n    print(\"Pattern not found\")\n```\n\n2.  `re.match(pattern, string)`: Tries to match the pattern at the beginning of the string. Returns a match object if successful, otherwise None.\n\n```python\nimport re\n\npattern = \"hello\"\nstring = \"hello world\"\nmatch = re.match(pattern, string)\nif match:\n    print(\"Pattern found at the beginning:\", match.group())\nelse:\n    print(\"Pattern not found at the beginning\")\n```\n\n3.  `re.findall(pattern, string)`: Finds all occurrences of the pattern in the string and returns them as a list of strings.\n\n```python\nimport re\n\npattern = \"\\d+\"  # Matches one or more digits\nstring = \"There are 123 apples and 45 oranges.\"\nmatches = re.findall(pattern, string)\nprint(\"All numbers found:\", matches)\n```\n\n4.  `re.sub(pattern, replacement, string)`: Replaces all occurrences of the pattern in the string with the replacement string.\n\n```python\nimport re\n\npattern = \"\\s+\"  # Matches one or more whitespace characters\nstring = \"Hello   World!\"\nreplaced_string = re.sub(pattern, \" \", string)\nprint(\"Replaced string:\", replaced_string)\n```\n\n5.  `re.compile(pattern)`: Compiles a regular expression pattern into a regex object, which can be used for matching using its `match()`, `search()` and other methods.\n\n```python\nimport re\n\npattern = re.compile(\"\\d+\")\nstring = \"Price: $100\"\nmatch = pattern.search(string)\nif match:\n    print(\"Price found:\", match.group())\n```\n\n**Example: Email Validation**\n\n```python\nimport re\n\ndef validate_email(email):\n    pattern = r\"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$\"\n    if re.match(pattern, email):\n        return True\n    else:\n        return False\n\nemail1 = \"test@example.com\"\nemail2 = \"invalid-email\"\n\nprint(f\"{email1} is valid: {validate_email(email1)}\")\nprint(f\"{email2} is valid: {validate_email(email2)}\")\n```\n\n**Character Classes:**\n\n*   `\\d`: Matches any digit (0-9).\n*   `\\D`: Matches any non-digit character.\n*   `\\s`: Matches any whitespace character (space, tab, newline).\n*   `\\S`: Matches any non-whitespace character.\n*   `\\w`: Matches any word character (a-z, A-Z, 0-9, \\_).\n*   `\\W`: Matches any non-word character.\n\n**Quantifiers:**\n\n*   `{n}`: Matches exactly n occurrences.\n*   `{n,}`: Matches n or more occurrences.\n*   `{n,m}`: Matches between n and m occurrences (inclusive).\n\nRegular expressions are versatile and essential for text processing, data validation, and many other tasks. Understanding their syntax and usage is crucial for any programmer.",
+                    "questions": [
+                        {
+                            "question": "What is the difference between `re.search()` and `re.match()` in Python's `re` module?",
+                            "type": "recall",
+                            "hint": "`re.search()` looks for the pattern anywhere in the string, while `re.match()` only checks if the pattern matches at the beginning of the string."
+                        },
+                        {
+                            "question": "You have a log file where each line contains a timestamp followed by a message. How would you use regular expressions to extract all the timestamps from the file?",
+                            "type": "application",
+                            "hint": "Use `re.findall()` with a pattern that matches the timestamp format. Assume timestamps are in the format YYYY-MM-DD HH:MM:SS. A suitable pattern would be `\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}`."
+                        }
+                    ],
+                    "youtube_video_title": "Python Regular Expressions (Regex) - A Comprehensive Guide",
+                    "youtube_search_term": "coding tutorial tutorial Apna College Coding with Harry freeCodeCamp",
+                    "youtube_fallback_url": "https://www.youtube.com/results?search_query=coding+tutorial+programming+tutorial",
+                    "practice_source": "hackerrank",
+                    "practice_question": null
+                }
+            ]
+        },
+        {
+            "week_number": 4,
+            "goal": "Master Advanced Concepts and Frameworks.",
+            "days": [
+                {
+                    "day_number": 22,
+                    "topic": "Introduction to Decorators",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "practice_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 23,
+                    "topic": "Generators and Iterators",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "practice_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 24,
+                    "topic": "Introduction to Concurrency and Multithreading",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "practice_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 25,
+                    "topic": "Understanding GIL (Global Interpreter Lock)",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "practice_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 26,
+                    "topic": "Introduction to Web Frameworks (Flask or Django)",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "practice_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 27,
+                    "topic": "Building a Simple Web Application",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "practice_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 28,
+                    "topic": "Introduction to Data Science Libraries (NumPy, Pandas)",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "practice_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                }
+            ]
+        },
+        {
+            "week_number": 5,
+            "goal": "Capstone Project and Further Learning.",
+            "days": [
+                {
+                    "day_number": 29,
+                    "topic": "Capstone Project: Building a Real-World Application",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "practice_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                },
+                {
+                    "day_number": 30,
+                    "topic": "Further Learning Resources and Next Steps",
+                    "learning_objectives": [],
+                    "youtube_video_url": "",
+                    "practice_url": "",
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": []
+                }
+            ]
+        }
+    ],
+    "id": "c9f0d915-171e-4a40-afbd-fec6419fabfc",
+    "session_id": "ayush",
+    "owner_user_key": "ayush",
+    "created_at": "2026-03-03T19:48:18.601346",
+    "status": "active",
+    "days_completed": 3,
+    "progress_percentage": 10.0,
+    "completed_days": [
+        1,
+        2,
+        8
+    ]
+}

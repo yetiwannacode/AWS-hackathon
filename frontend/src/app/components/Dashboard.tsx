@@ -57,7 +57,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
     React.useEffect(() => {
         if (track === 'individual') {
-            fetch('http://localhost:8000/api/roadmaps/default')
+            const token = localStorage.getItem('cote_auth_token');
+            fetch('http://localhost:8000/api/roadmaps/default', {
+                headers: token ? { Authorization: `Bearer ${token}` } : {}
+            })
                 .then(res => res.json())
                 .then(data => setRoadmaps(data))
                 .catch(err => console.error(err));
@@ -92,7 +95,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         try {
             const response = await fetch('http://localhost:8000/api/roadmap/generate', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(localStorage.getItem('cote_auth_token')
+                        ? { Authorization: `Bearer ${localStorage.getItem('cote_auth_token')}` }
+                        : {})
+                },
                 body: JSON.stringify({ prompt: roadmapPrompt, session_id: 'default' })
             });
 
@@ -159,7 +167,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         if (!file || !uploadingTopicId) return;
 
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('files', file);
 
         try {
             toast.loading('Processing document...', { id: 'upload' });
@@ -231,21 +239,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
                         <Zap size={120} className="text-primary" />
                     </div>
-                    <div className="relative z-10 space-y-6 max-w-2xl">
+                    <div className="relative z-10 space-y-6 max-w-4xl">
                         <h3 className="text-2xl font-black italic tracking-tight">CRAFT YOUR LEARNING ODYSSEY</h3>
                         <div className="flex gap-3">
                             <input
                                 type="text"
                                 value={roadmapPrompt}
                                 onChange={(e) => setRoadmapPrompt(e.target.value)}
-                                placeholder="e.g., I want to learn Data Science for complete beginners in 30 days..."
+                                placeholder="e.g., I want to learn OOPS from basics to advanced in 30 days."
                                 className="flex-1 px-6 py-4 bg-background border-2 border-primary/20 rounded-2xl focus:border-primary focus:outline-none font-medium text-lg shadow-xl shadow-primary/5"
                                 onKeyDown={(e) => e.key === 'Enter' && handleGenerateRoadmap()}
                             />
                             <button
                                 onClick={handleGenerateRoadmap}
                                 disabled={isGenerating}
-                                className="px-8 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 shadow-xl shadow-primary/20 disabled:opacity-50"
+                                className="px-6 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 shadow-xl shadow-primary/20 disabled:opacity-50"
                             >
                                 {isGenerating ? "CRAFTING..." : (
                                     <>

@@ -17,7 +17,6 @@ interface SidebarProps {
     setActiveTab: (tab: string) => void;
     userRole: 'teacher' | 'student';
     track: 'institution' | 'individual';
-    setTrack: (track: 'institution' | 'individual') => void;
     onLogout: () => void;
     onOpenReviewModal?: () => void;
     onSelectRoadmap?: (id: string) => void;
@@ -30,7 +29,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setActiveTab,
     userRole,
     track,
-    setTrack,
     onLogout,
     onOpenReviewModal,
     onSelectRoadmap
@@ -40,7 +38,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
     React.useEffect(() => {
         if (track === 'individual') {
-            fetch('http://localhost:8000/api/roadmaps/default')
+            const token = localStorage.getItem('cote_auth_token');
+            fetch('http://localhost:8000/api/roadmaps/default', {
+                headers: token ? { Authorization: `Bearer ${token}` } : {}
+            })
                 .then(res => res.json())
                 .then(data => setRoadmaps(Array.isArray(data) ? data : []))
                 .catch(err => {
@@ -72,32 +73,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             <nav className="flex-1 py-4 px-2 space-y-1 overflow-y-auto">
-                {/* Track Switcher */}
-                {track === 'institution' && (
-                    <div className="px-2 mb-6 space-y-2">
-                        {isOpen && <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-2">Learning Track</p>}
-                        <div className={`flex ${isOpen ? 'flex-row' : 'flex-col'} gap-1 p-1 bg-accent/50 rounded-xl`}>
-                            <button
-                                onClick={() => setTrack('institution')}
-                                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-black transition-all bg-primary text-primary-foreground shadow-md"
-                                title="Institution Track"
-                            >
-                                <Library size={16} />
-                                {isOpen && <span>INSTITUTION</span>}
-                            </button>
-                            <button
-                                onClick={() => setTrack('individual')}
-                                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-black transition-all hover:bg-accent text-muted-foreground"
-                                title="Individual Track"
-                            >
-                                <Zap size={16} />
-                                {isOpen && <span>INDIVIDUAL</span>}
-                            </button>
-                        </div>
-                    </div>
-                )}
+                {/* Dashboard is always available in both tracks */}
+                <button
+                    onClick={() => setActiveTab('dashboard')}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${activeTab === 'dashboard'
+                        ? 'bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/20'
+                        : 'hover:bg-accent text-foreground/70 hover:text-foreground'
+                        }`}
+                >
+                    <LayoutDashboard size={22} />
+                    {isOpen && <span>Dashboard</span>}
+                </button>
 
-                {track === 'institution' && menuItems.map((item) => (
+                {track === 'institution' && menuItems.filter(item => item.id !== 'dashboard').map((item) => (
                     <button
                         key={`${item.id}-${track}`}
                         onClick={() => setActiveTab(item.id)}

@@ -2,6 +2,7 @@ import os
 import json
 import random
 import time
+import hashlib
 from collections import Counter
 from typing import List, Dict, Optional
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -155,26 +156,29 @@ def get_assessment_prompt(level: int, context: str) -> str:
         """
     return ""
 
-def generate_assessment(session_id: str, level: int):
-    # 1. Check Cache
-    cache_file = os.path.join(ASSESSMENT_DIR, f"{session_id}_lvl{level}.json")
+def _assessment_cache_file(session_id: str, chapter_name: str, level: int) -> str:
+    chapter_hash = hashlib.sha1(chapter_name.encode("utf-8")).hexdigest()[:12]
+    return os.path.join(ASSESSMENT_DIR, f"{session_id}_{chapter_hash}_lvl{level}.json")
+
+
+def generate_assessment(session_id: str, level: int, chapter_index: Optional[int] = None):
+    files = get_sorted_files(session_id)
+    if not files:
+        return {"error": "No documents found for this session."}
+
+    if chapter_index is None:
+        progress = load_user_progress().get(session_id, {})
+        chapter_index = int(progress.get("current_chapter_index", 0) or 0)
+
+    if chapter_index >= len(files):
+        return {"error": "All chapters completed! You are a master."}
+
+    current_file = files[chapter_index]
+    cache_file = _assessment_cache_file(session_id, current_file["filename"], level)
     if os.path.exists(cache_file):
         with open(cache_file, "r") as f:
             return json.load(f)
 
-    # 2. Determine Current Chapter
-    progress = load_user_progress().get(session_id, {})
-    chapter_index = progress.get("current_chapter_index", 0)
-    
-    files = get_sorted_files(session_id)
-    if not files:
-        return {"error": "No documents found for this session."}
-        
-    if chapter_index >= len(files):
-         return {"error": "All chapters completed! You are a master."}
-         
-    current_file = files[chapter_index]
-    
     # 3. Get Context for THIS Chapter ONLY
     context = get_current_chapter_context(session_id, current_file)
     if not context:
@@ -201,7 +205,8 @@ def generate_assessment(session_id: str, level: int):
             "level": level,
             "timer_seconds": 600,
             "questions": assessment_data,
-            "chapter_name": current_file['filename']
+            "chapter_name": current_file['filename'],
+            "chapter_index": chapter_index
         }
         
         # Save to Cache
@@ -581,7 +586,7 @@ def get_all_assessments_for_teacher(session_id: str):
         
         # Generate assessments for all 3 levels
         for level in [1, 2, 3]:
-            assessment = generate_assessment(session_id, level)
+            assessment = generate_assessment(session_id, level, chapter_index=idx)
             if "error" not in assessment:
                 chapter_data["quests"].append({
                     "level": level,

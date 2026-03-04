@@ -8,11 +8,14 @@ interface MaterialsHubProps {
     onBack: () => void;
     userRole: 'teacher' | 'student';
     onUploadComplete?: (topicId: string, pdfUrl: string) => void;
+    onDeleteMaterial?: (topicId: string, materialId: string, materialTitle?: string) => Promise<boolean>;
 }
 
-export const MaterialsHub: React.FC<MaterialsHubProps> = ({ topic, onBack, userRole, onUploadComplete }) => {
+export const MaterialsHub: React.FC<MaterialsHubProps> = ({ topic, onBack, userRole, onUploadComplete, onDeleteMaterial }) => {
     const [view, setView] = useState<'hub' | 'material' | 'flashcards'>('hub');
+    const [selectingMaterial, setSelectingMaterial] = useState(false);
     const [selectingLanguage, setSelectingLanguage] = useState(false);
+    const [selectedMaterial, setSelectedMaterial] = useState('');
     const [selectedLanguage, setSelectedLanguage] = useState('english');
 
 
@@ -23,6 +26,7 @@ export const MaterialsHub: React.FC<MaterialsHubProps> = ({ topic, onBack, userR
                 onBack={() => setView('hub')}
                 userRole={userRole}
                 onUploadComplete={onUploadComplete}
+                onDeleteMaterial={onDeleteMaterial}
             />
         );
     }
@@ -32,6 +36,7 @@ export const MaterialsHub: React.FC<MaterialsHubProps> = ({ topic, onBack, userR
             <FlashcardsView
                 sessionId={topic.id}
                 language={selectedLanguage}
+                selectedSource={selectedMaterial}
                 isTeacher={userRole === 'teacher'}
                 onBack={() => setView('hub')}
             />
@@ -108,7 +113,7 @@ export const MaterialsHub: React.FC<MaterialsHubProps> = ({ topic, onBack, userR
 
                     {/* AI Flashcards Button (Students only for now, or just generic hub) */}
                     <button
-                        onClick={() => setSelectingLanguage(true)}
+                        onClick={() => setSelectingMaterial(true)}
                         className="group relative p-10 bg-card border-2 border-border rounded-[2.5rem] hover:border-purple-500 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/5 flex flex-col items-center text-center space-y-6 overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-bl-[5rem] -mr-8 -mt-8 transition-all group-hover:scale-110" />
@@ -133,12 +138,54 @@ export const MaterialsHub: React.FC<MaterialsHubProps> = ({ topic, onBack, userR
 
             {/* Language Selection Overlay */}
             {
+                selectingMaterial && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-background/80 backdrop-blur-md animate-in fade-in duration-300">
+                        <div className="w-full max-w-2xl bg-card border-2 border-primary/20 rounded-[2.5rem] p-10 shadow-2xl space-y-8">
+                            <div className="text-center space-y-2">
+                                <h3 className="text-3xl font-black tracking-tight">Select Material First</h3>
+                                <p className="text-muted-foreground font-medium">Choose which PDF to revise. Flashcards will be generated only from that material.</p>
+                            </div>
+
+                            {(topic.materials || []).length > 0 ? (
+                                <div className="grid grid-cols-1 gap-3 max-h-[360px] overflow-auto pr-1">
+                                    {(topic.materials || []).map((material: any) => (
+                                        <button
+                                            key={material.id}
+                                            onClick={() => {
+                                                setSelectedMaterial(material.title);
+                                                setSelectingMaterial(false);
+                                                setSelectingLanguage(true);
+                                            }}
+                                            className="p-4 bg-secondary/50 border-2 border-transparent hover:border-primary rounded-2xl transition-all text-left"
+                                        >
+                                            <p className="font-bold truncate">{material.title}</p>
+                                            <p className="text-xs text-muted-foreground font-semibold mt-1 uppercase tracking-wider">PDF Material</p>
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-center text-sm text-muted-foreground font-medium">No materials found for this classroom yet.</p>
+                            )}
+
+                            <button
+                                onClick={() => setSelectingMaterial(false)}
+                                className="w-full py-4 text-muted-foreground font-bold hover:text-foreground transition-colors"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                )
+            }
+
+            {/* Language Selection Overlay */}
+            {
                 selectingLanguage && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-background/80 backdrop-blur-md animate-in fade-in duration-300">
                         <div className="w-full max-w-2xl bg-card border-2 border-primary/20 rounded-[2.5rem] p-10 shadow-2xl space-y-8">
                             <div className="text-center space-y-2">
                                 <h3 className="text-3xl font-black tracking-tight">Select Revision Language</h3>
-                                <p className="text-muted-foreground font-medium">Explanations will be in your chosen language, technical terms stay in English.</p>
+                                <p className="text-muted-foreground font-medium">Material: <span className="font-bold text-foreground">{selectedMaterial}</span></p>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

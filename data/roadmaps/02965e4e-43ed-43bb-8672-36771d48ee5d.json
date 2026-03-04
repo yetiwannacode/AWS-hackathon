@@ -1,0 +1,687 @@
+{
+    "title": "30-Day DSA in C++ Mastery",
+    "description": "A comprehensive roadmap to master Data Structures and Algorithms using C++ in 30 days.",
+    "total_days": 30,
+    "weeks": [
+        {
+            "week_number": 1,
+            "goal": "Master fundamental data structures and C++ basics for DSA",
+            "days": [
+                {
+                    "day_number": 1,
+                    "topic": "Introduction to DSA and C++ Setup",
+                    "learning_objectives": [
+                        "Understand what DSA is and its importance",
+                        "Set up a C++ development environment",
+                        "Write and compile a simple C++ program"
+                    ],
+                    "youtube_video_title": "DSA in C++ | Introduction | Data Structures and Algorithms | Lecture 1",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Introduction+to+DSA+and+C%2B%2B+Setup",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/cpp",
+                    "practice_question": null,
+                    "reference_content": "Data Structures and Algorithms (DSA) are fundamental to computer science. They provide a systematic way to organize and manage data for efficient access and modification.  This course will guide you through essential DSA concepts using C++. First, you need to set up your environment.  You can use an IDE like Visual Studio Code with the C++ extension, or an online compiler like Repl.it or C++ Shell. To write a basic C++ program, create a file named `main.cpp`.  Include the `<iostream>` library for input/output operations.  Here's a simple \"Hello, World!\" program:\n\n```cpp\n#include <iostream>\n\nint main() {\n    std::cout << \"Hello, World!\" << std::endl;\n    return 0;\n}\n```\n\nTo compile this, use a C++ compiler (like g++): `g++ main.cpp -o main`.  Then, run it: `./main`. C++ introduces several data types like `int` (integers), `float` (floating-point numbers), `double` (double-precision floating-point numbers), `char` (characters), and `bool` (boolean values - `true` or `false`). Variables are declared using `type variable_name;` (e.g., `int age;`). Input is read using `std::cin >> variable_name;`, and output is displayed using `std::cout << variable_name << std::endl;`. Understanding these basics is vital before diving deeper into DSA.",
+                    "questions": [
+                        {
+                            "question": "What is the primary purpose of using Data Structures and Algorithms?",
+                            "type": "recall",
+                            "hint": "To efficiently organize and manage data for optimized access and modification."
+                        },
+                        {
+                            "question": "Describe the steps to compile and run a C++ program using g++.",
+                            "type": "application",
+                            "hint": "First, compile using `g++ filename.cpp -o output_filename`, then run the executable using `./output_filename`."
+                        }
+                    ],
+                    "youtube_search_term": "Introduction to DSA and C++ Setup",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 2,
+                    "topic": "Arrays and Vectors in C++",
+                    "learning_objectives": [
+                        "Understand the concept of arrays",
+                        "Learn how to use vectors in C++",
+                        "Perform basic operations on arrays and vectors"
+                    ],
+                    "youtube_video_title": "C++ Arrays",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Arrays+and+Vectors+in+C%2B%2B",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/challenges/cpp-input-and-output/problem",
+                    "practice_question": null,
+                    "reference_content": "Arrays are contiguous blocks of memory that store elements of the same data type. They are declared as `type array_name[size];` (e.g., `int numbers[5];`). Arrays have a fixed size determined at compile time. Vectors, part of the C++ Standard Template Library (STL), provide dynamic arrays that can resize themselves automatically. To use vectors, include the `<vector>` header. Vectors are declared as `std::vector<type> vector_name;` (e.g., `std::vector<int> numbers;`). Basic operations include `push_back(element)` to add elements at the end, `size()` to get the number of elements, `at(index)` or `[index]` to access elements, and `pop_back()` to remove the last element. Vectors can be initialized with a specific size and initial value: `std::vector<int> vec(10, 0);` creates a vector of 10 integers, all initialized to 0. For example:\n\n```cpp\n#include <iostream>\n#include <vector>\n\nint main() {\n    std::vector<int> numbers;\n    numbers.push_back(10);\n    numbers.push_back(20);\n    std::cout << \"Size: \" << numbers.size() << std::endl;  // Output: 2\n    std::cout << \"Element at index 0: \" << numbers << std::endl; // Output: 10\n    return 0;\n}\n```\n\nUnderstanding the difference between arrays and vectors, and when to use each, is crucial for efficient DSA implementation.",
+                    "questions": [
+                        {
+                            "question": "What is the key difference between arrays and vectors in C++?",
+                            "type": "recall",
+                            "hint": "Arrays have a fixed size, while vectors can dynamically resize."
+                        },
+                        {
+                            "question": "Write a C++ code snippet to create a vector of strings and add three strings to it.",
+                            "type": "application",
+                            "hint": "Use `std::vector<std::string>` and `push_back()` method."
+                        }
+                    ],
+                    "youtube_search_term": "Arrays and Vectors in C++",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 3,
+                    "topic": "Pointers and Dynamic Memory Allocation",
+                    "learning_objectives": [
+                        "Understand the concept of pointers",
+                        "Learn about dynamic memory allocation using `new` and `delete`",
+                        "Avoid memory leaks"
+                    ],
+                    "youtube_video_title": "C++ Pointers",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Pointers+and+Dynamic+Memory+Allocation",
+                    "practice_source": "ai_generated",
+                    "practice_url": "",
+                    "practice_question": {
+                        "question": "Write a C++ function that dynamically allocates an array of integers, populates it, and then deallocates the memory.",
+                        "hint": "Use `new` to allocate, `delete[]` to deallocate."
+                    },
+                    "reference_content": "Pointers are variables that store the memory address of another variable. They are declared as `type *pointer_name;` (e.g., `int *ptr;`). Dynamic memory allocation allows you to allocate memory during runtime. The `new` keyword is used to allocate memory on the heap, and `delete` is used to free the allocated memory.  Failing to `delete` allocated memory leads to memory leaks.  For arrays, use `delete[]`. Example:\n\n```cpp\n#include <iostream>\n\nint main() {\n    int *ptr = new int;  // Allocate memory for an integer\n    *ptr = 10;\n    std::cout << \"Value: \" << *ptr << std::endl;  // Output: 10\n    delete ptr;  // Free the allocated memory\n\n    int *arr = new int;  // Allocate memory for an array of 5 integers\n    for (int i = 0; i < 5; ++i) {\n        arr[i] = i * 2;\n    }\n    delete[] arr;  // Free the allocated memory for the array\n    return 0;\n}\n```\n\nAlways remember to `delete` what you `new` to avoid memory leaks. Pointers are crucial for creating dynamic data structures like linked lists and trees.",
+                    "questions": [
+                        {
+                            "question": "What is a memory leak and how can it be avoided in C++?",
+                            "type": "recall",
+                            "hint": "A memory leak occurs when dynamically allocated memory is not freed. Avoid it by using `delete` for single objects and `delete[]` for arrays."
+                        },
+                        {
+                            "question": "Explain the difference between `int *ptr` and `int** ptr`.",
+                            "type": "application",
+                            "hint": "`int *ptr` is a pointer to an integer, while `int** ptr` is a pointer to a pointer to an integer."
+                        }
+                    ],
+                    "youtube_search_term": "Pointers and Dynamic Memory Allocation",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 4,
+                    "topic": "Linked Lists - Introduction",
+                    "learning_objectives": [
+                        "Understand the concept of linked lists",
+                        "Implement a singly linked list",
+                        "Perform insertion and deletion operations"
+                    ],
+                    "youtube_video_title": "Linked List Data Structure",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Linked+Lists+-+Introduction",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problems/linked-list-cycle/",
+                    "practice_question": null,
+                    "reference_content": "A linked list is a linear data structure where elements are stored in nodes. Each node contains data and a pointer to the next node in the sequence. The last node's pointer points to `nullptr`. A singly linked list has nodes with a pointer to the next node only. Implementing a linked list involves creating a `Node` struct/class and a `LinkedList` class. The `Node` class typically contains the data and a pointer to the next node:\n\n```cpp\nstruct Node {\n    int data;\n    Node* next;\n};\n```\n\nInsertion can be done at the beginning, end, or middle of the list. Deletion involves removing a node from the list and updating the pointers of adjacent nodes. Here's an example of inserting at the beginning:\n\n```cpp\nvoid insertAtBeginning(Node** head, int newData) {\n    Node* newNode = new Node();\n    newNode->data = newData;\n    newNode->next = *head;\n    *head = newNode;\n}\n```\n\nSimilarly, deletion involves finding the node to be deleted and updating the `next` pointer of the previous node. Linked lists are useful for dynamic data storage where the size is not known beforehand.",
+                    "questions": [
+                        {
+                            "question": "What are the advantages of using linked lists over arrays?",
+                            "type": "recall",
+                            "hint": "Dynamic size, easier insertion and deletion."
+                        },
+                        {
+                            "question": "Describe how to delete a node from a singly linked list given a pointer to that node.",
+                            "type": "application",
+                            "hint": "Update the `next` pointer of the previous node to skip the node to be deleted."
+                        }
+                    ],
+                    "youtube_search_term": "Linked Lists - Introduction",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 5,
+                    "topic": "Stacks and Queues",
+                    "learning_objectives": [
+                        "Understand the LIFO principle of stacks",
+                        "Understand the FIFO principle of queues",
+                        "Implement stacks and queues using arrays or linked lists"
+                    ],
+                    "youtube_video_title": "Stack and Queue Data Structure",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=wjI1WNcIntg",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/challenges/balanced-brackets/problem",
+                    "practice_question": null,
+                    "reference_content": "Stacks are linear data structures that follow the Last-In-First-Out (LIFO) principle. Common operations are `push` (add an element to the top), `pop` (remove the top element), `peek` (view the top element), and `isEmpty`. Stacks can be implemented using arrays or linked lists. Queues follow the First-In-First-Out (FIFO) principle. Common operations are `enqueue` (add an element to the rear), `dequeue` (remove the front element), `front` (view the front element), and `isEmpty`. Queues can also be implemented using arrays or linked lists.\n\nExample of stack implementation using array:\n\n```cpp\n#include <iostream>\n#include <stack>\n\nint main() {\n    std::stack<int> s;\n    s.push(10);\n    s.push(20);\n    std::cout << \"Top element: \" << s.top() << std::endl; // Output: 20\n    s.pop();\n    std::cout << \"Top element after pop: \" << s.top() << std::endl; // Output: 10\n    return 0;\n}\n```\n\nExample of queue implementation using array:\n\n```cpp\n#include <iostream>\n#include <queue>\n\nint main() {\n    std::queue<int> q;\n    q.push(10);\n    q.push(20);\n    std::cout << \"Front element: \" << q.front() << std::endl; // Output: 10\n    q.pop();\n    std::cout << \"Front element after pop: \" << q.front() << std::endl; // Output: 20\n    return 0;\n}\n```",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between a stack and a queue.",
+                            "type": "recall",
+                            "hint": "Stack follows LIFO, while queue follows FIFO."
+                        },
+                        {
+                            "question": "Describe a real-world scenario where a stack data structure would be useful.",
+                            "type": "application",
+                            "hint": "Function call stack, undo/redo functionality."
+                        }
+                    ],
+                    "youtube_search_term": "Stacks and Queues"
+                },
+                {
+                    "day_number": 6,
+                    "topic": "Trees - Introduction and Binary Trees",
+                    "learning_objectives": [
+                        "Understand the concept of trees and their terminology",
+                        "Implement a binary tree",
+                        "Perform tree traversals (inorder, preorder, postorder)"
+                    ],
+                    "youtube_video_title": "Binary Tree Data Structure",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Trees+-+Introduction+and+Binary+Trees",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problems/binary-tree-inorder-traversal/",
+                    "practice_question": null,
+                    "reference_content": "A tree is a hierarchical data structure consisting of nodes connected by edges. A binary tree is a tree where each node has at most two children, referred to as the left child and the right child. Key terminology includes root, parent, child, sibling, leaf, and height. Tree traversals are methods to visit each node in the tree. Inorder traversal visits the left subtree, then the root, then the right subtree. Preorder traversal visits the root, then the left subtree, then the right subtree. Postorder traversal visits the left subtree, then the right subtree, then the root.\n\nExample of binary tree node structure:\n\n```cpp\nstruct Node {\n    int data;\n    Node* left;\n    Node* right;\n};\n```\n\nExample of inorder traversal:\n\n```cpp\nvoid inorderTraversal(Node* node) {\n    if (node == nullptr) return;\n    inorderTraversal(node->left);\n    std::cout << node->data << \" \";\n    inorderTraversal(node->right);\n}\n```\nUnderstanding tree traversals is crucial for many tree-based algorithms.",
+                    "questions": [
+                        {
+                            "question": "What is the maximum number of children a node can have in a binary tree?",
+                            "type": "recall",
+                            "hint": "Two."
+                        },
+                        {
+                            "question": "Explain the difference between inorder, preorder, and postorder tree traversals.",
+                            "type": "application",
+                            "hint": "The order in which the root node is visited differs."
+                        }
+                    ],
+                    "youtube_search_term": "Trees - Introduction and Binary Trees",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 7,
+                    "topic": "Binary Search Trees",
+                    "learning_objectives": [
+                        "Understand the properties of a binary search tree (BST)",
+                        "Implement BST insertion, deletion, and search operations",
+                        "Understand the time complexity of BST operations"
+                    ],
+                    "youtube_video_title": "Binary Search Tree Data Structure",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Binary+Search+Trees",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problems/search-in-a-binary-search-tree/",
+                    "practice_question": null,
+                    "reference_content": "A binary search tree (BST) is a binary tree where for each node, all nodes in its left subtree have values less than the node's value, and all nodes in its right subtree have values greater than the node's value. This property allows for efficient searching, insertion, and deletion. Insertion involves finding the correct position for the new node based on its value. Deletion can be more complex, especially when the node to be deleted has two children. Searching involves traversing the tree to find a node with a specific value.\n\nExample of BST insertion:\n\n```cpp\nNode* insert(Node* node, int data) {\n    if (node == nullptr) {\n        Node* newNode = new Node();\n        newNode->data = data;\n        newNode->left = newNode->right = nullptr;\n        return newNode;\n    }\n    if (data < node->data) {\n        node->left = insert(node->left, data);\n    } else {\n        node->right = insert(node->right, data);\n    }\n    return node;\n}\n```\nThe time complexity of BST operations (search, insertion, deletion) is O(log n) on average, but can be O(n) in the worst case (when the tree is skewed).",
+                    "questions": [
+                        {
+                            "question": "What property distinguishes a binary search tree from a regular binary tree?",
+                            "type": "recall",
+                            "hint": "The ordering of nodes: left subtree < node < right subtree."
+                        },
+                        {
+                            "question": "Explain the worst-case time complexity of searching for an element in a BST and when it occurs.",
+                            "type": "application",
+                            "hint": "O(n) when the tree is skewed (like a linked list)."
+                        }
+                    ],
+                    "youtube_search_term": "Binary Search Trees",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 2,
+            "goal": "Implement advanced data structures and algorithms",
+            "days": [
+                {
+                    "day_number": 8,
+                    "topic": "Heaps and Priority Queues",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Heaps+and+Priority+Queues",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/?topicSlugs=queue",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Heaps and Priority Queues",
+                    "youtube_video_title": "Heaps and Priority Queues - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 9,
+                    "topic": "Hash Tables and Hash Functions",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Hash+Tables+and+Hash+Functions",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/?topicSlugs=hash-table",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Hash Tables and Hash Functions",
+                    "youtube_video_title": "Hash Tables and Hash Functions - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 10,
+                    "topic": "Graph Representation and Basic Operations",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Graph+Representation+and+Basic+Operations",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/?topicSlugs=graph",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Graph Representation and Basic Operations",
+                    "youtube_video_title": "Graph Representation and Basic Operations - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 11,
+                    "topic": "Breadth-First Search (BFS)",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Breadth-First+Search+%28BFS%29",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Breadth-First Search (BFS)",
+                    "youtube_video_title": "Breadth-First Search (BFS) - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 12,
+                    "topic": "Depth-First Search (DFS)",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Depth-First+Search+%28DFS%29",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Depth-First Search (DFS)",
+                    "youtube_video_title": "Depth-First Search (DFS) - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 13,
+                    "topic": "Recursion",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Recursion",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/?topicSlugs=recursion",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Recursion",
+                    "youtube_video_title": "Recursion - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 14,
+                    "topic": "Backtracking",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Backtracking",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/?topicSlugs=backtracking",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Backtracking",
+                    "youtube_video_title": "Backtracking - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 3,
+            "goal": "Learn sorting and searching algorithms",
+            "days": [
+                {
+                    "day_number": 15,
+                    "topic": "Bubble Sort",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Bubble+Sort",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Bubble Sort",
+                    "youtube_video_title": "Bubble Sort - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 16,
+                    "topic": "Selection Sort",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Selection+Sort",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Selection Sort",
+                    "youtube_video_title": "Selection Sort - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 17,
+                    "topic": "Insertion Sort",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Insertion+Sort",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Insertion Sort",
+                    "youtube_video_title": "Insertion Sort - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 18,
+                    "topic": "Merge Sort",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Merge+Sort",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Merge Sort",
+                    "youtube_video_title": "Merge Sort - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 19,
+                    "topic": "Quick Sort",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Quick+Sort",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Quick Sort",
+                    "youtube_video_title": "Quick Sort - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 20,
+                    "topic": "Binary Search Algorithm",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Binary+Search+Algorithm",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/?topicSlugs=binary-search",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Binary Search Algorithm",
+                    "youtube_video_title": "Binary Search Algorithm - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 21,
+                    "topic": "Exponential Search",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Exponential+Search",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Exponential Search",
+                    "youtube_video_title": "Exponential Search - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 4,
+            "goal": "Practice Dynamic Programming and problem solving",
+            "days": [
+                {
+                    "day_number": 22,
+                    "topic": "Introduction to Dynamic Programming",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Introduction+to+Dynamic+Programming",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/?topicSlugs=dynamic-programming",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Introduction to Dynamic Programming",
+                    "youtube_video_title": "Introduction to Dynamic Programming - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 23,
+                    "topic": "Fibonacci Sequence - DP Approach",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Fibonacci+Sequence+-+DP+Approach",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Fibonacci Sequence - DP Approach",
+                    "youtube_video_title": "Fibonacci Sequence - DP Approach - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 24,
+                    "topic": "Knapsack Problem",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Knapsack+Problem",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Knapsack Problem",
+                    "youtube_video_title": "Knapsack Problem - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 25,
+                    "topic": "Longest Common Subsequence",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Longest+Common+Subsequence",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Longest Common Subsequence",
+                    "youtube_video_title": "Longest Common Subsequence - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 26,
+                    "topic": "Greedy Algorithms",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Greedy+Algorithms",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Greedy Algorithms",
+                    "youtube_video_title": "Greedy Algorithms - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 27,
+                    "topic": "Divide and Conquer",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Divide+and+Conquer",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Divide and Conquer",
+                    "youtube_video_title": "Divide and Conquer - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 28,
+                    "topic": "More Complex Problems",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=More+Complex+Problems",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "More Complex Problems",
+                    "youtube_video_title": "More Complex Problems - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 5,
+            "goal": "Review and Practice",
+            "days": [
+                {
+                    "day_number": 29,
+                    "topic": "Final Review",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Final+Review",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Final Review",
+                    "youtube_video_title": "Final Review - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 30,
+                    "topic": "Practice and Project Day",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Practice+and+Project+Day",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Practice and Project Day",
+                    "youtube_video_title": "Practice and Project Day - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        }
+    ],
+    "id": "02965e4e-43ed-43bb-8672-36771d48ee5d",
+    "session_id": "ayush",
+    "owner_user_key": "ayush",
+    "created_at": "2026-03-04T15:07:22.105382",
+    "status": "active",
+    "days_completed": 0,
+    "progress_percentage": 0
+}

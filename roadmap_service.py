@@ -3,6 +3,10 @@ from json_repair import repair_json
 import os
 import time
 import uuid
+from urllib.parse import quote_plus
+from urllib.parse import urlparse, parse_qs
+from urllib.request import urlopen
+from urllib.error import URLError, HTTPError
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 from google import genai
@@ -21,6 +25,233 @@ client = genai.Client(api_key=api_key)
 
 ROADMAPS_DIR = os.path.join("data", "roadmaps")
 os.makedirs(ROADMAPS_DIR, exist_ok=True)
+
+DSA_KEYWORDS = [
+    "dsa", "data structure", "data structures", "algorithm", "algorithms",
+    "array", "string", "linked list", "stack", "queue", "tree", "graph",
+    "heap", "hash", "dynamic programming", "recursion", "greedy", "backtracking",
+    "sliding window", "two pointers", "binary search"
+]
+
+CODING_KEYWORDS = [
+    "code", "coding", "programming", "developer", "software engineer",
+    "python", "java", "javascript", "typescript", "c++", "c#", "go", "rust",
+    "sql", "react", "node", "django", "flask", "api", "git", "linux",
+    "machine learning", "data science", "computer science", "web development"
+]
+
+HACKERRANK_TOPIC_URLS = {
+    "python": "https://www.hackerrank.com/domains/python",
+    "sql": "https://www.hackerrank.com/domains/sql",
+    "java": "https://www.hackerrank.com/domains/java",
+    "javascript": "https://www.hackerrank.com/domains/tutorials/10-days-of-javascript",
+    "cpp": "https://www.hackerrank.com/domains/cpp",
+    "c++": "https://www.hackerrank.com/domains/cpp",
+    "algorithms": "https://www.hackerrank.com/domains/algorithms",
+    "data structures": "https://www.hackerrank.com/domains/data-structures"
+}
+
+LEETCODE_TOPIC_SLUGS = {
+    "array": "array",
+    "string": "string",
+    "linked list": "linked-list",
+    "stack": "stack",
+    "queue": "queue",
+    "tree": "tree",
+    "graph": "graph",
+    "heap": "heap-priority-queue",
+    "hash": "hash-table",
+    "dynamic programming": "dynamic-programming",
+    "recursion": "recursion",
+    "backtracking": "backtracking",
+    "binary search": "binary-search",
+    "two pointers": "two-pointers",
+    "sliding window": "sliding-window",
+}
+
+PREFERRED_CODING_YT_CHANNELS = [
+    "Apna College",
+    "Coding with Harry",
+    "freeCodeCamp.org",
+]
+
+
+def _normalize_text(*parts: str) -> str:
+    return " ".join([str(p or "").lower() for p in parts]).strip()
+
+
+def _contains_any(text: str, keywords: List[str]) -> bool:
+    return any(keyword in text for keyword in keywords)
+
+
+def _infer_practice_source(roadmap_title: str, day: Dict[str, Any]) -> str:
+    content = _normalize_text(
+        roadmap_title,
+        day.get("topic", ""),
+        " ".join(day.get("learning_objectives", []) or [])
+    )
+    if _contains_any(content, DSA_KEYWORDS):
+        return "leetcode"
+    if _contains_any(content, CODING_KEYWORDS):
+        return "hackerrank"
+    return ""
+
+
+def _build_practice_url(source: str, day: Dict[str, Any]) -> str:
+    topic = _normalize_text(day.get("topic", ""), " ".join(day.get("learning_objectives", []) or []))
+    if source == "leetcode":
+        for key, slug in LEETCODE_TOPIC_SLUGS.items():
+            if key in topic:
+                return f"https://leetcode.com/problemset/?topicSlugs={slug}"
+        return "https://leetcode.com/problemset/"
+
+    if source == "hackerrank":
+        for key, url in HACKERRANK_TOPIC_URLS.items():
+            if key in topic:
+                return url
+        return "https://www.hackerrank.com/dashboard"
+
+    return ""
+
+
+def _build_fallback_practice_question(day: Dict[str, Any]) -> Dict[str, str]:
+    topic = day.get("topic", "this topic")
+    ai_questions = day.get("questions", []) or []
+    for q in ai_questions:
+        question_text = (q or {}).get("question", "").strip()
+        if question_text:
+            return {
+                "question": question_text,
+                "hint": (q or {}).get("hint", "").strip() or "Break the problem into smaller steps first."
+            }
+    return {
+        "question": f"Write a function that demonstrates your understanding of {topic}. Include at least one edge case and explain your approach.",
+        "hint": "Start with a brute-force solution, then optimize and test with edge cases."
+    }
+
+
+def _build_youtube_search_url(query: str) -> str:
+    return f"https://www.youtube.com/results?search_query={quote_plus(query)}"
+
+
+def _looks_like_youtube_url(url: str) -> bool:
+    value = (url or "").lower()
+    return "youtube.com" in value or "youtu.be" in value
+
+
+def _extract_youtube_video_id(url: str) -> str:
+    try:
+        parsed = urlparse(url)
+        host = (parsed.netloc or "").lower()
+        path = parsed.path or ""
+        if "youtu.be" in host:
+            return path.lstrip("/").split("/")[0]
+        if "youtube.com" in host:
+            if path == "/watch":
+                return (parse_qs(parsed.query).get("v") or [""])[0]
+            if path.startswith("/shorts/") or path.startswith("/embed/"):
+                return path.split("/")[2] if len(path.split("/")) > 2 else ""
+    except Exception:
+        return ""
+    return ""
+
+
+def _is_youtube_video_available(url: str) -> bool:
+    if not _looks_like_youtube_url(url):
+        return False
+    if "results?search_query=" in (url or ""):
+        return True
+    video_id = _extract_youtube_video_id(url)
+    if not video_id:
+        return False
+    oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={video_id}&format=json"
+    try:
+        with urlopen(oembed_url, timeout=4) as resp:
+            status = getattr(resp, "status", 200)
+            return status == 200
+    except (HTTPError, URLError, TimeoutError, ValueError):
+        return False
+
+
+def _clean_topic_query(topic: str) -> str:
+    cleaned = " ".join(str(topic or "").split()).strip()
+    lowered = cleaned.lower()
+    if lowered.endswith(" tutorial"):
+        cleaned = cleaned[: -len(" tutorial")].strip()
+    return cleaned
+
+
+def _normalize_day_youtube_fields(roadmap_title: str, day: Dict[str, Any], fallback_topic: str = "") -> None:
+    content = _normalize_text(
+        roadmap_title,
+        day.get("topic", "") or fallback_topic,
+        " ".join(day.get("learning_objectives", []) or [])
+    )
+    is_coding_topic = _contains_any(content, CODING_KEYWORDS) or _contains_any(content, DSA_KEYWORDS)
+    topic = _clean_topic_query(day.get("topic", "") or fallback_topic or "coding")
+    current_title = (day.get("youtube_video_title") or "").strip()
+    current_url = (day.get("youtube_video_url") or "").strip()
+    current_url_valid = bool(current_url and _is_youtube_video_available(current_url))
+
+    if is_coding_topic:
+        # Keep existing URL only if it is currently valid.
+        if current_url_valid:
+            day["youtube_search_term"] = topic
+            return
+
+        # Fallback is exact-topic search so results stay relevant and avoid dead links.
+        exact_query = topic
+        day["youtube_search_term"] = exact_query
+        day["youtube_video_url"] = _build_youtube_search_url(exact_query)
+        if not current_title:
+            day["youtube_video_title"] = f"{topic} - Top YouTube result"
+        day["youtube_channel_priority"] = PREFERRED_CODING_YT_CHANNELS
+        return
+
+    if current_url_valid:
+        if not day.get("youtube_search_term"):
+            day["youtube_search_term"] = topic
+        return
+
+    generic_query = f"{topic} tutorial"
+    day["youtube_search_term"] = generic_query
+    day["youtube_video_url"] = _build_youtube_search_url(generic_query)
+    if not current_title:
+        day["youtube_video_title"] = f"{topic} - Top YouTube results"
+
+
+def _normalize_day_practice_fields(roadmap_title: str, day: Dict[str, Any]) -> None:
+    source = (day.get("practice_source") or "").strip().lower()
+    inferred_source = _infer_practice_source(roadmap_title, day)
+    if source not in ("hackerrank", "leetcode", "ai_generated"):
+        source = inferred_source
+
+    practice_url = (day.get("practice_url") or "").strip()
+    is_coding_topic = bool(inferred_source)
+
+    if is_coding_topic and not practice_url and source in ("hackerrank", "leetcode"):
+        practice_url = _build_practice_url(source, day)
+
+    practice_question = day.get("practice_question")
+    if is_coding_topic and not practice_url:
+        if not isinstance(practice_question, dict) or not practice_question.get("question"):
+            practice_question = _build_fallback_practice_question(day)
+        source = "ai_generated"
+    elif not is_coding_topic:
+        practice_question = None
+        source = ""
+
+    day["practice_source"] = source
+    day["practice_url"] = practice_url
+    day["practice_question"] = practice_question
+
+
+def _normalize_roadmap_practice_fields(roadmap_data: Dict[str, Any]) -> None:
+    roadmap_title = roadmap_data.get("title", "")
+    for week in roadmap_data.get("weeks", []) or []:
+        for day in week.get("days", []) or []:
+            _normalize_day_youtube_fields(roadmap_title, day)
+            _normalize_day_practice_fields(roadmap_title, day)
 
 def generate_roadmap(prompt: str, session_id: str) -> Dict[str, Any]:
     """
@@ -45,6 +276,9 @@ def generate_roadmap(prompt: str, session_id: str) -> Dict[str, Any]:
                         "learning_objectives": ["Objective 1", "Objective 2"],
                         "youtube_video_title": "Title of the recommended YouTube video",
                         "youtube_video_url": "Actual URL to the recommended YouTube video",
+                        "practice_source": "hackerrank | leetcode | ai_generated | ''",
+                        "practice_url": "URL to a relevant practice page. Use HackerRank for most CS/coding courses, but use LeetCode for DSA-focused topics. Leave empty only when no suitable link exists.",
+                        "practice_question": {"question": "Fallback coding question when no URL can be found", "hint": "How to approach it"} or null,
                         "reference_content": "A highly comprehensive, in-depth tutorial (minimum 400 words). Do NOT summarize. Provide the actual learning material. For coding (like Python/ML), list out the exact data types, variables, and fully explain the functions of libraries like NumPy and Pandas including code syntax. For Mathematics, explicitly state the relevant formulas and exactly when/where they are used. This field must be rich enough that the user can learn the topic entirely from reading it.",
                         "questions": [
                             {"question": "A concept-checking question", "type": "recall", "hint": "A helpful hint or detailed answer to show in a popup"},
@@ -62,6 +296,9 @@ def generate_roadmap(prompt: str, session_id: str) -> Dict[str, Any]:
                         "topic": "Title only for upcoming days",
                         "learning_objectives": [],
                         "youtube_video_url": "",
+                        "practice_source": "",
+                        "practice_url": "",
+                        "practice_question": null,
                         "reference_content": "CONTENT_NOT_GENERATED",
                         "questions": []
                     }
@@ -74,6 +311,14 @@ def generate_roadmap(prompt: str, session_id: str) -> Dict[str, Any]:
     - You MUST generate the FULL outline (all days) for the requested duration.
     - However, you MUST only generate the deep content (`reference_content`, `youtube_video_url`, `questions` with `hint`) for **Week 1 (Days 1-7)**.
     - For all days in Week 2 and onwards, set `reference_content` to "CONTENT_NOT_GENERATED", `youtube_video_url` to "", and `questions` to an empty list [].
+    - For coding/computer-science courses:
+      - YouTube recommendations must prioritize videos from these channels first: Apna College, Coding with Harry, freeCodeCamp.org.
+      - If no suitable video from those channels is found for the exact topic, choose the next best top YouTube result for the exact day heading.
+      - Validate that suggested video URLs are currently available; avoid broken/unavailable links.
+      - Use HackerRank links by default (`practice_source = "hackerrank"`).
+      - If the topic is DSA-focused, prefer LeetCode (`practice_source = "leetcode"`).
+      - If you cannot find a reliable practice link, set `practice_url` to "" and provide `practice_source = "ai_generated"` with a good `practice_question`.
+    - For non-coding topics, keep `practice_source` empty and `practice_question` null.
     - Ensure logical progression.
     - Return ONLY the JSON. No markdown formatting.
     """
@@ -101,6 +346,7 @@ def generate_roadmap(prompt: str, session_id: str) -> Dict[str, Any]:
         try:
             # Let json_repair handle it directly, returning a Python object
             roadmap_data = json.loads(repair_json(text))
+            _normalize_roadmap_practice_fields(roadmap_data)
         except Exception as parse_err:
             print(f"❌ Critical JSON parsing failure even after repair: {parse_err}")
             print(f"Raw text generated: {text}")
@@ -111,6 +357,7 @@ def generate_roadmap(prompt: str, session_id: str) -> Dict[str, Any]:
         # Add metadata
         roadmap_data["id"] = roadmap_id
         roadmap_data["session_id"] = session_id
+        roadmap_data["owner_user_key"] = session_id
         roadmap_data["created_at"] = datetime.now().isoformat()
         roadmap_data["status"] = "active"
         roadmap_data["days_completed"] = 0
@@ -142,7 +389,8 @@ def list_roadmaps(session_id: str) -> List[Dict[str, Any]]:
         if filename.endswith(".json"):
             with open(os.path.join(ROADMAPS_DIR, filename), "r") as f:
                 data = json.load(f)
-                if data.get("session_id") == session_id:
+                owner_key = data.get("owner_user_key") or data.get("session_id")
+                if owner_key == session_id:
                     roadmaps.append({
                         "id": data["id"],
                         "title": data["title"],
@@ -151,6 +399,11 @@ def list_roadmaps(session_id: str) -> List[Dict[str, Any]]:
                         "created_at": data["created_at"]
                     })
     return roadmaps
+
+
+def roadmap_belongs_to_user(roadmap: Dict[str, Any], user_key: str) -> bool:
+    owner_key = roadmap.get("owner_user_key") or roadmap.get("session_id")
+    return owner_key == user_key
 
 
 def generate_day_content(roadmap_title: str, week_number: int, day: dict) -> Dict[str, Any]:
@@ -169,12 +422,26 @@ Generate a JSON object for this single day with these exact fields:
     "learning_objectives": ["objective 1", "objective 2", "objective 3"],
     "youtube_video_title": "Title of a real, relevant YouTube tutorial",
     "youtube_video_url": "https://www.youtube.com/watch?v=...",
+    "practice_source": "hackerrank | leetcode | ai_generated | ''",
+    "practice_url": "Practice link based on topic/platform",
+    "practice_question": {{"question": "Fallback coding question when no link can be found", "hint": "How to approach it"}} or null,
     "reference_content": "A comprehensive, in-depth tutorial of at least 400 words. For coding topics: include exact syntax, data types, library functions with code examples. For math topics: include formulas, derivations, and worked examples. Write as if it is the primary learning material the student will read.",
     "questions": [
         {{"question": "A concept-checking question", "type": "recall", "hint": "Detailed answer/explanation"}},
         {{"question": "A scenario-based question", "type": "application", "hint": "Detailed answer/explanation"}}
     ]
 }}
+
+IMPORTANT for practice fields:
+- For coding/computer-science topics, use HackerRank as default (`practice_source = "hackerrank"`).
+- If this day is DSA-focused, use LeetCode (`practice_source = "leetcode"`).
+- If no reliable URL can be found, set `practice_url` to "" and provide `practice_source = "ai_generated"` with a meaningful `practice_question`.
+- If it's not a coding topic, keep practice fields empty (`practice_source = ""`, `practice_url = ""`, `practice_question = null`).
+
+    IMPORTANT for YouTube recommendation:
+- For coding/computer-science topics, prioritize these channels in order: Apna College, Coding with Harry, freeCodeCamp.org.
+- If none of those channels has a suitable topic-specific video, choose the next top relevant YouTube result for the exact day heading.
+- Always provide a currently available working YouTube link. Do not return unavailable/deleted videos.
 
 Return ONLY the JSON object. No markdown formatting, no extra text."""
 
@@ -195,7 +462,10 @@ Return ONLY the JSON object. No markdown formatting, no extra text."""
                 text = text[7:]
             if text.endswith("```"):
                 text = text[:-3]
-            return {"success": True, "data": json.loads(repair_json(text))}
+            day_data = json.loads(repair_json(text))
+            _normalize_day_youtube_fields(roadmap_title, day_data, fallback_topic=day.get("topic", ""))
+            _normalize_day_practice_fields(roadmap_title, day_data)
+            return {"success": True, "data": day_data}
         except Exception as e:
             if "RESOURCE_EXHAUSTED" in str(e) and attempt < max_retries - 1:
                 wait_time = retry_delay * (attempt + 1)
@@ -246,6 +516,11 @@ def generate_week_content(roadmap_id: str, week_number: int):
                 "learning_objectives": new_day_data.get("learning_objectives", []),
                 "youtube_video_title": new_day_data.get("youtube_video_title", ""),
                 "youtube_video_url": new_day_data.get("youtube_video_url", ""),
+                "youtube_search_term": new_day_data.get("youtube_search_term", day.get("topic", "")),
+                "youtube_fallback_url": new_day_data.get("youtube_fallback_url", ""),
+                "practice_source": new_day_data.get("practice_source", ""),
+                "practice_url": new_day_data.get("practice_url", ""),
+                "practice_question": new_day_data.get("practice_question"),
                 "reference_content": new_day_data.get("reference_content", ""),
                 "questions": new_day_data.get("questions", [])
             })

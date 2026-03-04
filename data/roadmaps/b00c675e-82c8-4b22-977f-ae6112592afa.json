@@ -1,0 +1,789 @@
+{
+    "title": "Mastering Object-Oriented Programming (OOP) in C++: A 30-Day Journey",
+    "description": "A comprehensive roadmap to learn and master Object-Oriented Programming (OOP) concepts in C++ within 30 days. This course covers fundamental principles, advanced techniques, and practical applications to build robust and scalable software.",
+    "total_days": 30,
+    "weeks": [
+        {
+            "week_number": 1,
+            "goal": "Understand the fundamentals of OOP and C++ syntax for OOP",
+            "days": [
+                {
+                    "day_number": 1,
+                    "topic": "Introduction to OOP and C++",
+                    "learning_objectives": [
+                        "Understand the basic concepts of OOP (objects, classes, encapsulation, inheritance, polymorphism)",
+                        "Set up a C++ development environment",
+                        "Write and compile a simple C++ program"
+                    ],
+                    "youtube_video_title": "C++ Tutorial for Beginners - Full Course",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=vLnPwxZdW4Y",
+                    "practice_source": "ai_generated",
+                    "practice_url": "",
+                    "practice_question": {
+                        "question": "Write a C++ program that prints 'Hello, OOP!' to the console.",
+                        "hint": "Use the std::cout object and the << operator."
+                    },
+                    "reference_content": "Object-Oriented Programming (OOP) is a programming paradigm based on the concept of \"objects\", which contain data in the form of fields (often known as attributes or properties), and code, in the form of procedures (often known as methods). A central feature of OOP is the idea that data and methods that operate on that data should be bundled together into a single unit, known as a class. Key principles of OOP include: \n\n*   **Encapsulation:** Bundling data and methods that operate on that data within a class, hiding internal implementation details from the outside world. This protects the data from accidental modification and allows the class to control access to its members.\n*   **Inheritance:** Creating new classes (derived classes or subclasses) from existing classes (base classes or superclasses). The derived class inherits the attributes and methods of the base class, allowing for code reuse and the creation of hierarchical relationships between classes.\n*   **Polymorphism:** The ability of objects of different classes to respond to the same method call in their own way. This allows for more flexible and extensible code.\n\nC++ provides extensive support for OOP principles. A class is defined using the `class` keyword. Members of a class can be declared as `public`, `private`, or `protected`, controlling their visibility from outside the class.\n\n**Data Types in C++**: Fundamental types include `int` (integers), `float` (floating-point numbers), `double` (double-precision floating-point numbers), `char` (characters), and `bool` (boolean values). \n\n**Variables**: Variables are declared with a data type and a name, such as `int age;` or `float salary;`. \n\n**Functions**: Functions are blocks of code that perform specific tasks. They are defined with a return type, a name, and a list of parameters. For example: `int add(int a, int b) { return a + b; }`\n\n**Setting up a C++ Environment**:\n1.  **Install a Compiler**: You'll need a C++ compiler such as GCC (GNU Compiler Collection) or Clang. On Windows, you can use MinGW or MSVC (Microsoft Visual C++).  On macOS, Xcode includes Clang.\n2.  **Install an IDE or Text Editor**: Choose an Integrated Development Environment (IDE) like Visual Studio Code, CLion, or Code::Blocks, or a text editor like Sublime Text or Atom.\n3.  **Write Your First Program**: Create a file named `hello.cpp` and write the following code:\n\n```cpp\n#include <iostream>\n\nint main() {\n    std::cout << \"Hello, OOP!\" << std::endl;\n    return 0;\n}\n```\n4.  **Compile the Program**: Open a terminal or command prompt, navigate to the directory containing `hello.cpp`, and compile the program using the command `g++ hello.cpp -o hello` (if you're using GCC).  This creates an executable file named `hello`.\n5.  **Run the Program**: Execute the program by typing `./hello` in the terminal. You should see the output \"Hello, OOP!\"\n",
+                    "questions": [
+                        {
+                            "question": "What are the four main principles of OOP?",
+                            "type": "recall",
+                            "hint": "Encapsulation, Inheritance, Polymorphism, Abstraction"
+                        },
+                        {
+                            "question": "Explain how encapsulation helps in writing secure code.",
+                            "type": "application",
+                            "hint": "By hiding the internal state of an object and controlling access to it, encapsulation prevents unauthorized modification of data."
+                        }
+                    ],
+                    "youtube_search_term": "Introduction to OOP and C++"
+                },
+                {
+                    "day_number": 2,
+                    "topic": "Classes and Objects",
+                    "learning_objectives": [
+                        "Define classes and create objects in C++",
+                        "Understand the concept of class members (attributes and methods)",
+                        "Use access modifiers (public, private, protected)"
+                    ],
+                    "youtube_video_title": "C++ Classes and Objects",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=jTSVV3vRyYU",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/challenges/classes-objects/problem",
+                    "practice_question": null,
+                    "reference_content": "A class is a blueprint or template for creating objects. It defines the attributes (data members) and behaviors (member functions) that objects of that class will have. An object is an instance of a class. You can create multiple objects from a single class. \n\n**Defining a Class:**\n\n```cpp\nclass Dog {\npublic:\n    // Attributes (data members)\n    std::string name;\n    int age;\n\n    // Methods (member functions)\n    void bark() {\n        std::cout << \"Woof!\" << std::endl;\n    }\n};\n```\n\n**Creating Objects:**\n\n```cpp\nint main() {\n    Dog myDog;\n    myDog.name = \"Buddy\";\n    myDog.age = 3;\n    myDog.bark(); // Output: Woof!\n    return 0;\n}\n```\n\n**Access Modifiers**:\n*   `public`: Members are accessible from anywhere.\n*   `private`: Members are only accessible from within the class.\n*   `protected`: Members are accessible from within the class and its derived classes.\n\nEncapsulation is achieved by making attributes private and providing public methods to access and modify them. This is known as getter and setter methods.\n\n```cpp\nclass Rectangle {\nprivate:\n    double width;\n    double height;\n\npublic:\n    void setWidth(double w) {\n        if (w > 0) {\n            width = w;\n        }\n    }\n\n    double getWidth() {\n        return width;\n    }\n\n    void setHeight(double h) {\n        if (h > 0) {\n            height = h;\n        }\n    }\n\n    double getHeight() {\n        return height;\n    }\n\n    double getArea() {\n        return width * height;\n    }\n};\n```\n",
+                    "questions": [
+                        {
+                            "question": "What is the difference between a class and an object?",
+                            "type": "recall",
+                            "hint": "A class is a blueprint, while an object is an instance of that blueprint."
+                        },
+                        {
+                            "question": "Why is it a good practice to make attributes private in a class?",
+                            "type": "application",
+                            "hint": "To protect the data and control how it is accessed and modified, ensuring data integrity."
+                        }
+                    ],
+                    "youtube_search_term": "Classes and Objects"
+                },
+                {
+                    "day_number": 3,
+                    "topic": "Constructors and Destructors",
+                    "learning_objectives": [
+                        "Understand the purpose of constructors and destructors",
+                        "Define and use constructors (default, parameterized, copy)",
+                        "Understand the role of destructors in memory management"
+                    ],
+                    "youtube_video_title": "C++ Constructors and Destructors",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=JjOSc1Hm40k",
+                    "practice_source": "ai_generated",
+                    "practice_url": "",
+                    "practice_question": {
+                        "question": "Create a class with a constructor that initializes the object's attributes and a destructor that prints a message when the object is destroyed.",
+                        "hint": "The destructor has the same name as the class, preceded by a tilde (~)."
+                    },
+                    "reference_content": "Constructors are special member functions that are automatically called when an object of a class is created. They are used to initialize the object's attributes. Destructors are special member functions that are automatically called when an object is destroyed. They are used to release any resources that the object may have acquired.\n\n**Default Constructor**: A constructor that takes no arguments.\n\n```cpp\nclass MyClass {\npublic:\n    MyClass() {\n        // Initialization code here\n        value = 0;\n    }\nprivate:\n    int value;\n};\n```\n\n**Parameterized Constructor**: A constructor that takes arguments.\n\n```cpp\nclass MyClass {\npublic:\n    MyClass(int val) : value(val) {}\nprivate:\n    int value;\n};\n```\n\n**Copy Constructor**: A constructor that creates a new object as a copy of an existing object.\n\n```cpp\nclass MyClass {\npublic:\n    MyClass(const MyClass& other) : value(other.value) {}\nprivate:\n    int value;\n};\n```\n\n**Destructor**: A destructor is used to deallocate resources when an object is destroyed.  It's named the same as the class but prefixed with a tilde `~`.\n\n```cpp\nclass MyClass {\npublic:\n    MyClass() {\n        data = new int; // Allocate memory\n    }\n\n    ~MyClass() {\n        delete[] data; // Deallocate memory\n    }\n\nprivate:\n    int* data;\n};\n```\n",
+                    "questions": [
+                        {
+                            "question": "What is the purpose of a constructor?",
+                            "type": "recall",
+                            "hint": "To initialize the object's attributes when it is created."
+                        },
+                        {
+                            "question": "When is the destructor called?",
+                            "type": "recall",
+                            "hint": "When the object is destroyed (goes out of scope or is explicitly deleted)."
+                        }
+                    ],
+                    "youtube_search_term": "Constructors and Destructors"
+                },
+                {
+                    "day_number": 4,
+                    "topic": "Inheritance",
+                    "learning_objectives": [
+                        "Understand the concept of inheritance",
+                        "Implement single and multiple inheritance in C++",
+                        "Use access specifiers in inheritance (public, private, protected)",
+                        "Understand virtual functions and abstract classes"
+                    ],
+                    "youtube_video_title": "C++ Inheritance",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=R99tky-jNyM",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/challenges/inheritance-introduction/problem",
+                    "practice_question": null,
+                    "reference_content": "Inheritance is a mechanism in which one class (the derived class) inherits the properties and behaviors of another class (the base class). This allows for code reuse and the creation of hierarchical relationships between classes.\n\n**Single Inheritance**: A derived class inherits from a single base class.\n\n```cpp\nclass Animal {\npublic:\n    void eat() {\n        std::cout << \"Eating...\" << std::endl;\n    }\n};\n\nclass Dog : public Animal {\npublic:\n    void bark() {\n        std::cout << \"Woof!\" << std::endl;\n    }\n};\n\nint main() {\n    Dog myDog;\n    myDog.eat(); // Inherited from Animal\n    myDog.bark(); // Defined in Dog\n    return 0;\n}\n```\n\n**Multiple Inheritance**: A derived class inherits from multiple base classes.\n\n```cpp\nclass Swimmer {\npublic:\n    void swim() {\n        std::cout << \"Swimming...\" << std::endl;\n    }\n};\n\nclass Walker {\npublic:\n    void walk() {\n        std::cout << \"Walking...\" << std::endl;\n    }\n};\n\nclass Amphibian : public Swimmer, public Walker {};\n\nint main() {\n    Amphibian frog;\n    frog.swim();\n    frog.walk();\n    return 0;\n}\n```\n\n**Access Specifiers in Inheritance**:\n*   `public`: Public members of the base class become public members of the derived class.\n*   `private`: Public members of the base class become private members of the derived class.\n*   `protected`: Public members of the base class become protected members of the derived class.\n\n**Virtual Functions and Abstract Classes**:\n*   A virtual function is a member function that is declared in the base class and redefined in the derived class. This allows for dynamic polymorphism.\n*   An abstract class is a class that contains at least one pure virtual function (a virtual function that is declared but not defined in the base class). Abstract classes cannot be instantiated.",
+                    "questions": [
+                        {
+                            "question": "What is the main benefit of using inheritance?",
+                            "type": "recall",
+                            "hint": "Code reuse and the creation of hierarchical relationships between classes."
+                        },
+                        {
+                            "question": "Explain the difference between public, private, and protected inheritance.",
+                            "type": "recall",
+                            "hint": "It affects the accessibility of the base class members in the derived class."
+                        }
+                    ],
+                    "youtube_search_term": "Inheritance"
+                },
+                {
+                    "day_number": 5,
+                    "topic": "Polymorphism",
+                    "learning_objectives": [
+                        "Understand the concept of polymorphism",
+                        "Implement compile-time (function overloading, operator overloading) and run-time polymorphism (virtual functions)",
+                        "Use virtual functions and abstract classes to achieve polymorphism"
+                    ],
+                    "youtube_video_title": "C++ Polymorphism",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=wJ6-vCfEB-E",
+                    "practice_source": "ai_generated",
+                    "practice_url": "",
+                    "practice_question": {
+                        "question": "Create a base class Shape with a virtual function area(). Create derived classes Circle and Rectangle that override the area() function to calculate the area of the respective shapes.",
+                        "hint": "Use the override keyword to ensure that the derived class function is correctly overriding the base class function."
+                    },
+                    "reference_content": "Polymorphism is the ability of objects of different classes to respond to the same method call in their own way. This allows for more flexible and extensible code.\n\n**Compile-Time Polymorphism (Function Overloading)**: Defining multiple functions with the same name but different parameters.\n\n```cpp\nint add(int a, int b) {\n    return a + b;\n}\n\ndouble add(double a, double b) {\n    return a + b;\n}\n\nint main() {\n    std::cout << add(2, 3) << std::endl;      // Calls the int version\n    std::cout << add(2.5, 3.5) << std::endl;  // Calls the double version\n    return 0;\n}\n```\n\n**Compile-Time Polymorphism (Operator Overloading)**: Defining the behavior of operators for user-defined types.\n\n```cpp\nclass Complex {\npublic:\n    Complex(double r = 0, double i = 0) : real(r), imag(i) {}\n\n    Complex operator+(const Complex& other) const {\n        return Complex(real + other.real, imag + other.imag);\n    }\n\nprivate:\n    double real;\n    double imag;\n};\n\nint main() {\n    Complex c1(1, 2);\n    Complex c2(3, 4);\n    Complex c3 = c1 + c2;\n    return 0;\n}\n```\n\n**Run-Time Polymorphism (Virtual Functions)**: Defining a virtual function in the base class and overriding it in the derived class.\n\n```cpp\nclass Animal {\npublic:\n    virtual void makeSound() {\n        std::cout << \"Generic animal sound\" << std::endl;\n    }\n};\n\nclass Dog : public Animal {\npublic:\n    void makeSound() override {\n        std::cout << \"Woof!\" << std::endl;\n    }\n};\n\nint main() {\n    Animal* animal1 = new Animal();\n    Animal* animal2 = new Dog();\n    animal1->makeSound();  // Output: Generic animal sound\n    animal2->makeSound();  // Output: Woof!\n    return 0;\n}\n```",
+                    "questions": [
+                        {
+                            "question": "What is polymorphism?",
+                            "type": "recall",
+                            "hint": "The ability of objects of different classes to respond to the same method call in their own way."
+                        },
+                        {
+                            "question": "Explain the difference between compile-time and run-time polymorphism.",
+                            "type": "recall",
+                            "hint": "Compile-time polymorphism is resolved during compilation, while run-time polymorphism is resolved during execution."
+                        }
+                    ],
+                    "youtube_search_term": "Polymorphism"
+                },
+                {
+                    "day_number": 6,
+                    "topic": "Abstraction",
+                    "learning_objectives": [
+                        "Understand the concept of abstraction",
+                        "Use abstract classes and interfaces to achieve abstraction",
+                        "Hide complex implementation details from the user"
+                    ],
+                    "youtube_video_title": "C++ Abstraction",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=UOB9T8W-w3E",
+                    "practice_source": "ai_generated",
+                    "practice_url": "",
+                    "practice_question": {
+                        "question": "Create an abstract class Vehicle with a pure virtual function start(). Create derived classes Car and Bike that implement the start() function in their own way.",
+                        "hint": "An abstract class cannot be instantiated."
+                    },
+                    "reference_content": "Abstraction is the process of hiding complex implementation details and showing only the essential features of an object. This makes the code easier to understand and use.\n\n**Abstract Classes**: A class that contains at least one pure virtual function. Abstract classes cannot be instantiated.\n\n```cpp\nclass Shape {\npublic:\n    virtual double area() = 0; // Pure virtual function\n    virtual void display() = 0; // Pure virtual function\n};\n\nclass Circle : public Shape {\npublic:\n    Circle(double r) : radius(r) {}\n\n    double area() override {\n        return 3.14 * radius * radius;\n    }\n\n    void display() override {\n        std::cout << \"Circle with radius: \" << radius << std::endl;\n    }\n\nprivate:\n    double radius;\n};\n```\nIn this example, `Shape` is an abstract class because it contains pure virtual functions (`area` and `display`). `Circle` is a concrete class that implements the pure virtual functions. You cannot create an object of type `Shape`, but you can create an object of type `Circle`.\n",
+                    "questions": [
+                        {
+                            "question": "What is abstraction in OOP?",
+                            "type": "recall",
+                            "hint": "The process of hiding complex implementation details and showing only the essential features of an object."
+                        },
+                        {
+                            "question": "Why are abstract classes useful?",
+                            "type": "recall",
+                            "hint": "They define a common interface for derived classes, ensuring that they implement certain methods."
+                        }
+                    ],
+                    "youtube_search_term": "Abstraction"
+                },
+                {
+                    "day_number": 7,
+                    "topic": "Encapsulation",
+                    "learning_objectives": [
+                        "Understand the concept of encapsulation",
+                        "Use access modifiers to control access to class members",
+                        "Implement getter and setter methods to access and modify private attributes"
+                    ],
+                    "youtube_video_title": "C++ Encapsulation",
+                    "youtube_video_url": "https://www.youtube.com/watch?v=j9E-iTcl3ao",
+                    "practice_source": "ai_generated",
+                    "practice_url": "",
+                    "practice_question": {
+                        "question": "Create a class Student with private attributes name and age. Implement public getter and setter methods to access and modify these attributes.",
+                        "hint": "Use access modifiers to control access to class members."
+                    },
+                    "reference_content": "Encapsulation is the bundling of data and methods that operate on that data within a class, and hiding internal implementation details from the outside world. This protects the data from accidental modification and allows the class to control access to its members.\n\n**Access Modifiers**:\n*   `public`: Members are accessible from anywhere.\n*   `private`: Members are only accessible from within the class.\n*   `protected`: Members are accessible from within the class and its derived classes.\n\n**Getter and Setter Methods**:\nGetter methods (also known as accessors) are used to retrieve the value of a private attribute. Setter methods (also known as mutators) are used to set the value of a private attribute.\n\n```cpp\nclass Student {\nprivate:\n    std::string name;\n    int age;\n\npublic:\n    std::string getName() const {\n        return name;\n    }\n\n    void setName(const std::string& n) {\n        name = n;\n    }\n\n    int getAge() const {\n        return age;\n    }\n\n    void setAge(int a) {\n        if (a > 0) {\n            age = a;\n        }\n    }\n};\n```\nIn this example, `name` and `age` are private attributes, and `getName`, `setName`, `getAge`, and `setAge` are public getter and setter methods. This allows the user to access and modify the `name` and `age` attributes in a controlled manner.",
+                    "questions": [
+                        {
+                            "question": "What is encapsulation?",
+                            "type": "recall",
+                            "hint": "Bundling data and methods that operate on that data within a class, and hiding internal implementation details."
+                        },
+                        {
+                            "question": "Why is encapsulation important?",
+                            "type": "recall",
+                            "hint": "It protects the data from accidental modification and allows the class to control access to its members."
+                        }
+                    ],
+                    "youtube_search_term": "Encapsulation"
+                }
+            ]
+        },
+        {
+            "week_number": 2,
+            "goal": "Delve deeper into advanced OOP concepts like virtual functions, abstract classes, and dynamic polymorphism.",
+            "days": [
+                {
+                    "day_number": 8,
+                    "topic": "Virtual Functions and Polymorphism Revisited",
+                    "learning_objectives": [
+                        "Understand the concept of virtual functions and their purpose in achieving polymorphism.",
+                        "Implement virtual functions in C++ classes to enable runtime polymorphism.",
+                        "Differentiate between early binding (compile-time polymorphism) and late binding (runtime polymorphism)."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Virtual+Functions+and+Polymorphism+Revisited",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/challenges/virtual-functions/problem",
+                    "practice_question": null,
+                    "reference_content": "Virtual Functions and Polymorphism Revisited\n\nVirtual functions are a powerful feature in C++ that allows for runtime polymorphism. Polymorphism, in general, means 'many forms.' In the context of OOP, it allows objects of different classes to respond to the same function call in their own specific ways. Virtual functions are key to achieving this when dealing with inheritance.\n\n**What are Virtual Functions?**\n\nA virtual function is a member function that is declared within a base class and redefined (overridden) by a derived class. To declare a function as virtual, you use the `virtual` keyword in the base class. The purpose of a virtual function is to allow a call to that function to be resolved at runtime rather than at compile time. This is known as late binding or dynamic binding.\n\n**Syntax:**\n\n```cpp\nclass Base {\npublic:\n    virtual void display() {\n        std::cout << \"Base class display function\" << std::endl;\n    }\n};\n\nclass Derived : public Base {\npublic:\n    void display() override {\n        std::cout << \"Derived class display function\" << std::endl;\n    }\n};\n```\n\nIn this example, `display()` is a virtual function in the `Base` class. The `override` keyword in the `Derived` class (introduced in C++11) is optional but highly recommended as it explicitly states that the function is intended to override a virtual function from the base class.\n\n**How Virtual Functions Enable Polymorphism:**\n\nConsider the following scenario:\n\n```cpp\nBase* basePtr;\nDerived derivedObj;\nbasePtr = &derivedObj;\nbasePtr->display(); // Calls the Derived class's display function\n```\n\nWithout the `virtual` keyword, `basePtr->display()` would call the `Base` class's `display()` function, regardless of the object it points to. However, because `display()` is declared as `virtual`, the program determines at runtime which function to call based on the actual type of the object pointed to by `basePtr`. This is runtime polymorphism.\n\n**Early vs. Late Binding**\n\n*   **Early Binding (Compile-time Polymorphism):** Function calls are resolved at compile time. This is faster but less flexible. Function overloading and template functions are examples of early binding.\n*   **Late Binding (Runtime Polymorphism):** Function calls are resolved at runtime. This is more flexible but slightly slower. Virtual functions are the primary mechanism for late binding in C++.\n\n**Pure Virtual Functions and Abstract Classes**\n\nA pure virtual function is a virtual function that has no implementation in the base class. It is declared using `= 0`.\n\n```cpp\nclass Shape {\npublic:\n    virtual double area() = 0; // Pure virtual function\n};\n```\n\nA class containing at least one pure virtual function is called an abstract class. You cannot create objects of an abstract class. Abstract classes serve as interfaces, defining a set of functions that derived classes must implement.\n\n**Example with Abstract Class:**\n\n```cpp\n#include <iostream>\n\nclass Shape {\npublic:\n    virtual double area() = 0; // Pure virtual function\n    virtual ~Shape() {}\n};\n\nclass Circle : public Shape {\nprivate:\n    double radius;\npublic:\n    Circle(double r) : radius(r) {}\n    double area() override { return 3.14159 * radius * radius; }\n};\n\nclass Rectangle : public Shape {\nprivate:\n    double width, height;\npublic:\n    Rectangle(double w, double h) : width(w), height(h) {}\n    double area() override { return width * height; }\n};\n\nint main() {\n    Circle c(5.0);\n    Rectangle r(4.0, 6.0);\n    std::cout << \"Circle area: \" << c.area() << std::endl;\n    std::cout << \"Rectangle area: \" << r.area() << std::endl;\n    return 0;\n}\n```\n\nIn this example, `Shape` is an abstract class with a pure virtual function `area()`. `Circle` and `Rectangle` are derived classes that provide concrete implementations for `area()`.  The destructor in the base class is also declared as virtual to ensure proper cleanup in derived classes when using base class pointers.\n\n**When to Use Virtual Functions**\n\nUse virtual functions when:\n\n*   You have a base class and derived classes.\n*   You want to call a function on a base class pointer or reference, but you want the derived class's version of the function to be executed.\n*   You need to achieve runtime polymorphism.\n\nVirtual functions are a cornerstone of object-oriented programming in C++, enabling you to write flexible and extensible code that can adapt to different object types at runtime.",
+                    "questions": [
+                        {
+                            "question": "What is the primary difference between early binding and late binding, and how do virtual functions contribute to late binding in C++?",
+                            "type": "recall",
+                            "hint": "Early binding resolves function calls at compile time, while late binding resolves them at runtime. Virtual functions, used with pointers or references to base class objects, enable the correct derived class function to be called at runtime."
+                        },
+                        {
+                            "question": "Consider a scenario where you have a base class `Animal` with a virtual function `makeSound()`. You have derived classes `Dog` and `Cat` that override `makeSound()`. If you have a vector of `Animal` pointers, some pointing to `Dog` objects and others to `Cat` objects, how would you use polymorphism to make each animal 'speak'?",
+                            "type": "application",
+                            "hint": "Iterate through the vector of `Animal` pointers and call the `makeSound()` function on each element. Due to the virtual keyword, the correct overridden function for each object (either `Dog`'s `makeSound()` or `Cat`'s `makeSound()`) will be called."
+                        }
+                    ],
+                    "youtube_search_term": "Virtual Functions and Polymorphism Revisited",
+                    "youtube_video_title": "C++ Tutorial 52 - Virtual Functions",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ],
+                    "youtube_fallback_url": ""
+                },
+                {
+                    "day_number": 9,
+                    "topic": "Abstract Classes and Interfaces",
+                    "learning_objectives": [
+                        "Understand the concept of abstract classes and pure virtual functions.",
+                        "Learn how to define and implement abstract classes in C++.",
+                        "Grasp the concept of interfaces using abstract classes."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Abstract+Classes+and+Interfaces",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/challenges/abstract-classes-polymorphism/problem",
+                    "practice_question": null,
+                    "reference_content": "In C++, abstract classes are classes that contain at least one pure virtual function. A pure virtual function is a virtual function declared in a class that has no definition in the base class. It is declared using the `= 0` syntax.\n\n**Abstract Class:**\nAn abstract class serves as a base class for other classes. It cannot be instantiated directly, meaning you cannot create objects of an abstract class. Its primary purpose is to provide a common interface for its derived classes.\n\n**Pure Virtual Function:**\nA pure virtual function is a virtual function that has no implementation in the base class. It essentially declares that the derived classes must provide an implementation for this function. If a class contains a pure virtual function, it becomes an abstract class.\n\n**Syntax:**\n```cpp\nclass AbstractClass {\npublic:\n    virtual void pureVirtualFunction() = 0; // Pure virtual function\n};\n```\n\n**Example:**\n```cpp\n#include <iostream>\n\nclass Shape {\npublic:\n    // Pure virtual function to calculate area\n    virtual double area() = 0;\n    // Virtual function to display the shape's name\n    virtual void display() {\n        std::cout << \"Shape\";\n    }\n};\n\nclass Circle : public Shape {\nprivate:\n    double radius;\n\npublic:\n    Circle(double r) : radius(r) {}\n\n    double area() override {\n        return 3.14159 * radius * radius;\n    }\n\n    void display() override {\n        std::cout << \"Circle\";\n    }\n};\n\nclass Rectangle : public Shape {\nprivate:\n    double width;\n    double height;\n\npublic:\n    Rectangle(double w, double h) : width(w), height(h) {}\n\n    double area() override {\n        return width * height;\n    }\n    void display() override {\n        std::cout << \"Rectangle\";\n    }\n};\n\nint main() {\n    // Shape s; // Error: Cannot create an object of an abstract class\n    Circle c(5.0);\n    Rectangle r(4.0, 6.0);\n\n    std::cout << \"Area of circle: \" << c.area() << std::endl;\n    std::cout << \"Area of rectangle: \" << r.area() << std::endl;\n\n    c.display();\n    std::cout << std::endl;\n    r.display();\n    std::cout << std::endl;\n\n    return 0;\n}\n```\n**Explanation:**\nIn this example, `Shape` is an abstract class because it contains the pure virtual function `area()`. `Circle` and `Rectangle` are derived classes that inherit from `Shape` and provide their own implementations of the `area()` function.  Attempting to create an object of the `Shape` class directly would result in a compilation error.\n\n**Interfaces:**\nIn C++, interfaces can be implemented using abstract classes. An interface defines a set of functions that a class must implement. This is achieved by creating an abstract class with only pure virtual functions.  Any class that inherits from this abstract class must implement all of the pure virtual functions, thus adhering to the interface.\n\n**Example (Interface):**\n```cpp\n#include <iostream>\n\n// Interface class\nclass Printable {\npublic:\n    virtual void print() = 0; // Pure virtual function\n};\n\nclass Document : public Printable {\nprivate:\n    std::string content;\n\npublic:\n    Document(std::string c) : content(c) {}\n\n    void print() override {\n        std::cout << \"Document content: \" << content << std::endl;\n    }\n};\n\nclass Image : public Printable {\nprivate:\n    std::string filename;\n\npublic:\n    Image(std::string f) : filename(f) {}\n\n    void print() override {\n        std::cout << \"Image filename: \" << filename << std::endl;\n    }\n};\n\nint main() {\n    Document doc(\"This is a sample document.\");\n    Image img(\"photo.jpg\");\n\n    doc.print();\n    img.print();\n\n    return 0;\n}\n```\nIn this example, `Printable` serves as an interface.  Both the `Document` and `Image` classes implement the `Printable` interface by providing an implementation for the `print()` function.",
+                    "questions": [
+                        {
+                            "question": "What is a pure virtual function, and how does it relate to abstract classes?",
+                            "type": "recall",
+                            "hint": "A pure virtual function is a virtual function that has no implementation in the base class (= 0). A class containing at least one pure virtual function becomes an abstract class."
+                        },
+                        {
+                            "question": "Imagine you are designing a system for handling different types of media (audio, video, images). How could you use abstract classes to define a common interface for playing these media types?",
+                            "type": "application",
+                            "hint": "You could create an abstract class `Media` with a pure virtual function `play()`. Each derived class (`Audio`, `Video`, `Image`) would then implement the `play()` function in a way specific to that media type."
+                        }
+                    ],
+                    "youtube_search_term": "Abstract Classes and Interfaces",
+                    "youtube_video_title": "C++ Tutorial 48 - Abstract Classes and Pure Virtual Functions",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ],
+                    "youtube_fallback_url": ""
+                },
+                {
+                    "day_number": 10,
+                    "topic": "Dynamic Polymorphism and Object Slicing",
+                    "learning_objectives": [
+                        "Understand the concept of dynamic polymorphism in C++.",
+                        "Learn how virtual functions enable runtime polymorphism.",
+                        "Identify and prevent object slicing when using inheritance."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Dynamic+Polymorphism+and+Object+Slicing",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/cpp",
+                    "practice_question": {
+                        "question": "Create a base class `Shape` with a virtual function `area()` that returns 0. Derive two classes, `Rectangle` and `Circle`, from `Shape`. Override the `area()` function in each derived class to calculate and return the area of the respective shape. Demonstrate dynamic polymorphism by creating an array of `Shape` pointers, each pointing to either a `Rectangle` or a `Circle` object, and then calling the `area()` function on each element of the array.",
+                        "hint": "Use virtual functions in the base class to ensure the correct `area()` function is called at runtime based on the actual object type. Remember to include necessary headers and handle potential memory leaks."
+                    },
+                    "reference_content": "Dynamic polymorphism, also known as runtime polymorphism, is a crucial feature in object-oriented programming that allows objects of different classes to be treated as objects of a common type. This is achieved through the use of virtual functions and inheritance. \n\n**Virtual Functions:**\nA virtual function is a member function declared in a base class using the `virtual` keyword. When a virtual function is called through a pointer or reference to the base class, the actual function that is executed is determined by the type of the object being pointed to, not the type of the pointer or reference. This is known as late binding or dynamic binding.\n\n*Syntax:*\n```cpp\nclass Base {\npublic:\n    virtual void display() {\n        std::cout << \"Base class display\" << std::endl;\n    }\n};\n```\n\n**Object Slicing:**\nObject slicing occurs when a derived class object is assigned to a base class object. In this case, only the base class portion of the derived class object is copied, effectively 'slicing' off the derived class's members. This can lead to loss of data and unexpected behavior, especially when dealing with polymorphism.\n\n*Example:*\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    int x;\n};\n\nclass Derived : public Base {\npublic:\n    int y;\n};\n\nint main() {\n    Derived d;\n    d.x = 10;\n    d.y = 20;\n\n    Base b = d; // Object slicing occurs here\n\n    std::cout << b.x << std::endl; // Output: 10\n    // std::cout << b.y << std::endl; // Error: b does not have member y\n\n    return 0;\n}\n```\n*Preventing Object Slicing:*\nObject slicing can be prevented by working with pointers or references to base class objects instead of directly assigning derived class objects to base class objects. This allows the full derived class object to be accessed through the base class pointer or reference, preserving polymorphism and avoiding data loss.\n\n*Example:*\n```cpp\n#include <iostream>\n\nclass Base {\npublic:\n    virtual void display() {\n        std::cout << \"Base class display\" << std::endl;\n    }\n};\n\nclass Derived : public Base {\npublic:\n    void display() override {\n        std::cout << \"Derived class display\" << std::endl;\n    }\n};\n\nint main() {\n    Base* b = new Derived();\n    b->display(); // Output: Derived class display\n\n    delete b;\n    return 0;\n}\n```\nIn this example, even though `b` is a pointer to a `Base` class, the `display()` function of the `Derived` class is called because of the virtual keyword and the fact that `b` actually points to a `Derived` object. This demonstrates dynamic polymorphism and avoids object slicing.\n\n**Key Considerations:**\n- Always use virtual functions when you intend to override a function in a derived class and want the correct function to be called at runtime.\n- Be mindful of object slicing and use pointers or references to avoid it.\n- Understand the difference between compile-time (static) and runtime (dynamic) polymorphism.\n",
+                    "questions": [
+                        {
+                            "question": "What is the purpose of the `virtual` keyword in C++?",
+                            "type": "recall",
+                            "hint": "The `virtual` keyword enables dynamic polymorphism, allowing the correct function to be called at runtime based on the object's actual type. It is used in the base class to declare functions that may be overridden in derived classes."
+                        },
+                        {
+                            "question": "You have a base class `Animal` with a virtual function `makeSound()`. You derive a `Dog` class from `Animal` and override `makeSound()` to \"Woof!\". If you create an array of `Animal` pointers, some pointing to `Animal` objects and some to `Dog` objects, and then call `makeSound()` on each element, what will happen?",
+                            "type": "application",
+                            "hint": "Due to dynamic polymorphism, the `makeSound()` function of the `Dog` class will be called for the `Dog` objects, while the `makeSound()` function of the `Animal` class will be called for the `Animal` objects. This is determined at runtime based on the actual type of the object."
+                        }
+                    ],
+                    "youtube_search_term": "Dynamic Polymorphism and Object Slicing",
+                    "youtube_video_title": "C++ Tutorial 47 - Virtual Functions and Polymorphism",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ],
+                    "youtube_fallback_url": ""
+                },
+                {
+                    "day_number": 11,
+                    "topic": "Operator Overloading (Advanced)",
+                    "learning_objectives": [
+                        "Understand advanced operator overloading techniques, including overloading operators for memory management.",
+                        "Implement operator overloading for custom classes, ensuring proper handling of deep copies and avoiding memory leaks.",
+                        "Apply overloaded operators in complex C++ programs to enhance code readability and maintainability."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Operator+Overloading+%28Advanced%29",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/challenges/cpp-operator-overload/problem",
+                    "practice_question": null,
+                    "reference_content": "Advanced Operator Overloading in C++\n\nOperator overloading is a powerful feature in C++ that allows you to redefine the meaning of operators for user-defined types (classes). This enables you to use operators like +, -, *, /, ==, <, >, etc., with your own objects, making the code more intuitive and readable. In advanced operator overloading, we delve into more complex scenarios like overloading operators for memory management, handling deep copies, and ensuring exception safety.\n\n1. Overloading Operators for Memory Management\n\n   When dealing with classes that manage dynamic memory (e.g., using `new` and `delete`), it's crucial to overload the assignment operator (=) and the copy constructor to perform deep copies. This prevents issues like shallow copies leading to double deletion or memory corruption.\n\n   Example:\n\n   ```cpp\n   #include <iostream>\n   #include <cstring>\n\n   class String {\n   private:\n       char* data;\n       size_t length;\n   public:\n       // Constructor\n       String(const char* str) : length(strlen(str)) {\n           data = new char[length + 1];\n           strcpy(data, str);\n       }\n\n       // Copy Constructor (Deep Copy)\n       String(const String& other) : length(other.length) {\n           data = new char[length + 1];\n           strcpy(data, other.data);\n       }\n\n       // Assignment Operator (Deep Copy)\n       String& operator=(const String& other) {\n           if (this != &other) { // Prevent self-assignment\n               delete[] data; // Free existing memory\n               length = other.length;\n               data = new char[length + 1];\n               strcpy(data, other.data);\n           }\n           return *this;\n       }\n\n       // Destructor\n       ~String() {\n           delete[] data;\n       }\n\n       // Overloaded Output Stream Operator\n       friend std::ostream& operator<<(std::ostream& os, const String& str) {\n           os << str.data;\n           return os;\n       }\n   };\n\n   int main() {\n       String str1 = \"Hello\";\n       String str2 = str1; // Calls copy constructor\n       String str3 = \"World\";\n       str3 = str1; // Calls assignment operator\n\n       std::cout << str1 << std::endl; // Output: Hello\n       std::cout << str2 << std::endl; // Output: Hello\n       std::cout << str3 << std::endl; // Output: Hello\n\n       return 0;\n   }\n   ```\n\n   Explanation:\n\n   - **Copy Constructor:** Creates a new `String` object by allocating new memory and copying the content from another `String` object.\n   - **Assignment Operator:** Assigns the value of one `String` object to another. It first checks for self-assignment, then frees the existing memory, allocates new memory, and copies the content.\n   - **Destructor:** Frees the dynamically allocated memory when a `String` object is destroyed, preventing memory leaks.\n\n2. Overloading Increment and Decrement Operators\n\n   You can overload the increment (++) and decrement (--) operators in both prefix and postfix forms. The prefix form modifies the object and returns a reference to the modified object, while the postfix form returns a copy of the original object before modification.\n\n   Example:\n\n   ```cpp\n   #include <iostream>\n\n   class Counter {\n   private:\n       int value;\n   public:\n       Counter(int val = 0) : value(val) {}\n\n       // Prefix increment (++counter)\n       Counter& operator++() {\n           value++;\n           return *this;\n       }\n\n       // Postfix increment (counter++)\n       Counter operator++(int) {\n           Counter temp = *this; // Create a copy of the current object\n           value++; // Increment the current object\n           return temp; // Return the original value\n       }\n\n       int getValue() const {\n           return value;\n       }\n   };\n\n   int main() {\n       Counter c1(5);\n       std::cout << \"Initial value: \" << c1.getValue() << std::endl; // Output: Initial value: 5\n\n       Counter c2 = ++c1; // Prefix increment\n       std::cout << \"Prefix increment: \" << c1.getValue() << \", c2: \" << c2.getValue() << std::endl; // Output: Prefix increment: 6, c2: 6\n\n       Counter c3 = c1++; // Postfix increment\n       std::cout << \"Postfix increment: \" << c1.getValue() << \", c3: \" <<  c3.getValue() << std::endl; // Output: Postfix increment: 7, c3: 6\n\n       return 0;\n   }\n   ```\n\n   Explanation:\n\n   - **Prefix Increment:** Increments the `value` and returns a reference to the modified `Counter` object.\n   - **Postfix Increment:** Creates a temporary copy of the `Counter` object, increments the `value` of the original object, and returns the temporary copy.\n\n3. Overloading Function Call Operator ()\n\n   The function call operator `()` can be overloaded to allow objects to be called like functions. This is useful for creating function objects (functors).\n\n   Example:\n\n   ```cpp\n   #include <iostream>\n\n   class Multiplier {\n   private:\n       int factor;\n   public:\n       Multiplier(int f) : factor(f) {}\n\n       // Overloaded function call operator\n       int operator()(int num) const {\n           return num * factor;\n       }\n   };\n\n   int main() {\n       Multiplier multiplyBy5(5);\n       int result = multiplyBy5(10); // Calls the overloaded operator()\n       std::cout << \"Result: \" << result << std::endl; // Output: Result: 50\n\n       return 0;\n   }\n   ```\n\n   Explanation:\n\n   - The `Multiplier` class overloads the `()` operator to multiply the input `num` by the `factor`.\n   - The object `multiplyBy5` can be called like a function, making the code more flexible and expressive.\n\n4. Exception Safety\n\n   When overloading operators, especially those involving memory management, ensure exception safety. Use techniques like RAII (Resource Acquisition Is Initialization) to manage resources and prevent leaks in case of exceptions.\n\n   By mastering these advanced operator overloading techniques, you can create more robust, efficient, and readable C++ code.",
+                    "questions": [
+                        {
+                            "question": "Why is it important to overload the assignment operator and copy constructor when a class manages dynamic memory?",
+                            "type": "recall",
+                            "hint": "Failing to do so can lead to shallow copies, causing issues like double deletion, memory corruption, or memory leaks."
+                        },
+                        {
+                            "question": "Consider a scenario where you have a `Matrix` class. How would you overload the `+` operator to add two `Matrix` objects, ensuring that the operation is valid (i.e., the matrices have compatible dimensions)?",
+                            "type": "application",
+                            "hint": "Check for dimension compatibility before performing the addition. If dimensions are incompatible, either throw an exception or return a default-constructed `Matrix`. Ensure that a new `Matrix` is created to hold the result, and its elements are the sum of the corresponding elements of the input matrices."
+                        }
+                    ],
+                    "youtube_search_term": "Operator Overloading (Advanced)",
+                    "youtube_video_title": "C++ Tutorial 61 - Operator Overloading",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ],
+                    "youtube_fallback_url": ""
+                },
+                {
+                    "day_number": 12,
+                    "topic": "Friend Functions and Classes",
+                    "learning_objectives": [
+                        "Understand the concept of friend functions and friend classes in C++.",
+                        "Learn how to declare and define friend functions.",
+                        "Learn how to declare and define friend classes.",
+                        "Understand the benefits and potential drawbacks of using friend functions and friend classes."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Friend+Functions+and+Classes",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/cpp",
+                    "practice_question": {
+                        "question": "Design a `Matrix` class and a `Vector` class. Implement a friend function `multiply` that can multiply a `Matrix` object with a `Vector` object. The `Matrix` class should have private data members to store the matrix elements, and the `Vector` class should have private data members to store the vector elements. The `multiply` function should have access to these private members through the friend relationship.",
+                        "hint": "Declare the `multiply` function as a friend within either the `Matrix` or `Vector` class. Ensure the function takes a `Matrix` object and a `Vector` object as arguments and returns a `Vector` object representing the result of the multiplication. Pay attention to the dimensions of the matrix and vector to ensure valid multiplication."
+                    },
+                    "reference_content": "In C++, friend functions and friend classes are mechanisms that allow you to grant non-member functions or classes access to the private and protected members of a class. This can be useful in situations where you need to provide external functions or classes with access to the internal workings of a class without making those members public.\n\n**Friend Functions**\n\nA friend function is a function that is not a member of a class but is granted access to the class's private and protected members. To declare a function as a friend of a class, you use the `friend` keyword within the class definition. Here's the syntax:\n\n```cpp\nclass MyClass {\nprivate:\n    int privateVar;\n\npublic:\n    friend void friendFunction(MyClass obj);\n};\n\nvoid friendFunction(MyClass obj) {\n    obj.privateVar = 10; // Accessing private member\n}\n```\nIn this example, `friendFunction` is not a member of `MyClass`, but it can access `MyClass`'s `privateVar`.  A friend function is defined like a normal function; the `friend` keyword is only used in the class definition.\n\n**Friend Classes**\n\nSimilarly, you can declare an entire class as a friend of another class. This grants all member functions of the friend class access to the private and protected members of the other class.  Here's the syntax:\n\n```cpp\nclass MyClass {\nprivate:\n    int privateVar;\n\npublic:\n    friend class FriendClass;\n};\n\nclass FriendClass {\npublic:\n    void accessMyClass(MyClass obj) {\n        obj.privateVar = 20; // Accessing private member\n    }\n};\n```\n\nIn this example, all member functions of `FriendClass` can access the private and protected members of `MyClass`.  Like friend functions, the `friend` keyword is only used within the class definition.\n\n**Use Cases**\n\n*   **Operator Overloading:** Friend functions are commonly used to overload operators, especially when the left-hand operand is not an object of the class.\n*   **Data Access:** When two classes need to share data, declaring one as a friend of the other can be more efficient than using public accessor methods.  However, this should be done judiciously to avoid breaking encapsulation.\n\n**Example: Operator Overloading with Friend Function**\n```cpp\n#include <iostream>\n\nclass Complex {\nprivate:\n    double real;\n    double imag;\n\npublic:\n    Complex(double r = 0.0, double i = 0.0) : real(r), imag(i) {}\n\n    void print() const {\n        std::cout << real << \" + \" << imag << \"i\" << std::endl;\n    }\n\n    friend Complex operator+(const Complex& c1, const Complex& c2);\n};\n\nComplex operator+(const Complex& c1, const Complex& c2) {\n    return Complex(c1.real + c2.real, c1.imag + c2.imag);\n}\n\nint main() {\n    Complex c1(1.0, 2.0);\n    Complex c2(3.0, 4.0);\n    Complex c3 = c1 + c2;\n    c3.print(); // Output: 4 + 6i\n    return 0;\n}\n```\n\n**Example: Friend Class for Data Management**\n```cpp\n#include <iostream>\n#include <vector>\n\nclass DataManager;\n\nclass Data {\nprivate:\n    int value;\n    friend class DataManager;\npublic:\n    Data(int v) : value(v) {}\n};\n\nclass DataManager {\npublic:\n    void printData(Data& data) {\n        std::cout << \"Data value: \" << data.value << std::endl;\n    }\n    void updateData(Data& data, int newValue) {\n        data.value = newValue;\n    }\n};\n\nint main() {\n    Data data(5);\n    DataManager manager;\n    manager.printData(data); // Output: Data value: 5\n    manager.updateData(data, 10);\n    manager.printData(data); // Output: Data value: 10\n    return 0;\n}\n```\n**Drawbacks and Considerations**\n\n*   **Encapsulation:** Friend functions and classes can weaken encapsulation by granting external entities access to internal data. Use them sparingly.\n*   **Complexity:** Overuse of friends can make code harder to understand and maintain.\n*   **Alternatives:** Before using friends, consider if there are alternative approaches, such as using public accessor methods (getters and setters) or refactoring the code to reduce the need for direct access to private members.\n\nIn summary, friend functions and classes provide a way to grant access to private members, but they should be used carefully to avoid compromising encapsulation and code maintainability.",
+                    "questions": [
+                        {
+                            "question": "What are the key differences between friend functions and member functions in C++?",
+                            "type": "recall",
+                            "hint": "Friend functions are not members of the class, do not have a 'this' pointer, and are declared using the 'friend' keyword inside the class. Member functions are part of the class, have a 'this' pointer, and can directly access private members without being declared as friends."
+                        },
+                        {
+                            "question": "Imagine you have a `Logger` class that needs to access private data of multiple other classes to record their state. How would you use friend classes or functions to implement this scenario, and what are the potential drawbacks you should consider?",
+                            "type": "application",
+                            "hint": "You could make the `Logger` class a friend of all the classes it needs to monitor, or create friend functions within each class that the Logger can call. Consider the impact on encapsulation and the potential for tight coupling between the Logger and the other classes. Evaluate if alternative approaches like providing specific logging methods within each class would be more maintainable."
+                        }
+                    ],
+                    "youtube_search_term": "Friend Functions and Classes",
+                    "youtube_video_title": "C++ Placement Course : EP 23 (Friend Function)",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ],
+                    "youtube_fallback_url": ""
+                },
+                {
+                    "day_number": 13,
+                    "topic": "Exception Handling in OOP",
+                    "learning_objectives": [
+                        "Understand the basic concepts of exception handling in C++.",
+                        "Learn how to use try, catch, and throw keywords to handle exceptions.",
+                        "Implement custom exception classes to handle specific error conditions in OOP."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Exception+Handling+in+OOP",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/challenges/cpp-exception-handling/problem",
+                    "practice_question": null,
+                    "reference_content": "Exception handling is a crucial aspect of writing robust and reliable C++ code, especially in object-oriented programming. It allows you to gracefully handle unexpected errors or exceptional situations that may arise during program execution, preventing crashes and ensuring a smoother user experience. In C++, exception handling is implemented using the `try`, `catch`, and `throw` keywords.\n\n**Basic Syntax:**\n\n```cpp\ntry {\n  // Code that might throw an exception\n} catch (ExceptionType1 e1) {\n  // Code to handle ExceptionType1\n} catch (ExceptionType2 e2) {\n  // Code to handle ExceptionType2\n} catch (...) {\n  // Code to handle any other exception\n}\n```\n\n*   **try block:** This block encloses the code that might potentially throw an exception. The program monitors this block for any exceptions that are thrown.\n*   **catch block:** This block catches and handles the exception thrown within the try block. You can have multiple catch blocks to handle different types of exceptions. The `...` catch block is a catch-all handler for any exception type that hasn't been explicitly caught.\n*   **throw keyword:** This keyword is used to explicitly throw an exception. The exception can be a built-in C++ exception or a user-defined exception.\n\n**Example:**\n\n```cpp\n#include <iostream>\n#include <stdexcept>\n\nusing namespace std;\n\nint divide(int a, int b) {\n  if (b == 0) {\n    throw runtime_error(\"Division by zero error!\");\n  }\n  return a / b;\n}\n\nint main() {\n  int x, y;\n  cout << \"Enter two numbers: \";\n  cin >> x >> y;\n\n  try {\n    int result = divide(x, y);\n    cout << \"Result: \" << result << endl;\n  } catch (runtime_error &e) {\n    cerr << \"Exception caught: \" << e.what() << endl;\n  }\n\n  return 0;\n}\n```\n\nIn this example, the `divide` function throws a `runtime_error` exception if the denominator is zero. The `try` block in `main` calls the `divide` function, and the `catch` block catches the `runtime_error` exception and prints an error message.\n\n**Custom Exception Classes:**\n\nYou can also create your own exception classes to handle specific error conditions in your program. This allows for more fine-grained error handling.\n\n```cpp\n#include <iostream>\n#include <exception>\n#include <string>\n\nusing namespace std;\n\nclass MyException : public exception {\nprivate:\n  string message;\n\npublic:\n  MyException(string msg) : message(msg) {}\n  const char* what() const noexcept override {\n    return message.c_str();\n  }\n};\n\nint main() {\n  try {\n    throw MyException(\"This is a custom exception!\");\n  } catch (MyException &e) {\n    cerr << \"Exception caught: \" << e.what() << endl;\n  } catch (exception &e) { // Catch standard exceptions\n        cerr << \"Standard exception caught: \" << e.what() << endl;\n  } catch (...) { // Catch any other exception (good practice to keep last)\n    cerr << \"Unknown exception caught!\" << endl;\n  }\n\n  return 0;\n}\n```\n\nIn this example, `MyException` is a custom exception class derived from the standard `exception` class. It has a constructor that takes an error message and overrides the `what()` method to return the message.\n\n**Best Practices:**\n\n*   **Throw exceptions by value, catch by reference:** This avoids object slicing and ensures that you are working with the actual exception object.\n*   **Use exception specifications (noexcept):** Indicate whether a function might throw an exception.  Using `noexcept` can help the compiler optimize the code.\n*   **Handle exceptions at the appropriate level:** Catch exceptions where you have enough information to handle them effectively.\n*   **Avoid throwing exceptions in destructors:** This can lead to undefined behavior.\n*   **Always include a catch-all block:** This ensures that any unexpected exceptions are caught and handled gracefully.\n\nException handling is a powerful tool for writing robust and reliable C++ code. By understanding the basic concepts and best practices, you can effectively handle errors and ensure the stability of your programs.",
+                    "questions": [
+                        {
+                            "question": "What are the three main keywords used in exception handling in C++, and what is the purpose of each?",
+                            "type": "recall",
+                            "hint": "The keywords are try, catch, and throw. 'try' encloses the code that might throw an exception. 'catch' handles the exception. 'throw' is used to explicitly throw an exception."
+                        },
+                        {
+                            "question": "You are developing a banking application. Describe a scenario where you would use exception handling, including the type of exception you might throw and how you would handle it.",
+                            "type": "application",
+                            "hint": "Consider scenarios like insufficient funds during a withdrawal, invalid account numbers, or database connection errors. Use custom exception classes to represent these specific errors."
+                        }
+                    ],
+                    "youtube_search_term": "Exception Handling in OOP",
+                    "youtube_video_title": "C++ Tutorial 63 - Exception Handling",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ],
+                    "youtube_fallback_url": ""
+                },
+                {
+                    "day_number": 14,
+                    "topic": "Review and Consolidation of OOP Principles",
+                    "learning_objectives": [
+                        "Review and reinforce the core principles of Object-Oriented Programming (OOP) in C++.",
+                        "Consolidate understanding of classes, objects, inheritance, polymorphism, and encapsulation.",
+                        "Apply OOP principles to solve practical programming problems."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Review+and+Consolidation+of+OOP+Principles",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/cpp/classes",
+                    "practice_question": null,
+                    "reference_content": "Object-Oriented Programming (OOP) is a programming paradigm based on the concept of 'objects', which contain data in the form of fields (often known as attributes) and code in the form of procedures (often known as methods). A distinguishing feature of objects is that an object's procedures can access and often modify the data fields of the object with which they are associated (objects have a notion of 'this' or 'self'). In C++, OOP is implemented through classes. A class is a blueprint for creating objects. It defines the data members (attributes) and member functions (methods) that an object of the class will have.\n\n**Core OOP Principles in C++:**\n\n1.  **Encapsulation:** This is the bundling of data (attributes) and methods that operate on that data within a single unit, or 'class'. It helps in hiding the internal state of the object and protecting the integrity of the data. Access to the data is controlled through methods, typically getter and setter methods. Example:\n\n```cpp\nclass Rectangle {\nprivate:\n    int width;\n    int height;\npublic:\n    void setWidth(int w) { width = w; }\n    void setHeight(int h) { height = h; }\n    int getArea() { return width * height; }\n};\n```\n\n2.  **Inheritance:** This is the mechanism by which one class (the derived class) inherits the properties (attributes and methods) of another class (the base class). It promotes code reuse and establishes 'is-a' relationships between classes. C++ supports single, multiple, and multilevel inheritance. Example:\n\n```cpp\nclass Shape {\npublic:\n    virtual int getArea() = 0; // Pure virtual function, making Shape an abstract class\n};\n\nclass Circle : public Shape {\nprivate:\n    int radius;\npublic:\n    Circle(int r) : radius(r) {}\n    int getArea() override { return 3.14 * radius * radius; }\n};\n```\n\n3.  **Polymorphism:** This means 'many forms'. It allows objects of different classes to be treated as objects of a common type. C++ implements polymorphism through virtual functions and function overloading. Example:\n\n```cpp\nclass Animal {\npublic:\n    virtual void makeSound() { std::cout << \"Generic animal sound\" << std::endl; }\n};\n\nclass Dog : public Animal {\npublic:\n    void makeSound() override { std::cout << \"Woof!\" << std::endl; }\n};\n\nclass Cat : public Animal {\npublic:\n    void makeSound() override { std::cout << \"Meow!\" << std::endl; }\n};\n\nint main() {\n    Animal* animal1 = new Dog();\n    Animal* animal2 = new Cat();\n    animal1->makeSound(); // Output: Woof!\n    animal2->makeSound(); // Output: Meow!\n    return 0;\n}\n```\n\n4.  **Abstraction:** This is the process of simplifying complex reality by modeling classes based on essential characteristics while hiding unnecessary implementation details. Abstract classes and interfaces (achieved through pure virtual functions in C++) are key to abstraction. It allows you to focus on what an object does instead of how it does it.\n\n**Key C++ Syntax and Concepts:**\n\n*   **Classes:** Defined using the `class` keyword. Members can be `public`, `private`, or `protected`.\n*   **Objects:** Instances of a class, created using the class name followed by the object name.\n*   **Constructors:** Special member functions that initialize objects when they are created. There are default, parameterized, and copy constructors.\n*   **Destructors:** Special member functions that clean up resources when an object is destroyed.\n*   **`this` pointer:** A pointer that refers to the current object.\n*   **`virtual` keyword:** Used to declare virtual functions, enabling runtime polymorphism.\n*   **`override` keyword:** Ensures that a derived class's function correctly overrides a base class's virtual function.\n\nUnderstanding and applying these OOP principles is crucial for writing well-structured, maintainable, and scalable C++ code. Practice designing classes and implementing inheritance hierarchies to solidify your understanding.",
+                    "questions": [
+                        {
+                            "question": "Explain the difference between public, private, and protected access specifiers in C++ classes.",
+                            "type": "recall",
+                            "hint": "Public members are accessible from anywhere. Private members are only accessible within the class. Protected members are accessible within the class and its derived classes."
+                        },
+                        {
+                            "question": "You are designing a system for a library. Define classes for `Book`, `Patron`, and `Library`. Show how inheritance and encapsulation can be applied in your design. Provide C++ code snippets illustrating your design.",
+                            "type": "application",
+                            "hint": "Consider what attributes and methods each class should have. Think about inheritance relationships (e.g., a 'ReferenceBook' might inherit from 'Book'). Encapsulate data members and provide controlled access through methods."
+                        }
+                    ],
+                    "youtube_search_term": "Review and Consolidation of OOP Principles",
+                    "youtube_video_title": "C++ Tutorial for Beginners - Full Course",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ],
+                    "youtube_fallback_url": ""
+                }
+            ]
+        },
+        {
+            "week_number": 3,
+            "goal": "Explore advanced topics such as templates, namespaces, and smart pointers for efficient C++ programming.",
+            "days": [
+                {
+                    "day_number": 15,
+                    "topic": "Templates: Generic Programming",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Templates%3A+Generic+Programming",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Templates: Generic Programming",
+                    "youtube_video_title": "Templates: Generic Programming - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 16,
+                    "topic": "Function Templates",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Function+Templates",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Function Templates",
+                    "youtube_video_title": "Function Templates - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 17,
+                    "topic": "Class Templates",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Class+Templates",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Class Templates",
+                    "youtube_video_title": "Class Templates - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 18,
+                    "topic": "Namespaces",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Namespaces",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Namespaces",
+                    "youtube_video_title": "Namespaces - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 19,
+                    "topic": "Smart Pointers: Unique Pointers",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Smart+Pointers%3A+Unique+Pointers",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Smart Pointers: Unique Pointers",
+                    "youtube_video_title": "Smart Pointers: Unique Pointers - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 20,
+                    "topic": "Smart Pointers: Shared Pointers",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Smart+Pointers%3A+Shared+Pointers",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Smart Pointers: Shared Pointers",
+                    "youtube_video_title": "Smart Pointers: Shared Pointers - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 21,
+                    "topic": "Smart Pointers: Weak Pointers",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Smart+Pointers%3A+Weak+Pointers",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Smart Pointers: Weak Pointers",
+                    "youtube_video_title": "Smart Pointers: Weak Pointers - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 4,
+            "goal": "Apply OOP principles to design patterns and real-world projects to solidify your understanding.",
+            "days": [
+                {
+                    "day_number": 22,
+                    "topic": "Introduction to Design Patterns",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Introduction+to+Design+Patterns",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Introduction to Design Patterns",
+                    "youtube_video_title": "Introduction to Design Patterns - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 23,
+                    "topic": "Creational Patterns (Singleton, Factory)",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Creational+Patterns+%28Singleton%2C+Factory%29",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Creational Patterns (Singleton, Factory)",
+                    "youtube_video_title": "Creational Patterns (Singleton, Factory) - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 24,
+                    "topic": "Structural Patterns (Adapter, Decorator)",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Structural+Patterns+%28Adapter%2C+Decorator%29",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Structural Patterns (Adapter, Decorator)",
+                    "youtube_video_title": "Structural Patterns (Adapter, Decorator) - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 25,
+                    "topic": "Behavioral Patterns (Observer, Strategy)",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Behavioral+Patterns+%28Observer%2C+Strategy%29",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Behavioral Patterns (Observer, Strategy)",
+                    "youtube_video_title": "Behavioral Patterns (Observer, Strategy) - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 26,
+                    "topic": "OOP Project: Designing a Simple Game",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=OOP+Project%3A+Designing+a+Simple+Game",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "OOP Project: Designing a Simple Game",
+                    "youtube_video_title": "OOP Project: Designing a Simple Game - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 27,
+                    "topic": "OOP Project: Implementing a Library Management System",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=OOP+Project%3A+Implementing+a+Library+Management+System",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "OOP Project: Implementing a Library Management System",
+                    "youtube_video_title": "OOP Project: Implementing a Library Management System - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 28,
+                    "topic": "OOP Project: Building a Basic Banking System",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=OOP+Project%3A+Building+a+Basic+Banking+System",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "OOP Project: Building a Basic Banking System",
+                    "youtube_video_title": "OOP Project: Building a Basic Banking System - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 5,
+            "goal": "Optimize your C++ code using best practices and explore advanced memory management techniques.",
+            "days": [
+                {
+                    "day_number": 29,
+                    "topic": "Best Practices in C++ OOP",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Best+Practices+in+C%2B%2B+OOP",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/cpp",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Best Practices in C++ OOP",
+                    "youtube_video_title": "Best Practices in C++ OOP - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 30,
+                    "topic": "Advanced Memory Management Techniques",
+                    "learning_objectives": [],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Advanced+Memory+Management+Techniques",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Advanced Memory Management Techniques",
+                    "youtube_video_title": "Advanced Memory Management Techniques - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        }
+    ],
+    "id": "b00c675e-82c8-4b22-977f-ae6112592afa",
+    "session_id": "ayush",
+    "owner_user_key": "ayush",
+    "created_at": "2026-03-04T14:44:49.609389",
+    "status": "active",
+    "days_completed": 0,
+    "progress_percentage": 0
+}

@@ -11,6 +11,9 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
 interface Day {
     day_number: number;
     topic: string;
@@ -18,6 +21,9 @@ interface Day {
     youtube_video_title?: string;
     youtube_video_url?: string;
     youtube_search_term: string;
+    practice_source?: 'hackerrank' | 'leetcode' | 'ai_generated' | '';
+    practice_url?: string;
+    practice_question?: { question?: string; hint?: string } | null;
     reference_content: string;
     questions: { question: string; type: string; hint?: string }[];
 }
@@ -61,6 +67,16 @@ export const DailyDetailView: React.FC<DailyDetailViewProps> = ({
 
     const videoTitle = day.youtube_video_title || `${day.topic} - Highly Rated Tutorials`;
     const secondaryText = day.youtube_video_url ? 'Recommended Video' : (day.youtube_search_term ? `Search: "${day.youtube_search_term}"` : 'Recommended Topic Search');
+    const practiceSource = (day.practice_source || '').toLowerCase();
+    const practiceSourceLabel =
+        practiceSource === 'leetcode'
+            ? 'LeetCode'
+            : practiceSource === 'hackerrank'
+                ? 'HackerRank'
+                : practiceSource === 'ai_generated'
+                    ? 'AI Recommendation'
+                    : (day.practice_url?.includes('leetcode.com') ? 'LeetCode' : 'HackerRank');
+    const hasPracticeBlock = Boolean(day.practice_url || day.practice_question?.question);
 
     return (
         <div className="p-6 max-w-5xl mx-auto space-y-10 animate-in fade-in slide-in-from-right-4 duration-700">
@@ -71,15 +87,36 @@ export const DailyDetailView: React.FC<DailyDetailViewProps> = ({
                 <ArrowLeft size={16} /> Back to Roadmap
             </button>
 
-            <header className="space-y-2">
-                <p className="text-primary font-black uppercase tracking-[0.3em] text-sm">DAY {day.day_number}</p>
-                <h1 className="text-5xl font-black tracking-tighter">{day.topic}</h1>
-                <div className="flex flex-wrap gap-2 pt-2">
-                    {day.learning_objectives.map((obj, i) => (
-                        <span key={i} className="px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-bold ring-1 ring-primary/20">
-                            {obj}
-                        </span>
-                    ))}
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="space-y-2">
+                    <p className="text-primary font-black uppercase tracking-[0.3em] text-sm">DAY {day.day_number}</p>
+                    <h1 className="text-5xl font-black tracking-tighter">{day.topic}</h1>
+                    <div className="flex flex-wrap gap-2 pt-2">
+                        {day.learning_objectives.map((obj, i) => (
+                            <span key={i} className="px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-bold ring-1 ring-primary/20">
+                                {obj}
+                            </span>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="flex-shrink-0">
+                    <button
+                        onClick={handleComplete}
+                        disabled={isCompleted}
+                        className={`px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 ${isCompleted
+                            ? 'bg-green-500 text-white cursor-default shadow-green-500/20'
+                            : 'bg-primary text-primary-foreground shadow-primary/20 hover:shadow-primary/40'
+                            }`}
+                    >
+                        {isCompleted ? (
+                            <>
+                                <CheckCircle2 size={18} /> COMPLETED
+                            </>
+                        ) : (
+                            "MARK AS DONE"
+                        )}
+                    </button>
                 </div>
             </header>
 
@@ -91,7 +128,43 @@ export const DailyDetailView: React.FC<DailyDetailViewProps> = ({
                             <h2 className="text-2xl font-black uppercase tracking-tight">Essential Reading</h2>
                         </div>
                         <div className="prose prose-invert max-w-none text-muted-foreground leading-relayed font-medium">
-                            <p className="whitespace-pre-wrap">{day.reference_content}</p>
+                            <ReactMarkdown
+                                remarkPlugins={[remarkGfm]}
+                                components={{
+                                    pre: ({ node, ...props }) => (
+                                        <div className="relative my-6 rounded-2xl overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl">
+                                            <pre className="p-6 overflow-auto text-sm leading-relaxed" {...props} />
+                                        </div>
+                                    ),
+                                    code: ({ node, inline, className, children, ...props }: any) => {
+                                        if (inline) {
+                                            return (
+                                                <code className="px-1.5 py-0.5 rounded-md bg-white/10 text-primary font-bold text-[0.9em]" {...props}>
+                                                    {children}
+                                                </code>
+                                            );
+                                        }
+                                        return (
+                                            <code className={className} {...props}>
+                                                {children}
+                                            </code>
+                                        );
+                                    },
+                                    h1: ({ node, ...props }) => <h1 className="text-3xl font-black tracking-tighter mt-8 mb-4 text-foreground" {...props} />,
+                                    h2: ({ node, ...props }) => <h2 className="text-2xl font-black tracking-tight mt-6 mb-3 text-foreground" {...props} />,
+                                    h3: ({ node, ...props }) => <h3 className="text-xl font-bold tracking-tight mt-4 mb-2 text-foreground" {...props} />,
+                                    p: ({ node, ...props }) => <p className="mb-4 last:mb-0" {...props} />,
+                                    ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-4 space-y-1" {...props} />,
+                                    ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-4 space-y-1" {...props} />,
+                                    li: ({ node, ...props }) => <li className="ml-4" {...props} />,
+                                    strong: ({ node, ...props }) => <strong className="font-black text-primary" {...props} />,
+                                    blockquote: ({ node, ...props }) => (
+                                        <blockquote className="border-l-4 border-primary pl-4 py-1 italic opacity-80 mb-4" {...props} />
+                                    ),
+                                }}
+                            >
+                                {day.reference_content}
+                            </ReactMarkdown>
                         </div>
                     </section>
 
@@ -134,6 +207,52 @@ export const DailyDetailView: React.FC<DailyDetailViewProps> = ({
                 </div>
 
                 <div className="space-y-8">
+                    {hasPracticeBlock && (
+                        <section className="bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] p-8 space-y-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3 text-emerald-500">
+                                    <div className="p-2 bg-emerald-500/10 rounded-xl">
+                                        <ExternalLink size={24} />
+                                    </div>
+                                    <h2 className="text-2xl font-black uppercase tracking-tight">Hands-on Practice</h2>
+                                </div>
+                            </div>
+                            <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                                Ready to apply what you've learned? Use the recommended practice resource below.
+                            </p>
+                            {day.practice_url && (
+                                <a
+                                    href={day.practice_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="bg-emerald-500 text-white rounded-2xl p-6 border border-emerald-500/20 flex items-center justify-between group cursor-pointer hover:bg-emerald-600 transition-all w-full shadow-lg shadow-emerald-500/20"
+                                >
+                                    <div className="flex items-center gap-4 min-w-0">
+                                        <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center text-white group-hover:scale-110 transition-transform flex-shrink-0">
+                                            <Play size={24} fill="currentColor" className="ml-1" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-extrabold uppercase tracking-widest text-sm">Start Practice</p>
+                                            <p className="text-xs text-white/80 font-bold truncate">{practiceSourceLabel}: {day.topic}</p>
+                                        </div>
+                                    </div>
+                                    <ArrowLeft className="rotate-180 text-white flex-shrink-0 ml-4" size={20} />
+                                </a>
+                            )}
+                            {!day.practice_url && day.practice_question?.question && (
+                                <div className="bg-background/70 border border-emerald-500/20 rounded-2xl p-5 space-y-3">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500/70">{practiceSourceLabel}</p>
+                                    <p className="font-bold leading-relaxed">{day.practice_question.question}</p>
+                                    {day.practice_question.hint && (
+                                        <p className="text-xs text-muted-foreground font-medium">
+                                            Hint: {day.practice_question.hint}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </section>
+                    )}
+
                     <section className="bg-green-500/5 border border-green-500/10 rounded-[2rem] p-8 space-y-6">
                         <div className="flex items-center gap-3 text-green-500">
                             <Lightbulb size={24} />
@@ -156,25 +275,6 @@ export const DailyDetailView: React.FC<DailyDetailViewProps> = ({
                             ))}
                         </div>
                     </section>
-
-                    <div className="sticky top-6">
-                        <button
-                            onClick={handleComplete}
-                            disabled={isCompleted}
-                            className={`w-full py-6 rounded-3xl font-black text-xl uppercase tracking-widest transition-all shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 ${isCompleted
-                                ? 'bg-green-500 text-white cursor-default shadow-green-500/20'
-                                : 'bg-primary text-primary-foreground shadow-primary/20 hover:shadow-primary/40'
-                                }`}
-                        >
-                            {isCompleted ? (
-                                <>
-                                    <CheckCircle2 size={24} /> COMPLETED
-                                </>
-                            ) : (
-                                "MARK AS DONE"
-                            )}
-                        </button>
-                    </div>
                 </div>
             </div>
 

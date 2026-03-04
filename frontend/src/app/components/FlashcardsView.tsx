@@ -11,11 +11,12 @@ interface Flashcard {
 interface FlashcardsViewProps {
     sessionId: string;
     language: string;
+    selectedSource?: string;
     isTeacher?: boolean;
     onBack: () => void;
 }
 
-export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, language, isTeacher = false, onBack }) => {
+export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, language, selectedSource = "", isTeacher = false, onBack }) => {
     const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -26,13 +27,21 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
     const [editSummary, setEditSummary] = useState('');
     const [aiPrompt, setAiPrompt] = useState('');
     const [isSaving, setIsSaving] = useState(false);
-
     useEffect(() => {
+        if (!selectedSource) {
+            return;
+        }
         const fetchFlashcards = async () => {
+            setLoading(true);
             try {
-                const res = await fetch(`http://localhost:8000/api/flashcards/${sessionId}?language=${language}`);
+                const query = new URLSearchParams({ language });
+                if (selectedSource) {
+                    query.set('source', selectedSource);
+                }
+                const res = await fetch(`http://localhost:8000/api/flashcards/${sessionId}?${query.toString()}`);
                 const data = await res.json();
                 setFlashcards(data);
+                setCurrentIndex(0);
             } catch (err) {
                 console.error("Failed to fetch flashcards", err);
                 toast.error("Failed to load flashcards");
@@ -42,7 +51,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
         };
 
         fetchFlashcards();
-    }, [sessionId]);
+    }, [sessionId, language, selectedSource]);
 
     const handleNext = async () => {
         if (currentIndex < flashcards.length - 1) {
@@ -91,7 +100,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                     session_id: sessionId,
                     language,
                     index: currentIndex,
-                    updated_card: { topic: editTopic, summary: editSummary }
+                    updated_card: { topic: editTopic, summary: editSummary },
+                    source: selectedSource || null
                 })
             });
             const result = await res.json();
@@ -120,7 +130,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                     session_id: sessionId,
                     language,
                     index: currentIndex,
-                    instruction: aiPrompt
+                    instruction: aiPrompt,
+                    source: selectedSource || null
                 })
             });
             const result = await res.json();
@@ -200,13 +211,19 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                                     <h2 className="text-4xl font-black tracking-tight">{currentCard.topic}</h2>
                                 </div>
                                 {isTeacher && !isEditing && (
-                                    <button
-                                        onClick={handleStartEdit}
-                                        className="p-3 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-colors"
-                                        title="Edit Flashcard"
-                                    >
-                                        <Sparkles size={20} />
-                                    </button>
+                                    <div className="flex flex-col items-end gap-1">
+                                        <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] opacity-60">AI EDIT</span>
+                                        <button
+                                            onClick={handleStartEdit}
+                                            className="group flex items-center gap-2 px-3 py-3 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-primary-foreground hover:px-5 transition-all duration-300 shadow-lg shadow-primary/5 hover:shadow-primary/20"
+                                            title="Edit Flashcard"
+                                        >
+                                            <Sparkles size={18} />
+                                            <span className="max-w-0 overflow-hidden whitespace-nowrap font-black text-xs uppercase tracking-widest group-hover:max-w-[60px] transition-all duration-500 ease-in-out">
+                                                Edit
+                                            </span>
+                                        </button>
+                                    </div>
                                 )}
                             </div>
 

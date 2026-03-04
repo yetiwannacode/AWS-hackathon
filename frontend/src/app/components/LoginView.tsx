@@ -28,6 +28,14 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showEmergencyLogin, setShowEmergencyLogin] = useState(false);
+
+    const AUTH_TIMEOUT_MS = 12000;
+    const API_BASE_CANDIDATES = Array.from(new Set([
+        API_BASE,
+        'http://localhost:8000',
+        'http://127.0.0.1:8000'
+    ]));
 
     const getPortalLabel = (role: Role, currentTrack: Track) => {
         if (role === 'teacher') return 'Teacher Portal';
@@ -39,6 +47,73 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
         setTrack(selectedTrack);
         setMode('login');
         setStep('auth');
+        setShowEmergencyLogin(false);
+    };
+
+    const fetchWithTimeout = async (url: string, options: RequestInit, timeoutMs: number) => {
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+        try {
+            return await fetch(url, { ...options, signal: controller.signal });
+        } finally {
+            window.clearTimeout(timeoutId);
+        }
+    };
+
+    const authRequestWithFallback = async (endpoint: string, payload: Record<string, any>) => {
+        let lastError: Error | null = null;
+
+        for (const base of API_BASE_CANDIDATES) {
+            for (let attempt = 0; attempt < 2; attempt++) {
+                try {
+                    const response = await fetchWithTimeout(`${base}${endpoint}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    }, AUTH_TIMEOUT_MS);
+
+                    const data = await response.json().catch(() => ({}));
+                    if (!response.ok) {
+                        const detail = data.detail || 'Authentication failed.';
+                        if (response.status >= 500 && attempt === 0) {
+                            continue;
+                        }
+                        throw new Error(detail);
+                    }
+
+                    return data;
+                } catch (error: any) {
+                    const errorName = error?.name || '';
+                    const timedOut = errorName === 'AbortError';
+                    const retryable = timedOut || /failed to fetch|networkerror/i.test(String(error?.message || ''));
+                    lastError = timedOut
+                        ? new Error('Login request timed out. Please check backend/server load.')
+                        : new Error(error?.message || 'Authentication failed.');
+
+                    if (retryable && attempt === 0) {
+                        continue;
+                    }
+                    if (!retryable) {
+                        throw lastError;
+                    }
+                }
+            }
+        }
+
+        throw lastError || new Error('Auth service is unreachable right now.');
+    };
+
+    const startEmergencySession = () => {
+        const roleLabel = selectedRole === 'teacher' ? 'Teacher' : 'Student';
+        const demoUser: AuthUser = {
+            name: `Emergency ${roleLabel}`,
+            email: '',
+            role: selectedRole,
+            track
+        };
+        const demoToken = `offline-demo::${selectedRole}::${track}::${Date.now()}`;
+        toast.warning('Backend auth is unreachable. Starting emergency offline session for demo.');
+        onLogin(demoUser, demoToken);
     };
 
     const handleAuth = async (e: React.FormEvent) => {
@@ -71,6 +146,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
         }
 
         setIsLoading(true);
+        setShowEmergencyLogin(false);
         try {
             const endpoint = mode === 'signup' ? '/api/auth/signup' : '/api/auth/login';
             const payload = mode === 'signup'
@@ -86,16 +162,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                     password
                 };
 
-            const response = await fetch(`${API_BASE}${endpoint}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.detail || 'Authentication failed.');
-            }
+            const data = await authRequestWithFallback(endpoint, payload);
 
             if (mode === 'login') {
                 const accountRole = data.user?.role as Role;
@@ -112,7 +179,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             toast.success(mode === 'signup' ? 'Signup successful!' : 'Login successful!');
             onLogin(data.user, data.token);
         } catch (error: any) {
-            toast.error(error.message || 'Authentication failed.');
+            const message = error?.message || 'Authentication failed.';
+            toast.error(message);
+            if (/unreachable|timed out|failed to fetch|network/i.test(message) && mode === 'login') {
+                setShowEmergencyLogin(true);
+            }
         } finally {
             setIsLoading(false);
         }
@@ -273,6 +344,15 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                                 >
                                     {isLoading ? 'Please wait...' : mode === 'signup' ? 'Create Account' : 'Login'}
                                 </button>
+                                {showEmergencyLogin && mode === 'login' && (
+                                    <button
+                                        type="button"
+                                        onClick={startEmergencySession}
+                                        className="w-full py-3 border border-amber-500/50 text-amber-600 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-amber-500/10 transition-colors"
+                                    >
+                                        Emergency Demo Login
+                                    </button>
+                                )}
                             </form>
                         </div>
                     )}

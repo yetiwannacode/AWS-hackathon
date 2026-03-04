@@ -1,6 +1,8 @@
 import os
 import json
-from typing import List, Dict
+import re
+import threading
+from typing import List, Dict, Optional
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -19,6 +21,8 @@ load_dotenv(override=True)
 CHROMA_PATH = "./chroma_db"
 LOCAL_EMBEDDINGS = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.3)
+_cache_locks: Dict[str, threading.Lock] = {}
+_cache_locks_guard = threading.Lock()
 
 @retry(
     stop=stop_after_attempt(5),
@@ -54,163 +58,208 @@ Rules for your response:
      - *Example (Telugu)*: "Neural Network అనేది ఒక కంప్యూటర్ సిస్టమ్..."
 """
 
-def generate_flashcards(session_id: str, language: str = "english"):
+def _normalize_source_name(source: Optional[str]) -> Optional[str]:
+    if not source:
+        return None
+    cleaned = os.path.basename(str(source)).strip()
+    return cleaned or None
+
+
+def _source_slug(source: str) -> str:
+    # Stable cache-safe slug per material filename.
+    return re.sub(r"[^a-zA-Z0-9._-]+", "_", source).strip("_").lower()[:120]
+
+
+def _flashcard_cache_path(session_id: str, language: str, source: Optional[str] = None) -> str:
+    source_name = _normalize_source_name(source)
+    if source_name:
+        cache_name = f"flashcards_v10_{language.lower()}_{_source_slug(source_name)}.json"
+    else:
+        cache_name = f"flashcards_v10_{language.lower()}_all.json"
+    return os.path.join("uploads", session_id, cache_name)
+
+
+def _get_cache_lock(cache_path: str) -> threading.Lock:
+    with _cache_locks_guard:
+        if cache_path not in _cache_locks:
+            _cache_locks[cache_path] = threading.Lock()
+        return _cache_locks[cache_path]
+
+
+def _read_cached_flashcards(cache_path: str) -> Optional[List[Dict[str, str]]]:
+    if not os.path.exists(cache_path):
+        return None
+    try:
+        with open(cache_path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+        cards = payload.get("flashcards", [])
+        return cards if isinstance(cards, list) else []
+    except Exception as e:
+        print(f"Cache read failed: {e}")
+        return None
+
+
+def _write_cache_atomic(cache_path: str, data: Dict[str, object]) -> None:
+    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+    tmp_path = f"{cache_path}.tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    os.replace(tmp_path, cache_path)
+
+
+def generate_flashcards(session_id: str, language: str = "english", source: Optional[str] = None):
     """
     Generates topic-wise revision summaries from the ingested materials of a session.
     """
-    cache_name = f"flashcards_v9_{language.lower()}.json"
-    flashcard_cache_path = os.path.join("uploads", session_id, cache_name)
-    
-    # Check if already generated for this language
-    if os.path.exists(flashcard_cache_path):
+    source_name = _normalize_source_name(source)
+    flashcard_cache_path = _flashcard_cache_path(session_id, language, source_name)
+    cache_lock = _get_cache_lock(flashcard_cache_path)
+
+    cached = _read_cached_flashcards(flashcard_cache_path)
+    if cached is not None:
+        return cached
+
+    with cache_lock:
+        cached = _read_cached_flashcards(flashcard_cache_path)
+        if cached is not None:
+            return cached
+
+        db = Chroma(
+            persist_directory=CHROMA_PATH,
+            embedding_function=LOCAL_EMBEDDINGS,
+            collection_name="hackathon_collection"
+        )
+
+        print(f"Retrieving material for {language} flashcards in session: {session_id}, source={source_name or 'ALL'}")
+        where_filter = {"session_id": session_id}
+        if source_name:
+            where_filter = {"$and": [{"session_id": session_id}, {"source": source_name}]}
+
+        results = db.get(where=where_filter, include=["documents"])
+        docs = results.get("documents", [])
+        if not docs:
+            return []
+
+        full_context = "\n\n".join(docs[:40])
+
+        script_note = ""
+        if language.lower() == "hindi":
+            script_note = "STRICT: Use Devanagari script for explanations."
+        elif language.lower() == "telugu":
+            script_note = "STRICT: Use Telugu script only. Do not use English alphabets for Telugu sentences."
+
+        lang_instruction = f"Output language: {language}. {script_note} Remember: technical terms in English, explanations in native {language} script."
+        prompt = f"Extract topics and generate revision flashcards from this text:\n\n{full_context}\n\n{lang_instruction}"
+
+        messages = [
+            SystemMessage(content=FLASHCARD_SYSTEM_PROMPT),
+            HumanMessage(content=prompt)
+        ]
+
+        response = generate_ai_response(messages)
+
         try:
-            with open(flashcard_cache_path, "r", encoding="utf-8") as f:
-                return json.load(f)["flashcards"]
+            clean_content = response.content.replace('```json', '').replace('```', '').strip()
+            data = json.loads(clean_content)
+            if not isinstance(data, dict):
+                raise ValueError("Invalid flashcard payload.")
+            if not isinstance(data.get("flashcards"), list):
+                data["flashcards"] = []
+            _write_cache_atomic(flashcard_cache_path, data)
+            return data.get("flashcards", [])
         except Exception as e:
-            print(f"⚠️ Error reading flashcard cache: {e}")
+            print(f"Failed to parse {language} flashcard JSON: {e}")
+            print(f"RAW CONTENT: {response.content}")
+            return []
 
-    # 1. Connect to DB
-    db = Chroma(
-        persist_directory=CHROMA_PATH,
-        embedding_function=LOCAL_EMBEDDINGS,
-        collection_name="hackathon_collection"
-    )
-
-    # 2. Retrieve all unique chunks for this session
-    print(f"🔍 Retrieving material for {language} flashcards in session: {session_id}")
-    results = db.get(
-        where={"session_id": session_id},
-        include=["documents"]
-    )
-    
-    docs = results.get("documents", [])
-    if not docs:
-        print(f"⚠️ No documents found for session {session_id}")
-        return []
-
-    # Combine docs (Increase limit to cover more material)
-    full_context = "\n\n".join(docs[:40]) 
-
-    # 3. Generate with AI
-    script_note = ""
-    if language.lower() == "hindi":
-        script_note = "STRICT: Use Devanagari script (हिन्दी) for explanations."
-    elif language.lower() == "telugu":
-        script_note = "STRICT: Use Telugu script (తెలుగు) ONLY. DO NOT USE ENGLISH ALPHABETS FOR TELUGU SENTENCES."
-        
-    lang_instruction = f"Output language: {language}. {script_note} Remember: technical terms in English, explanations in native {language} script."
-    prompt = f"Extract topics and generate revision flashcards from this text:\n\n{full_context}\n\n{lang_instruction}"
-    
-    messages = [
-        SystemMessage(content=FLASHCARD_SYSTEM_PROMPT),
-        HumanMessage(content=prompt)
-    ]
-
-    print(f"🪄 Generating {language} flashcards via AI for session {session_id}...")
-    response = generate_ai_response(messages)
-    
-    try:
-        # Clean response if AI adds markdown
-        clean_content = response.content.replace('```json', '').replace('```', '').strip()
-        data = json.loads(clean_content)
-        
-        # Cache for future use
-        os.makedirs(os.path.dirname(flashcard_cache_path), exist_ok=True)
-        with open(flashcard_cache_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-            
-        return data.get("flashcards", [])
-    except Exception as e:
-        print(f"❌ Failed to parse {language} flashcard JSON: {e}")
-        print(f"RAW CONTENT: {response.content}")
-        return []
-
-def update_flashcard_manual(session_id: str, language: str, index: int, updated_card: Dict[str, str]):
+def update_flashcard_manual(session_id: str, language: str, index: int, updated_card: Dict[str, str], source: Optional[str] = None):
     """
     Manually updates a specific flashcard in the cache.
     """
-    cache_name = f"flashcards_v9_{language.lower()}.json"
-    flashcard_cache_path = os.path.join("uploads", session_id, cache_name)
-    
+    flashcard_cache_path = _flashcard_cache_path(session_id, language, source)
+    cache_lock = _get_cache_lock(flashcard_cache_path)
+
     if not os.path.exists(flashcard_cache_path):
         return {"error": "Flashcard cache not found"}
-        
+
     try:
-        with open(flashcard_cache_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            
-        if 0 <= index < len(data["flashcards"]):
-            data["flashcards"][index] = updated_card
-            
-            with open(flashcard_cache_path, "w", encoding="utf-8") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-            return {"success": True, "flashcards": data["flashcards"]}
-        else:
+        with cache_lock:
+            with open(flashcard_cache_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            if 0 <= index < len(data["flashcards"]):
+                data["flashcards"][index] = updated_card
+                _write_cache_atomic(flashcard_cache_path, data)
+                return {"success": True, "flashcards": data["flashcards"]}
             return {"error": "Invalid flashcard index"}
     except Exception as e:
-        print(f"❌ Error updating flashcard: {e}")
+        print(f"Error updating flashcard: {e}")
         return {"error": str(e)}
 
-def refine_flashcard_with_ai(session_id: str, language: str, index: int, user_instruction: str):
+def refine_flashcard_with_ai(
+    session_id: str,
+    language: str,
+    index: int,
+    user_instruction: str,
+    source: Optional[str] = None
+):
     """
     Refines a specific flashcard using AI based on teacher instructions.
     """
-    cache_name = f"flashcards_v9_{language.lower()}.json"
-    flashcard_cache_path = os.path.join("uploads", session_id, cache_name)
-    
+    flashcard_cache_path = _flashcard_cache_path(session_id, language, source)
+    cache_lock = _get_cache_lock(flashcard_cache_path)
+
     if not os.path.exists(flashcard_cache_path):
         return {"error": "Flashcard cache not found"}
-        
+
     try:
-        with open(flashcard_cache_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            
-        if not (0 <= index < len(data["flashcards"])):
-            return {"error": "Invalid flashcard index"}
-            
-        current_card = data["flashcards"][index]
-        
-        # Build prompt for refinement
-        refinement_prompt = f"""
-        You are refining a specific revision flashcard based on a teacher's instruction.
-        
-        Current Flashcard:
-        Topic: {current_card['topic']}
-        Summary: {current_card['summary']}
-        
-        Teacher's Instruction for refinement: "{user_instruction}"
-        
-        Rules:
-        1. Maintain the JSON format: {{"topic": "...", "summary": "..."}}
-        2. Keep the summary concise (max 120 words).
-        3. Use the requested language: {language}.
-        4. Return ONLY the JSON object for this single refined card.
-        """
-        
-        messages = [
-            SystemMessage(content="You are an expert tutor refining educational content."),
-            HumanMessage(content=refinement_prompt)
-        ]
-        
-        print(f"🪄 Refining flashcard {index} via AI for session {session_id}...")
-        response = generate_ai_response(messages)
-        
-        # Parse refined card
-        clean_content = response.content.replace('```json', '').replace('```', '').strip()
-        refined_card = json.loads(clean_content)
-        
-        # Update and save
-        data["flashcards"][index] = refined_card
-        with open(flashcard_cache_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-            
-        return {"success": True, "refined_card": refined_card, "flashcards": data["flashcards"]}
-        
+        with cache_lock:
+            with open(flashcard_cache_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            if not (0 <= index < len(data["flashcards"])):
+                return {"error": "Invalid flashcard index"}
+
+            current_card = data["flashcards"][index]
+
+            refinement_prompt = f"""
+            You are refining a specific revision flashcard based on a teacher's instruction.
+
+            Current Flashcard:
+            Topic: {current_card['topic']}
+            Summary: {current_card['summary']}
+
+            Teacher's Instruction for refinement: "{user_instruction}"
+
+            Rules:
+            1. Maintain the JSON format: {{"topic": "...", "summary": "..."}}
+            2. Keep the summary concise (max 120 words).
+            3. Use the requested language: {language}.
+            4. Return ONLY the JSON object for this single refined card.
+            """
+
+            messages = [
+                SystemMessage(content="You are an expert tutor refining educational content."),
+                HumanMessage(content=refinement_prompt)
+            ]
+
+            response = generate_ai_response(messages)
+            clean_content = response.content.replace('```json', '').replace('```', '').strip()
+            refined_card = json.loads(clean_content)
+
+            data["flashcards"][index] = refined_card
+            _write_cache_atomic(flashcard_cache_path, data)
+
+            return {"success": True, "refined_card": refined_card, "flashcards": data["flashcards"]}
+
     except Exception as e:
-        print(f"❌ Error refining flashcard with AI: {e}")
+        print(f"Error refining flashcard with AI: {e}")
         return {"error": str(e)}
 
 if __name__ == "__main__":
     # Test logic
     # print(generate_flashcards("test_session"))
     pass
+
+
+

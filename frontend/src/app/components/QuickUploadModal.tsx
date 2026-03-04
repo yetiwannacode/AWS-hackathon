@@ -42,7 +42,7 @@ export const QuickUploadModal: React.FC<QuickUploadModalProps> = ({
 
         setIsUploading(true);
         const formData = new FormData();
-        formData.append('file', selectedFile);
+        formData.append('files', selectedFile);
 
         try {
             toast.loading('Processing document...', { id: 'quick-upload' });
