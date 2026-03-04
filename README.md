@@ -1,109 +1,196 @@
-# C.O.T.E.ai 🎓🤖
+# C.O.T.E.ai (Study Assistant Bot)
 
-**C.O.T.E.ai** stands for Context optimized training and excecution. It is an AI-powered classroom platform designed to maximize student potential and streamline teacher workflows. It provides a high-fidelity, intelligent environment where educational materials transform into interactive learning experiences.
+This repository contains a production-style AI learning platform with two tracks:
 
-## 🚀 Vision
-C.O.T.E.ai bridges the gap between traditional teaching and personal AI tutoring, providing teachers with powerful management tools and students with dynamic, adaptive learning materials.
+- `institution`: teacher/student classroom workflows
+- `individual`: personal AI roadmap workflows
 
-## ✨ Features
+This README reflects the current codebase state as of March 4, 2026.
 
-### 👨‍🏫 Teacher Portal
-- **Material Management**: Seamlessly upload and organize educational PDFs for your classes.
-- **Performance Overview**: Track student progress and performance metrics at a glance.
-- **Classroom Insights**: View and manage the list of students present in your virtual classroom.
+## What is implemented
 
-### 🎓 Student Portal
-- **Live Document Summaries**: Instant access to key takeaways from uploaded materials.
-- **Summarized Flashcards**: Personalized cards generated for "last-second revision" and efficient active recall.
-- **Gamified Assessment System**: 
-  - Three progressive difficulty levels (Recall, Apply, Create) with XP-based rewards
-  - Real-time feedback with instant XP notifications (+10 XP for correct answers)
-  - Automated transitions between questions for seamless testing experience
-  - Detailed post-assessment analytics showing correct answers, mistakes, and total XP earned
-- **Mistakes Repository**: 
-  - Comprehensive tracking of all incorrect answers across assessments
-  - AI-generated explanations for each mistake
-  - Personal comment/note system for self-reflection and learning
-  - Global mistakes view aggregating errors from all classroom sessions
-- **Live Progress Dashboard**: Track your XP growth, weekly improvement metrics, and review recent mistakes
-- **Multi-language Support**: Flashcards and AI revision available in **English, Hindi, Telugu, and Hinglish**.
-- **C.O.T.E.ai Doubt Assistant**: A premium, glassmorphism-styled floating chatbot for instant doubt clarification using RAG.
+### Authentication and user model
+- Username/password auth with token sessions
+- Roles: `teacher`, `student`
+- Tracks: `institution`, `individual`
+- Persistent auth/user data in `data/users.json` and `data/auth_sessions.json`
 
-### 👤 Individual Learner Section
-- **Personalized Roadmaps**: AI-generated learning paths based on your specific goals and timeline.
-- **Daily Learning Objectives**: Day-by-day breakdown of topics with integrated YouTube resources.
-- **In-depth Reference Material**: Rich, comprehensive learning content provided for every day of the roadmap.
-- **Progress Tracking**: Holistic view of roadmap completion and quiz performance.
+### Institution track
+- Teacher classroom creation with enrollment code
+- Student classroom join via 5-character code
+- PDF material upload/delete per classroom
+- Background ingestion of uploaded PDFs into Chroma vector DB
+- Doubt assistant (`/ask`) grounded in classroom materials
+- Topic flashcards with language support and cache
+- 3-level assessment path (recall, application, creation), XP, mistakes, remedial cooldown
+- Teacher analytics and teacher assessment preview
+- Teacher review ingestion (`/teacher_review`, `/upload_review`) to refine assistant behavior
 
-### 🛠️ Personalization & RAG Refinement
-- **Teacher Review Documents**: Teachers can upload supplementary notes or feedback to refine the AI's understanding of specific student gaps.
-- **Dynamic Context Injection**: AI responses are grounded in both core materials and personalized teacher guidance.
+### Individual track
+- AI-generated roadmaps with day/week structure
+- Week 1 includes deep content; later weeks are outline-first and can be expanded on demand
+- Day-level progress tracking
+- Week content generation endpoint for deferred deep content
+- Coding roadmap normalization for YouTube/practice resources
+- New rule: engineering/developer-productivity roadmaps set the final day to interview prep with 30 relevant interview questions
 
-## 🏗️ Project Structure
+## Tech stack
+
+- Frontend: React 18, TypeScript, Vite, Tailwind CSS 4, MUI, Radix UI, Framer Motion
+- Backend: FastAPI, Pydantic, SQLite (app metadata), JSON persistence for auth/progress caches
+- AI and RAG:
+  - Google Gemini (`gemini-2.0-flash`)
+  - LangChain
+  - ChromaDB
+  - HuggingFace embeddings (`sentence-transformers/all-MiniLM-L6-v2`)
+- PDF parsing: `unstructured[pdf]`, `poppler`, `tesseract`
+- Optional cloud storage: AWS S3 (via `boto3`)
+
+## Repository layout
 
 ```text
 .
-├── frontend/             # Vite + React (TypeScript + Tailwind CSS 4)
-│   ├── src/app/          # Core layout and role selection
-│   ├── src/components/   # Navbar, Sidebar, Chatbot, etc.
-│   └── src/styles/       # Design system and theme configuration
-├── main.py               # Main FastAPI entry point and API routes
-├── ingestion_pipeline.py  # Advanced PDF processing and ingestion
-├── retrieval_service.py   # RAG-based query engine using Gemini 2.0 Flash
-├── roadmap_service.py     # AI Roadmap generation and management
-├── assessment_service.py  # Gamified quiz engine and state management
-├── flashcard_service.py   # Multi-language flashcard generation
-├── data/                  # Persistent data storage (roadmaps, assessments, progress)
-├── chroma_db/            # Vector database for high-speed retrieval
-└── uploads/              # Storage for classroom materials and teacher reviews
+|- frontend/                 # React app (UI for institution + individual tracks)
+|- main.py                  # FastAPI app and all route wiring
+|- ingestion_pipeline.py    # PDF ingestion + chunking + vector upsert
+|- retrieval_service.py     # Doubt assistant retrieval and answer generation
+|- assessment_service.py    # Assessment generation, XP, mistakes, remedial logic
+|- flashcard_service.py     # Flashcard generation/edit/refine pipeline
+|- roadmap_service.py       # Roadmap generation, week expansion, progress
+|- topic_mapper.py          # Topic grouping helper
+|- data/                    # Runtime data (users, sessions, progress, roadmaps, assessments)
+|- uploads/                 # Uploaded classroom files and teacher review artifacts
+|- chroma_db/               # Vector store persistence
+|- Dockerfile               # Backend container image
 ```
 
-## 🚀 Getting Started
+## Prerequisites
 
-### Prerequisites
-- Python 3.9+
+- Python 3.10+ (3.11 recommended)
 - Node.js 20+
-- Google Gemini API Key
+- Google API key for Gemini
 
-### Setting up the Backend
-1. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Windows: .\venv\Scripts\activate
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Set up your `.env` file:
-   ```text
-   GOOGLE_API_KEY=your_gemini_api_key_here
-   ```
-4. Start the API:
-   ```bash
-   uvicorn main:app --reload
-   ```
+For local PDF parsing, ensure system deps are available:
+- `poppler-utils`
+- `tesseract-ocr`
 
-### Setting up the Frontend
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Run the development server:
-   ```bash
-   npm run dev
-   ```
+(`Dockerfile` already installs these for containerized backend runs.)
 
-## 🛠️ Tech Stack
+## Environment variables
 
-- **Frontend**: React, TypeScript, Vite, Tailwind CSS 4, Lucide React, Framer Motion.
-- **Backend**: FastAPI, LangChain, ChromaDB, Hugging-face embeddings.
-- **AI Engine**: **Google Gemini 2.0 Flash** (Model of choice for speed and reasoning).
+Create `.env` in project root:
 
-## 📄 License
-MIT License
+```env
+GOOGLE_API_KEY=your_google_api_key
+
+# Optional
+CORS_ORIGINS=*                       # or comma-separated origins
+AWS_REGION=ap-southeast-2
+S3_BUCKET_NAME=your_bucket_name      # if using S3 upload backup
+```
+
+## Local setup
+
+### 1. Backend
+
+```bash
+python -m venv venv
+source venv/bin/activate   # Windows: .\venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+Backend runs at `http://localhost:8000` by default.
+
+### 2. Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend runs at `http://localhost:5173` by default.
+
+Optional frontend env (`frontend/.env`):
+
+```env
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+## Docker (backend)
+
+```bash
+docker build -t study-assistant-bot .
+docker run --rm -p 8000:8000 --env-file .env study-assistant-bot
+```
+
+## API overview
+
+Main groups currently exposed in `main.py`:
+
+- Health and status:
+  - `GET /`
+  - `GET /health`
+- Auth:
+  - `POST /api/auth/signup`
+  - `POST /api/auth/login`
+  - `GET /api/auth/me`
+  - `POST /api/auth/logout`
+- Doubt assistant and ingestion:
+  - `POST /ask`
+  - `POST /upload`
+- Classrooms:
+  - `GET /api/classrooms/mine`
+  - `POST /api/classrooms`
+  - `POST /api/classrooms/join`
+  - `DELETE /api/classrooms/{classroom_id}/materials/{material_id}`
+  - `GET /api/classrooms/{classroom_id}/people`
+  - `GET /api/classrooms`
+- Assessments and progress:
+  - `POST /api/assessment/generate`
+  - `POST /api/assessment/submit`
+  - `GET /api/mistakes/{session_id}`
+  - `POST /api/mistakes/comment`
+  - `GET /api/progress/{session_id}`
+  - `POST /api/add_xp`
+  - `POST /api/spend_xp`
+  - `POST /api/remedial/complete`
+  - `GET /api/teacher/analytics/{session_id}`
+  - `GET /api/teacher/assessments/{session_id}`
+- Flashcards:
+  - `GET /api/flashcards/{session_id}`
+  - `POST /api/flashcards/update`
+  - `POST /api/flashcards/ai-edit`
+- Roadmaps:
+  - `POST /api/roadmap/generate`
+  - `GET /api/roadmaps/{session_id}`
+  - `GET /api/roadmap/{roadmap_id}`
+  - `POST /api/roadmap/{roadmap_id}/complete_day`
+  - `POST /api/roadmap/{roadmap_id}/generate_week`
+- Teacher review:
+  - `POST /teacher_review`
+  - `POST /upload_review`
+
+Use `http://localhost:8000/docs` for live OpenAPI docs.
+
+## Roadmap behavior notes
+
+- Full outline is generated for requested duration.
+- Deep content is generated for week 1 initially.
+- Future weeks can be expanded via `generate_week`.
+- Coding topics auto-normalize practice sources (`HackerRank`/`LeetCode`) and YouTube fallback links.
+- For engineering/developer-productivity prompts, final roadmap day is forced to interview-only content with 30 relevant interview questions.
+
+## Data and persistence
+
+- Classroom metadata: SQLite (`data/app.db`)
+- Auth/progress/session state: JSON files under `data/`
+- Uploaded files: `uploads/{session_id}/`
+- Embeddings and vectors: `chroma_db/`
+
+For clean local resets, stop services and remove `data/`, `uploads/`, and `chroma_db/` carefully.
+
+## License
+
 MIT License

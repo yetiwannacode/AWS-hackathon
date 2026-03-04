@@ -40,6 +40,13 @@ CODING_KEYWORDS = [
     "machine learning", "data science", "computer science", "web development"
 ]
 
+ENGINEERING_PRODUCTIVITY_KEYWORDS = [
+    "engineering", "software engineering", "developer productivity", "productivity",
+    "dev productivity", "engineering productivity", "devops", "ci/cd", "ci cd",
+    "system design", "microservices", "backend", "frontend", "full stack",
+    "architecture", "clean code", "code review", "testing", "debugging"
+]
+
 HACKERRANK_TOPIC_URLS = {
     "python": "https://www.hackerrank.com/domains/python",
     "sql": "https://www.hackerrank.com/domains/sql",
@@ -253,6 +260,155 @@ def _normalize_roadmap_practice_fields(roadmap_data: Dict[str, Any]) -> None:
             _normalize_day_youtube_fields(roadmap_title, day)
             _normalize_day_practice_fields(roadmap_title, day)
 
+
+def _is_engineering_productivity_request(prompt: str, roadmap_data: Dict[str, Any]) -> bool:
+    combined = _normalize_text(
+        prompt,
+        roadmap_data.get("title", ""),
+        roadmap_data.get("description", "")
+    )
+    return _contains_any(combined, CODING_KEYWORDS) or _contains_any(combined, ENGINEERING_PRODUCTIVITY_KEYWORDS)
+
+
+def _extract_all_days(roadmap_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    days: List[Dict[str, Any]] = []
+    for week in roadmap_data.get("weeks", []) or []:
+        for day in week.get("days", []) or []:
+            if isinstance(day, dict):
+                days.append(day)
+    return days
+
+
+def _build_default_interview_questions(topic: str) -> List[Dict[str, str]]:
+    prompts = [
+        "How would you explain the core concepts of {topic} to a junior engineer?",
+        "What are the most common mistakes teams make when implementing {topic}?",
+        "Which trade-offs matter most when designing a solution using {topic}?",
+        "How do you evaluate whether a {topic} solution is scalable?",
+        "What metrics would you track to measure success for {topic} in production?",
+        "How would you debug a production issue related to {topic}?",
+        "What are the security concerns to keep in mind with {topic}?",
+        "How do you test systems built around {topic}?",
+        "How would you optimize performance in a system that uses {topic} heavily?",
+        "When would you avoid using {topic}, and why?",
+        "How does {topic} affect developer productivity in a team environment?",
+        "How would you roll out a major change involving {topic} safely?",
+        "What failure modes should you anticipate with {topic}?",
+        "How would you design observability for a platform centered on {topic}?",
+        "How do you reason about reliability and availability in {topic}-driven systems?",
+        "How would you mentor a new hire to become productive with {topic}?",
+        "What design patterns are commonly used with {topic}, and when?",
+        "How would you estimate effort for a project focused on {topic}?",
+        "How do you balance short-term delivery and long-term maintainability in {topic}?",
+        "Which code review checks are most important for {topic}-related changes?",
+        "How would you design an interview problem to assess knowledge of {topic}?",
+        "What are practical ways to improve team workflow using {topic}?",
+        "How do you handle technical debt around {topic}?",
+        "How do you ensure documentation quality for {topic}-centric systems?",
+        "How would you benchmark two approaches to {topic} objectively?",
+        "What anti-patterns have you seen in {topic} implementations?",
+        "How do architectural decisions influence the success of {topic} adoption?",
+        "How would you communicate complex {topic} decisions to non-technical stakeholders?",
+        "How do you choose tools and libraries for {topic} in a new project?",
+        "What advanced interview question about {topic} do you find most revealing, and why?"
+    ]
+    return [{"question": p.format(topic=topic), "type": "interview", "hint": "Focus on practical trade-offs and real-world examples."} for p in prompts]
+
+
+def _generate_interview_questions(topic: str, user_prompt: str) -> List[Dict[str, str]]:
+    interview_prompt = f"""Generate exactly 30 software engineering interview questions in strict JSON.
+
+Topic: {topic}
+User goal: {user_prompt}
+
+Output format:
+{{
+  "questions": [
+    {{"question": "question text", "type": "interview", "hint": "short guidance"}}
+  ]
+}}
+
+Rules:
+- Return exactly 30 unique, highly repeated and relevant interview questions for the topic.
+- Keep each question concise and interview-ready.
+- Keep hints short (one sentence).
+- `type` must always be `interview`.
+- Return only JSON with the top-level key `questions`.
+"""
+    try:
+        response = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=interview_prompt
+        )
+        text = (response.text or "").strip()
+        if text.startswith("```json"):
+            text = text[7:]
+        if text.endswith("```"):
+            text = text[:-3]
+        parsed = json.loads(repair_json(text))
+        raw_questions = parsed.get("questions", []) if isinstance(parsed, dict) else []
+        normalized: List[Dict[str, str]] = []
+        seen = set()
+        for entry in raw_questions:
+            q = (entry or {}).get("question", "").strip()
+            if not q:
+                continue
+            key = q.lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            hint = (entry or {}).get("hint", "").strip() or "Explain using a practical, production-oriented example."
+            normalized.append({"question": q, "type": "interview", "hint": hint})
+            if len(normalized) == 30:
+                break
+
+        if len(normalized) < 30:
+            fallback = _build_default_interview_questions(topic)
+            for item in fallback:
+                key = item["question"].strip().lower()
+                if key in seen:
+                    continue
+                seen.add(key)
+                normalized.append(item)
+                if len(normalized) == 30:
+                    break
+        return normalized[:30]
+    except Exception as err:
+        print(f"⚠️ Interview question generation failed, using fallback list: {err}")
+        return _build_default_interview_questions(topic)
+
+
+def _apply_engineering_interview_last_day_rule(roadmap_data: Dict[str, Any], user_prompt: str) -> None:
+    if not _is_engineering_productivity_request(user_prompt, roadmap_data):
+        return
+
+    all_days = _extract_all_days(roadmap_data)
+    if not all_days:
+        return
+
+    last_day = max(all_days, key=lambda d: int(d.get("day_number", 0)))
+    topic = roadmap_data.get("title") or user_prompt or "Software Engineering"
+    interview_questions = _generate_interview_questions(topic, user_prompt)
+
+    last_day["topic"] = f"{topic} - Interview Questions"
+    last_day["learning_objectives"] = [
+        "Practice high-frequency interview questions",
+        "Strengthen explanation depth and trade-off reasoning",
+        "Build confidence for real interview rounds"
+    ]
+    last_day["youtube_video_title"] = ""
+    last_day["youtube_video_url"] = ""
+    last_day["youtube_search_term"] = ""
+    last_day["youtube_fallback_url"] = ""
+    last_day["practice_source"] = "ai_generated"
+    last_day["practice_url"] = ""
+    last_day["practice_question"] = None
+    last_day["reference_content"] = (
+        "Interview-only day. Focus on solving and explaining the 30 questions below. "
+        "Practice concise answers, trade-offs, and production examples."
+    )
+    last_day["questions"] = interview_questions
+
 def generate_roadmap(prompt: str, session_id: str) -> Dict[str, Any]:
     """
     Generates a structured learning roadmap from a user prompt.
@@ -347,6 +503,7 @@ def generate_roadmap(prompt: str, session_id: str) -> Dict[str, Any]:
             # Let json_repair handle it directly, returning a Python object
             roadmap_data = json.loads(repair_json(text))
             _normalize_roadmap_practice_fields(roadmap_data)
+            _apply_engineering_interview_last_day_rule(roadmap_data, prompt)
         except Exception as parse_err:
             print(f"❌ Critical JSON parsing failure even after repair: {parse_err}")
             print(f"Raw text generated: {text}")
