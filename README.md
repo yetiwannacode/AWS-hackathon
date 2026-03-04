@@ -1,4 +1,4 @@
-# C.O.T.E.ai (Study Assistant Bot)
+# C.O.T.E.ai (Concept Oriented Training and Exectuion ai)
 
 This repository contains a production-style AI learning platform with two tracks:
 
