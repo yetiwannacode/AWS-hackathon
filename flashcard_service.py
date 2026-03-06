@@ -3,10 +3,9 @@ import json
 import re
 import threading
 from typing import List, Dict, Optional
-from langchain_google_genai import ChatGoogleGenerativeAI
+from bedrock_utils import invoke_bedrock_text
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_core.messages import HumanMessage, SystemMessage
 from tenacity import (
     retry,
     stop_after_attempt,
@@ -20,19 +19,23 @@ load_dotenv(override=True)
 # --- CONFIG ---
 CHROMA_PATH = "./chroma_db"
 LOCAL_EMBEDDINGS = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.3)
 _cache_locks: Dict[str, threading.Lock] = {}
 _cache_locks_guard = threading.Lock()
 
+class BedrockResponse:
+    def __init__(self, content: str):
+        self.content = content
+        
 @retry(
     stop=stop_after_attempt(5),
     wait=wait_exponential(multiplier=1, min=2, max=10),
     retry=retry_if_exception_type(Exception),
     before_sleep=lambda retry_state: print(f"⚠️ API Limit hit (Flashcards). Retrying in {retry_state.next_action.sleep} seconds...")
 )
-def generate_ai_response(messages):
+def generate_ai_response(prompt: str):
     try:
-        return llm.invoke(messages)
+        content= invoke_bedrock_text(prompt, temperature=0.3, max_tokens=2500).strip()
+        return BedrockResponse(content)
     except Exception as e:
         print(f"DEBUG: API call failed with error: {str(e)}")
         raise e
@@ -151,16 +154,21 @@ def generate_flashcards(session_id: str, language: str = "english", source: Opti
         lang_instruction = f"Output language: {language}. {script_note} Remember: technical terms in English, explanations in native {language} script."
         prompt = f"Extract topics and generate revision flashcards from this text:\n\n{full_context}\n\n{lang_instruction}"
 
-        messages = [
-            SystemMessage(content=FLASHCARD_SYSTEM_PROMPT),
-            HumanMessage(content=prompt)
-        ]
-
-        response = generate_ai_response(messages)
+        full_prompt = f"{FLASHCARD_SYSTEM_PROMPT}\n\n{prompt}"
+        response = generate_ai_response(full_prompt)
 
         try:
-            clean_content = response.content.replace('```json', '').replace('```', '').strip()
-            data = json.loads(clean_content)
+            clean_content = response.content.replace("```json", "").replace("```", "").strip()
+            try:
+                data = json.loads(clean_content)
+            except json.JSONDecodeError:
+                start = clean_content.find("{")
+                end = clean_content.rfind("}")
+                if start != -1 and end != -1:
+                    data = json.loads(clean_content[start:end+1])
+                else:
+                    raise
+                    
             if not isinstance(data, dict):
                 raise ValueError("Invalid flashcard payload.")
             if not isinstance(data.get("flashcards"), list):
@@ -238,14 +246,21 @@ def refine_flashcard_with_ai(
             4. Return ONLY the JSON object for this single refined card.
             """
 
-            messages = [
-                SystemMessage(content="You are an expert tutor refining educational content."),
-                HumanMessage(content=refinement_prompt)
-            ]
-
-            response = generate_ai_response(messages)
-            clean_content = response.content.replace('```json', '').replace('```', '').strip()
-            refined_card = json.loads(clean_content)
+            full_prompt = (
+                "You are an expert tutor refining educational content.\n\n"
+                f"{refinement_prompt}"
+            )
+            response = generate_ai_response(full_prompt)
+            clean_content = response.content.replace("```json", "").replace("```", "").strip()
+            try:
+                refined_card = json.loads(clean_content)
+            except json.JSONDecodeError:
+                start = clean_content.find("{")
+                end = clean_content.rfind("}")
+                if start != -1 and end != -1:
+                    refined_card = json.loads(clean_content[start:end+1])
+                else:
+                    raise
 
             data["flashcards"][index] = refined_card
             _write_cache_atomic(flashcard_cache_path, data)
