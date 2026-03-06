@@ -9,19 +9,10 @@ from urllib.request import urlopen
 from urllib.error import URLError, HTTPError
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-from google import genai
-from google.genai import types
+from bedrock_utils import invoke_bedrock_text
 from dotenv import load_dotenv
 
 load_dotenv()
-
-# Configure Gemini
-api_key = os.getenv("GOOGLE_API_KEY")
-if not api_key:
-    # Fallback to a placeholder or raise error in production
-    print("Warning: GOOGLE_API_KEY not found in .env")
-
-client = genai.Client(api_key=api_key)
 
 ROADMAPS_DIR = os.path.join("data", "roadmaps")
 os.makedirs(ROADMAPS_DIR, exist_ok=True)
@@ -336,16 +327,12 @@ Rules:
 - Return only JSON with the top-level key `questions`.
 """
     try:
-        response = client.models.generate_content(
-            model='gemini-2.0-flash',
-            contents=interview_prompt
-        )
-        text = (response.text or "").strip()
+        text = invoke_bedrock_text(interview_prompt, temperature= 0.2, max_tokens=3000).strip()
         if text.startswith("```json"):
             text = text[7:]
         if text.endswith("```"):
             text = text[:-3]
-        parsed = json.loads(repair_json(text))
+        parsed = json.loads(repair_json(text.strip()))
         raw_questions = parsed.get("questions", []) if isinstance(parsed, dict) else []
         normalized: List[Dict[str, str]] = []
         seen = set()
@@ -481,21 +468,20 @@ def generate_roadmap(prompt: str, session_id: str) -> Dict[str, Any]:
     
     print(f"🚀 Generating roadmap for prompt: {prompt}")
     try:
-        response = client.models.generate_content(
-            model='gemini-2.0-flash',
-            contents=f"{system_prompt}\n\nUser Goal: {prompt}",
-            config=types.GenerateContentConfig(
-                tools=[types.Tool(google_search=types.GoogleSearch())]
-            )
-        )
+        full_prompt= f"{system_prompt}\n\nUser Goal: {prompt}"
+        text= invoke_bedrock_text(full_prompt, temperature=0.3, max_tokens=7000).strip()
         
         # Clean up the response text - remove markdown code blocks if necessary
-        text = response.text.strip()
         if text.startswith("```json"):
             text = text[7:]
         if text.endswith("```"):
             text = text[:-3]
         text = text.strip()
+        if not text.startswith("{"):
+            start = text.find("{")
+            end = text.rfind("}")
+            if start != -1 and end != -1:
+                text = text[start:end+1]
 
         print(f"✅ AI Response received: {text[:100]}...")
         
@@ -565,7 +551,7 @@ def roadmap_belongs_to_user(roadmap: Dict[str, Any], user_key: str) -> bool:
 
 def generate_day_content(roadmap_title: str, week_number: int, day: dict) -> Dict[str, Any]:
     """
-    Generate deep content for a SINGLE day to avoid RESOURCE_EXHAUSTED errors
+    Generate deep content for a SINGLE day to avoid large model quota errors 
     that occur when generating all 7 days at once in one large API call.
     """
     day_prompt = f"""You are an expert educational consultant generating content for ONE specific day of a learning roadmap.
@@ -607,24 +593,27 @@ Return ONLY the JSON object. No markdown formatting, no extra text."""
 
     for attempt in range(max_retries):
         try:
-            response = client.models.generate_content(
-                model='gemini-2.0-flash',
-                contents=day_prompt,
-                config=types.GenerateContentConfig(
-                    tools=[types.Tool(google_search=types.GoogleSearch())]
-                )
-            )
-            text = response.text.strip()
+            text= invoke_bedrock_text(day_prompt, temperature=0.3, max_tokens=4000).strip()
             if text.startswith("```json"):
                 text = text[7:]
             if text.endswith("```"):
                 text = text[:-3]
+            text = text.strip()
+            if not text.startswith("{"):
+                start = text.find("{")
+                end = text.rfind("}")
+                if start != -1 and end != -1:
+                    text = text[start:end+1]
             day_data = json.loads(repair_json(text))
             _normalize_day_youtube_fields(roadmap_title, day_data, fallback_topic=day.get("topic", ""))
             _normalize_day_practice_fields(roadmap_title, day_data)
             return {"success": True, "data": day_data}
         except Exception as e:
-            if "RESOURCE_EXHAUSTED" in str(e) and attempt < max_retries - 1:
+            error_text= str(e).lower()
+            if (
+                ("resource_exhausted" in error_text or "throttl" in error_text or "quota" in error_text)
+                and attempt < max_retries - 1
+            ):
                 wait_time = retry_delay * (attempt + 1)
                 print(f"  ⚠️ Quota hit for Day {day['day_number']}, retrying in {wait_time}s... (Attempt {attempt+1}/{max_retries})")
                 time.sleep(wait_time)
@@ -636,7 +625,7 @@ Return ONLY the JSON object. No markdown formatting, no extra text."""
 def generate_week_content(roadmap_id: str, week_number: int):
     """
     Generate deep content for all days in a specific week.
-    Generates one day at a time to avoid Gemini RESOURCE_EXHAUSTED errors.
+    Generates one day at a time to avoid large model quota and payload issues 
     Saves progress after each day so partial results are not lost.
     """
     roadmap = get_roadmap(roadmap_id)
