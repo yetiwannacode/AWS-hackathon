@@ -1,7 +1,7 @@
 import os
 import json
 from typing import List, Dict
-from langchain_google_genai import ChatGoogleGenerativeAI
+from bedrock_utils import invoke_bedrock_text
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -18,12 +18,6 @@ load_dotenv(override=True)
 # --- CONFIG ---
 CHROMA_PATH = "./chroma_db"
 LOCAL_EMBEDDINGS = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-# Temperature set to 0.2 for creative analogies while staying grounded
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash", 
-    temperature=0.2,
-    model_kwargs={"tools": [{"google_search": {}}]}
-)
 
 @retry(
     stop=stop_after_attempt(5),
@@ -31,9 +25,15 @@ llm = ChatGoogleGenerativeAI(
     retry=retry_if_exception_type(Exception),
     before_sleep=lambda retry_state: print(f"⚠️ API Limit hit (Retrieval). Retrying in {retry_state.next_action.sleep} seconds...")
 )
+
+class BedrockResponse:
+    def __init__(self, content: str):
+        self.content = content
+
 def generate_ai_response(messages):
     try:
-        return llm.invoke(messages)
+        text = invoke_bedrock_text(messages, temperature=0.2, max_tokens=2000)
+        return BedrockResponse(text)
     except Exception as e:
         print(f"DEBUG: API call failed with error: {str(e)}")
         # If it's a 429, we want to know the EXACT message (e.g., TPM, RPM, or Account limit)
