@@ -135,13 +135,12 @@ def generate_flashcards(session_id: str, language: str = "english", source: Opti
 
         print(f"Retrieving material for {language} flashcards in session: {session_id}, source={source_name or 'ALL'}")
         where_filter = {"session_id": session_id}
-        if source_name:
-            where_filter = {"$and": [{"session_id": session_id}, {"source": source_name}]}
 
         results = db.get(where=where_filter, include=["documents"])
         docs = results.get("documents", [])
         if not docs:
-            return []
+            print(f"No documents found for session_id={session_id}, source={source_name}")
+            return {"status": "processing", "flashcards": []}
 
         full_context = "\n\n".join(docs[:40])
 

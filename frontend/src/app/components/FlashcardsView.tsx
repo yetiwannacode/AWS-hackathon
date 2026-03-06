@@ -16,7 +16,15 @@ interface FlashcardsViewProps {
     onBack: () => void;
 }
 
-export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, language, selectedSource = "", isTeacher = false, onBack }) => {
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+
+export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
+    sessionId,
+    language,
+    selectedSource = "",
+    isTeacher = false,
+    onBack
+}) => {
     const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -27,24 +35,46 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
     const [editSummary, setEditSummary] = useState('');
     const [aiPrompt, setAiPrompt] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+
     useEffect(() => {
-        if (!selectedSource) {
-            return;
-        }
         const fetchFlashcards = async () => {
             setLoading(true);
             try {
                 const query = new URLSearchParams({ language });
+
                 if (selectedSource) {
                     query.set('source', selectedSource);
                 }
-                const res = await fetch(`http://localhost:8000/api/flashcards/${sessionId}?${query.toString()}`);
+
+                const url = `${API_BASE_URL}/api/flashcards/${sessionId}?${query.toString()}`;
+                console.log("Fetching flashcards from:", url);
+
+                const res = await fetch(url);
                 const data = await res.json();
-                setFlashcards(data);
+
+                console.log("Flashcards response:", data);
+
+                if (!res.ok) {
+                    throw new Error(data?.detail || data?.error || "Failed to fetch flashcards");
+                }
+
+                if (Array.isArray(data)) {
+                    setFlashcards(data);
+                } else if (data?.flashcards && Array.isArray(data.flashcards)) {
+                    setFlashcards(data.flashcards);
+
+                    if (data.status === "processing") {
+                        toast.info("Your material is still being indexed. Please try again in a few seconds.");
+                    }
+                } else {
+                    setFlashcards([]);
+                }
+
                 setCurrentIndex(0);
             } catch (err) {
                 console.error("Failed to fetch flashcards", err);
                 toast.error("Failed to load flashcards");
+                setFlashcards([]);
             } finally {
                 setLoading(false);
             }
@@ -56,13 +86,14 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
     const handleNext = async () => {
         if (currentIndex < flashcards.length - 1) {
             setDirection(1);
-            // Award 20 XP
+
             try {
-                await fetch('http://localhost:8000/api/add_xp', {
+                await fetch(`${API_BASE_URL}/api/add_xp`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ session_id: sessionId, amount: 20 })
                 });
+
                 toast.success("+20 XP for learning!", {
                     icon: <Trophy size={16} className="text-yellow-500" />,
                     duration: 2000
@@ -79,7 +110,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
         if (currentIndex > 0) {
             setDirection(-1);
             setCurrentIndex(prev => prev - 1);
-            setIsEditing(false); // Close edit mode when navigating
+            setIsEditing(false);
         }
     };
 
@@ -93,7 +124,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
     const handleSaveManual = async () => {
         setIsSaving(true);
         try {
-            const res = await fetch(`http://localhost:8000/api/flashcards/update`, {
+            const res = await fetch(`${API_BASE_URL}/api/flashcards/update`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -104,7 +135,13 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                     source: selectedSource || null
                 })
             });
+
             const result = await res.json();
+
+            if (!res.ok) {
+                throw new Error(result?.error || "Update failed");
+            }
+
             if (result.success) {
                 setFlashcards(result.flashcards);
                 setIsEditing(false);
@@ -113,6 +150,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                 toast.error(result.error || "Update failed");
             }
         } catch (err) {
+            console.error(err);
             toast.error("Failed to save changes");
         } finally {
             setIsSaving(false);
@@ -121,9 +159,10 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
 
     const handleRefineAI = async () => {
         if (!aiPrompt.trim()) return;
+
         setIsSaving(true);
         try {
-            const res = await fetch(`http://localhost:8000/api/flashcards/ai-edit`, {
+            const res = await fetch(`${API_BASE_URL}/api/flashcards/ai-edit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -134,7 +173,13 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                     source: selectedSource || null
                 })
             });
+
             const result = await res.json();
+
+            if (!res.ok) {
+                throw new Error(result?.error || "AI refinement failed");
+            }
+
             if (result.success) {
                 setFlashcards(result.flashcards);
                 setIsEditing(false);
@@ -144,6 +189,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                 toast.error(result.error || "AI refinement failed");
             }
         } catch (err) {
+            console.error(err);
             toast.error("AI service error");
         } finally {
             setIsSaving(false);
@@ -165,7 +211,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                 <BrainCircuit size={64} className="text-muted-foreground opacity-20" />
                 <div className="space-y-2">
                     <h3 className="text-2xl font-black">No topics found yet</h3>
-                    <p className="text-muted-foreground">Make sure you have uploaded classroom materials first!</p>
+                    <p className="text-muted-foreground">Make sure you have uploaded classroom materials first, or wait a few moments for indexing to finish.</p>
                 </div>
                 <button
                     onClick={onBack}
@@ -201,13 +247,14 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                         transition={{ type: "spring", damping: 20, stiffness: 100 }}
                         className="w-full max-w-2xl bg-card border-2 border-primary/20 rounded-[2.5rem] p-12 shadow-2xl relative overflow-hidden group hover:border-primary/40 transition-colors"
                     >
-                        {/* Decorative Background Element */}
                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-[5rem] -mr-8 -mt-8 pointer-events-none group-hover:bg-primary/10 transition-colors" />
 
                         <div className="space-y-8 relative z-10">
                             <div className="flex items-start justify-between">
                                 <div className="space-y-2">
-                                    <span className="text-primary text-xs font-black uppercase tracking-[0.2em]">Topic {currentIndex + 1} of {flashcards.length}</span>
+                                    <span className="text-primary text-xs font-black uppercase tracking-[0.2em]">
+                                        Topic {currentIndex + 1} of {flashcards.length}
+                                    </span>
                                     <h2 className="text-4xl font-black tracking-tight">{currentCard.topic}</h2>
                                 </div>
                                 {isTeacher && !isEditing && (
@@ -277,7 +324,9 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({ sessionId, langu
                                     ) : (
                                         <div className="space-y-4">
                                             <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
-                                                <p className="text-sm font-medium text-primary">Describe how you want to refine this card (e.g., "Make it simpler", "Add more details about formulas").</p>
+                                                <p className="text-sm font-medium text-primary">
+                                                    Describe how you want to refine this card (e.g., "Make it simpler", "Add more details about formulas").
+                                                </p>
                                             </div>
                                             <textarea
                                                 value={aiPrompt}

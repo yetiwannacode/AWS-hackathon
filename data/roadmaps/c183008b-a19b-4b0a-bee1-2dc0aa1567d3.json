@@ -1,0 +1,917 @@
+{
+    "title": "Mastering Machine Learning in 30 Days",
+    "description": "A comprehensive 30-day journey to understand and master the fundamentals of Machine Learning, including supervised and unsupervised learning, model evaluation, and practical applications.",
+    "total_days": 30,
+    "weeks": [
+        {
+            "week_number": 1,
+            "goal": "Understand the basics of Machine Learning and its applications",
+            "days": [
+                {
+                    "day_number": 1,
+                    "topic": "Introduction to Machine Learning",
+                    "learning_objectives": [
+                        "Understand what Machine Learning is",
+                        "Identify different types of Machine Learning"
+                    ],
+                    "youtube_video_title": "What is Machine Learning?",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Introduction+to+Machine+Learning",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/tutorials/10-days-of-python",
+                    "practice_question": null,
+                    "reference_content": "Machine Learning (ML) is a subset of Artificial Intelligence (AI) that focuses on the development of computer programs that can access data and use it to learn for themselves. ML algorithms build a mathematical model based on sample data, known as training data, in order to make predictions or decisions without being explicitly programmed to perform the task. There are three main types of machine learning: supervised learning, unsupervised learning, and reinforcement learning. Supervised learning involves training a model on a labeled dataset, which means that the input data is paired with the correct output. The model learns to map inputs to outputs based on the examples it has seen. Unsupervised learning involves training a model on an unlabeled dataset, which means that the input data is not paired with any output. The model must find patterns and structure in the data on its own. Reinforcement learning involves training a model to make a sequence of decisions by rewarding it for good decisions and punishing it for bad ones.",
+                    "questions": [
+                        {
+                            "question": "What are the three main types of machine learning?",
+                            "type": "recall",
+                            "hint": "Supervised, Unsupervised, and Reinforcement Learning"
+                        },
+                        {
+                            "question": "How does supervised learning differ from unsupervised learning?",
+                            "type": "application",
+                            "hint": "Supervised learning uses labeled data while unsupervised learning uses unlabeled data"
+                        }
+                    ],
+                    "youtube_search_term": "Introduction to Machine Learning",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 2,
+                    "topic": "Supervised Learning",
+                    "learning_objectives": [
+                        "Understand the concept of supervised learning",
+                        "Identify common algorithms used in supervised learning"
+                    ],
+                    "youtube_video_title": "Supervised Learning Explained",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Supervised+Learning",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/tutorials/10-days-of-python",
+                    "practice_question": null,
+                    "reference_content": "Supervised learning is a type of machine learning where the model is trained on a labeled dataset. This means that each training example is a pair of an input and the desired output. The goal of supervised learning is to learn a function that maps inputs to outputs. Common algorithms used in supervised learning include linear regression, logistic regression, decision trees, support vector machines, and neural networks.",
+                    "questions": [
+                        {
+                            "question": "What is the main goal of supervised learning?",
+                            "type": "recall",
+                            "hint": "To learn a function that maps inputs to outputs"
+                        },
+                        {
+                            "question": "Name two common algorithms used in supervised learning.",
+                            "type": "recall",
+                            "hint": "Linear regression and logistic regression"
+                        }
+                    ],
+                    "youtube_search_term": "Supervised Learning",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 3,
+                    "topic": "Unsupervised Learning",
+                    "learning_objectives": [
+                        "Understand the concept of unsupervised learning",
+                        "Identify common algorithms used in unsupervised learning"
+                    ],
+                    "youtube_video_title": "Unsupervised Learning Explained",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Unsupervised+Learning",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/tutorials/10-days-of-python",
+                    "practice_question": null,
+                    "reference_content": "Unsupervised learning is a type of machine learning where the model is trained on an unlabeled dataset. This means that the input data is not paired with any output. The goal of unsupervised learning is to find patterns and structure in the data. Common algorithms used in unsupervised learning include clustering algorithms like K-means and hierarchical clustering, and dimensionality reduction techniques like PCA and t-SNE.",
+                    "questions": [
+                        {
+                            "question": "What is the main goal of unsupervised learning?",
+                            "type": "recall",
+                            "hint": "To find patterns and structure in the data"
+                        },
+                        {
+                            "question": "Name two common algorithms used in unsupervised learning.",
+                            "type": "recall",
+                            "hint": "K-means and PCA"
+                        }
+                    ],
+                    "youtube_search_term": "Unsupervised Learning",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 4,
+                    "topic": "Reinforcement Learning",
+                    "learning_objectives": [
+                        "Understand the concept of reinforcement learning",
+                        "Identify common algorithms used in reinforcement learning"
+                    ],
+                    "youtube_video_title": "Reinforcement Learning Explained",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Reinforcement+Learning",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/tutorials/10-days-of-python",
+                    "practice_question": null,
+                    "reference_content": "Reinforcement learning is a type of machine learning where the model learns by interacting with an environment. The model takes actions and receives rewards or penalties based on those actions. The goal of reinforcement learning is to learn a policy that maximizes the cumulative reward over time. Common algorithms used in reinforcement learning include Q-learning and Deep Q-Networks (DQN).",
+                    "questions": [
+                        {
+                            "question": "What is the main goal of reinforcement learning?",
+                            "type": "recall",
+                            "hint": "To learn a policy that maximizes the cumulative reward over time"
+                        },
+                        {
+                            "question": "Name two common algorithms used in reinforcement learning.",
+                            "type": "recall",
+                            "hint": "Q-learning and DQN"
+                        }
+                    ],
+                    "youtube_search_term": "Reinforcement Learning",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 5,
+                    "topic": "Model Evaluation",
+                    "learning_objectives": [
+                        "Understand the importance of model evaluation",
+                        "Identify common evaluation metrics"
+                    ],
+                    "youtube_video_title": "Model Evaluation in Machine Learning",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Model+Evaluation",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/tutorials/10-days-of-python",
+                    "practice_question": null,
+                    "reference_content": "Model evaluation is a crucial step in the machine learning process. It involves assessing the performance of a trained model on a separate dataset, known as the test set. Common evaluation metrics include accuracy, precision, recall, F1 score, and mean squared error (MSE). These metrics provide insights into how well the model is performing and help in selecting the best model for a given task.",
+                    "questions": [
+                        {
+                            "question": "Why is model evaluation important?",
+                            "type": "recall",
+                            "hint": "To assess the performance of a trained model on a separate dataset"
+                        },
+                        {
+                            "question": "Name three common evaluation metrics.",
+                            "type": "recall",
+                            "hint": "Accuracy, precision, recall"
+                        }
+                    ],
+                    "youtube_search_term": "Model Evaluation",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 6,
+                    "topic": "Feature Engineering",
+                    "learning_objectives": [
+                        "Understand the concept of feature engineering",
+                        "Identify techniques for feature engineering"
+                    ],
+                    "youtube_video_title": "Feature Engineering in Machine Learning",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Feature+Engineering",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/tutorials/10-days-of-python",
+                    "practice_question": null,
+                    "reference_content": "Feature engineering is the process of selecting, transforming, and creating features from raw data. Good features are essential for building accurate and robust machine learning models. Techniques for feature engineering include feature selection, feature extraction, and feature creation. Feature selection involves selecting a subset of relevant features from the dataset. Feature extraction involves transforming the raw data into a more suitable form for the model. Feature creation involves creating new features from the existing ones.",
+                    "questions": [
+                        {
+                            "question": "What is the purpose of feature engineering?",
+                            "type": "recall",
+                            "hint": "To select, transform, and create features from raw data"
+                        },
+                        {
+                            "question": "Name three techniques for feature engineering.",
+                            "type": "recall",
+                            "hint": "Feature selection, feature extraction, feature creation"
+                        }
+                    ],
+                    "youtube_search_term": "Feature Engineering",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 7,
+                    "topic": "Model Deployment",
+                    "learning_objectives": [
+                        "Understand the concept of model deployment",
+                        "Identify common deployment platforms"
+                    ],
+                    "youtube_video_title": "Model Deployment in Machine Learning",
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Model+Deployment",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/domains/tutorials/10-days-of-python",
+                    "practice_question": null,
+                    "reference_content": "Model deployment is the process of making a trained machine learning model available for use in a production environment. Common deployment platforms include cloud services like AWS, Azure, and Google Cloud, as well as on-premises servers. The deployment process involves setting up the model in a way that it can be accessed and used by end-users or other applications.",
+                    "questions": [
+                        {
+                            "question": "What is the purpose of model deployment?",
+                            "type": "recall",
+                            "hint": "To make a trained model available for use in a production environment"
+                        },
+                        {
+                            "question": "Name three common deployment platforms.",
+                            "type": "recall",
+                            "hint": "AWS, Azure, Google Cloud"
+                        }
+                    ],
+                    "youtube_search_term": "Model Deployment",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 2,
+            "goal": "Deep dive into specific ML algorithms and techniques",
+            "days": [
+                {
+                    "day_number": 8,
+                    "topic": "Linear Regression",
+                    "learning_objectives": [
+                        "Understand the concept of linear regression",
+                        "Learn how to implement linear regression"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Linear+Regression",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Linear Regression",
+                    "youtube_video_title": "Linear Regression - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 9,
+                    "topic": "Logistic Regression",
+                    "learning_objectives": [
+                        "Understand the concept of logistic regression",
+                        "Learn how to implement logistic regression"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Logistic+Regression",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Logistic Regression",
+                    "youtube_video_title": "Logistic Regression - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 10,
+                    "topic": "Decision Trees",
+                    "learning_objectives": [
+                        "Understand the concept of decision trees",
+                        "Learn how to implement decision trees"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Decision+Trees",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/?topicSlugs=tree",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Decision Trees",
+                    "youtube_video_title": "Decision Trees - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 11,
+                    "topic": "Support Vector Machines",
+                    "learning_objectives": [
+                        "Understand the concept of support vector machines",
+                        "Learn how to implement support vector machines"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Support+Vector+Machines",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Support Vector Machines",
+                    "youtube_video_title": "Support Vector Machines - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 12,
+                    "topic": "Neural Networks",
+                    "learning_objectives": [
+                        "Understand the concept of neural networks",
+                        "Learn how to implement neural networks"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Neural+Networks",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Neural Networks",
+                    "youtube_video_title": "Neural Networks - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 13,
+                    "topic": "Clustering Algorithms",
+                    "learning_objectives": [
+                        "Understand the concept of clustering algorithms",
+                        "Learn how to implement clustering algorithms"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Clustering+Algorithms",
+                    "practice_source": "leetcode",
+                    "practice_url": "https://leetcode.com/problemset/",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Clustering Algorithms",
+                    "youtube_video_title": "Clustering Algorithms - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 14,
+                    "topic": "Dimensionality Reduction Techniques",
+                    "learning_objectives": [
+                        "Understand the concept of dimensionality reduction techniques",
+                        "Learn how to implement dimensionality reduction techniques"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Dimensionality+Reduction+Techniques",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Dimensionality Reduction Techniques",
+                    "youtube_video_title": "Dimensionality Reduction Techniques - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 3,
+            "goal": "Apply ML concepts to real-world problems",
+            "days": [
+                {
+                    "day_number": 15,
+                    "topic": "Image Classification",
+                    "learning_objectives": [
+                        "Learn how to apply ML to image classification",
+                        "Implement an image classification model"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Image+Classification",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Image Classification",
+                    "youtube_video_title": "Image Classification - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 16,
+                    "topic": "Natural Language Processing",
+                    "learning_objectives": [
+                        "Learn how to apply ML to natural language processing",
+                        "Implement an NLP model"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Natural+Language+Processing",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Natural Language Processing",
+                    "youtube_video_title": "Natural Language Processing - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 17,
+                    "topic": "Time Series Analysis",
+                    "learning_objectives": [
+                        "Learn how to apply ML to time series analysis",
+                        "Implement a time series model"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Time+Series+Analysis",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Time Series Analysis",
+                    "youtube_video_title": "Time Series Analysis - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 18,
+                    "topic": "Recommendation Systems",
+                    "learning_objectives": [
+                        "Learn how to apply ML to recommendation systems",
+                        "Implement a recommendation system"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Recommendation+Systems",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Recommendation Systems",
+                    "youtube_video_title": "Recommendation Systems - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 19,
+                    "topic": "Anomaly Detection",
+                    "learning_objectives": [
+                        "Learn how to apply ML to anomaly detection",
+                        "Implement an anomaly detection model"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Anomaly+Detection",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Anomaly Detection",
+                    "youtube_video_title": "Anomaly Detection - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 20,
+                    "topic": "Reinforcement Learning Applications",
+                    "learning_objectives": [
+                        "Learn how to apply ML to reinforcement learning applications",
+                        "Implement a reinforcement learning model"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Reinforcement+Learning+Applications",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Reinforcement Learning Applications",
+                    "youtube_video_title": "Reinforcement Learning Applications - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 21,
+                    "topic": "Model Optimization",
+                    "learning_objectives": [
+                        "Learn how to optimize ML models",
+                        "Implement model optimization techniques"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Model+Optimization",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Model Optimization",
+                    "youtube_video_title": "Model Optimization - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 4,
+            "goal": "Advanced ML topics and best practices",
+            "days": [
+                {
+                    "day_number": 22,
+                    "topic": "Hyperparameter Tuning",
+                    "learning_objectives": [
+                        "Understand the concept of hyperparameter tuning",
+                        "Learn how to tune hyperparameters"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Hyperparameter+Tuning",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Hyperparameter Tuning",
+                    "youtube_video_title": "Hyperparameter Tuning - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 23,
+                    "topic": "Cross-Validation",
+                    "learning_objectives": [
+                        "Understand the concept of cross-validation",
+                        "Learn how to implement cross-validation"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Cross-Validation",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Cross-Validation",
+                    "youtube_video_title": "Cross-Validation - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 24,
+                    "topic": "Ensemble Methods",
+                    "learning_objectives": [
+                        "Understand the concept of ensemble methods",
+                        "Learn how to implement ensemble methods"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Ensemble+Methods",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Ensemble Methods",
+                    "youtube_video_title": "Ensemble Methods - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 25,
+                    "topic": "Model Interpretability",
+                    "learning_objectives": [
+                        "Understand the concept of model interpretability",
+                        "Learn how to make models interpretable"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Model+Interpretability",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Model Interpretability",
+                    "youtube_video_title": "Model Interpretability - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 26,
+                    "topic": "Bias and Fairness in ML",
+                    "learning_objectives": [
+                        "Understand the concept of bias and fairness in ML",
+                        "Learn how to address bias and fairness"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Bias+and+Fairness+in+ML",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Bias and Fairness in ML",
+                    "youtube_video_title": "Bias and Fairness in ML - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 27,
+                    "topic": "Transfer Learning",
+                    "learning_objectives": [
+                        "Understand the concept of transfer learning",
+                        "Learn how to implement transfer learning"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Transfer+Learning",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "Transfer Learning",
+                    "youtube_video_title": "Transfer Learning - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                },
+                {
+                    "day_number": 28,
+                    "topic": "AutoML",
+                    "learning_objectives": [
+                        "Understand the concept of AutoML",
+                        "Learn how to use AutoML tools"
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=AutoML",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/dashboard",
+                    "practice_question": null,
+                    "reference_content": "CONTENT_NOT_GENERATED",
+                    "questions": [],
+                    "youtube_search_term": "AutoML",
+                    "youtube_video_title": "AutoML - Top YouTube result",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ]
+                }
+            ]
+        },
+        {
+            "week_number": 5,
+            "goal": "Capstone project and final review",
+            "days": [
+                {
+                    "day_number": 29,
+                    "topic": "Capstone Project: ML in Action",
+                    "learning_objectives": [
+                        "Integrate and apply machine learning techniques to solve a real-world problem.",
+                        "Evaluate the performance of the machine learning model using appropriate metrics.",
+                        "Present the findings and insights from the machine learning project effectively."
+                    ],
+                    "youtube_video_url": "https://www.youtube.com/results?search_query=Capstone+Project%3A+ML+in+Action",
+                    "practice_source": "hackerrank",
+                    "practice_url": "https://www.hackerrank.com/challenges/machine-learning/30-days-of-code-day-29",
+                    "practice_question": null,
+                    "reference_content": "In today's session, we will be working on a capstone project that will put all the machine learning concepts you've learned over the past 28 days to the test. The goal is to build a complete machine learning model from data collection to model deployment. First, you'll need to select a dataset that is relevant and interesting to you. Once you have your dataset, start by exploring and preprocessing the data. This includes handling missing values, encoding categorical variables, and normalizing numerical features. After preprocessing, split the data into training and testing sets. Choose a suitable machine learning algorithm based on the problem type (classification, regression, clustering, etc.). Train your model using the training set and evaluate its performance using the testing set. Common metrics for evaluation include accuracy, precision, recall, F1 score, and mean squared error. Finally, fine-tune your model by adjusting hyperparameters and experiment with different algorithms to improve performance. Document your process and results thoroughly, and be prepared to present your findings.",
+                    "questions": [
+                        {
+                            "question": "What are the key steps involved in building a machine learning model?",
+                            "type": "recall",
+                            "hint": "The key steps include data collection, preprocessing, splitting the data, choosing an algorithm, training the model, evaluating its performance, and fine-tuning."
+                        },
+                        {
+                            "question": "You have built a machine learning model that achieves an accuracy of 85% on the training set but only 60% on the testing set. What could be the possible reasons for this discrepancy?",
+                            "type": "application",
+                            "hint": "The discrepancy could be due to overfitting, where the model performs well on the training data but poorly on unseen data. Other reasons could include insufficient data, poor preprocessing, or an inappropriate choice of model."
+                        }
+                    ],
+                    "youtube_search_term": "Capstone Project: ML in Action",
+                    "youtube_video_title": "Building a Machine Learning Model from Scratch",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ],
+                    "youtube_fallback_url": ""
+                },
+                {
+                    "day_number": 30,
+                    "topic": "Mastering Machine Learning in 30 Days - Interview Questions",
+                    "learning_objectives": [
+                        "Practice high-frequency interview questions",
+                        "Strengthen explanation depth and trade-off reasoning",
+                        "Build confidence for real interview rounds"
+                    ],
+                    "youtube_video_url": "",
+                    "practice_source": "ai_generated",
+                    "practice_url": "",
+                    "practice_question": null,
+                    "reference_content": "Interview-only day. Focus on solving and explaining the 30 questions below. Practice concise answers, trade-offs, and production examples.",
+                    "questions": [
+                        {
+                            "question": "What is the difference between supervised and unsupervised learning?",
+                            "type": "interview",
+                            "hint": "Supervised learning uses labeled data, unsupervised does not."
+                        },
+                        {
+                            "question": "Explain the concept of overfitting in machine learning.",
+                            "type": "interview",
+                            "hint": "Overfitting occurs when a model learns the training data too well, including noise."
+                        },
+                        {
+                            "question": "What is the role of cross-validation in machine learning?",
+                            "type": "interview",
+                            "hint": "Cross-validation helps to assess the model's performance on unseen data."
+                        },
+                        {
+                            "question": "Describe the bias-variance tradeoff.",
+                            "type": "interview",
+                            "hint": "Balancing bias and variance to achieve optimal model performance."
+                        },
+                        {
+                            "question": "What is regularization and why is it used?",
+                            "type": "interview",
+                            "hint": "Regularization prevents overfitting by adding a penalty to the loss function."
+                        },
+                        {
+                            "question": "What are the different types of cost functions?",
+                            "type": "interview",
+                            "hint": "Common cost functions include MSE, MAE, and cross-entropy."
+                        },
+                        {
+                            "question": "Explain the difference between L1 and L2 regularization.",
+                            "type": "interview",
+                            "hint": "L1 adds absolute value penalty, L2 adds squared penalty."
+                        },
+                        {
+                            "question": "What is the purpose of the learning rate in gradient descent?",
+                            "type": "interview",
+                            "hint": "The learning rate controls the step size in gradient descent."
+                        },
+                        {
+                            "question": "What is the difference between batch gradient descent and stochastic gradient descent?",
+                            "type": "interview",
+                            "hint": "Batch uses the entire dataset, stochastic uses one sample at a time."
+                        },
+                        {
+                            "question": "What is the curse of dimensionality?",
+                            "type": "interview",
+                            "hint": "As the number of features increases, the volume of the space increases exponentially."
+                        },
+                        {
+                            "question": "What is the difference between precision and recall?",
+                            "type": "interview",
+                            "hint": "Precision is the number of true positives divided by all positive predictions, recall is the number of true positives divided by all actual positives."
+                        },
+                        {
+                            "question": "What is a confusion matrix?",
+                            "type": "interview",
+                            "hint": "A confusion matrix is a table used to evaluate the performance of a classification model."
+                        },
+                        {
+                            "question": "What is the difference between bagging and boosting?",
+                            "type": "interview",
+                            "hint": "Bagging combines multiple models to reduce variance, boosting combines multiple models to reduce bias."
+                        },
+                        {
+                            "question": "What is a decision tree?",
+                            "type": "interview",
+                            "hint": "A decision tree is a flowchart-like structure for making decisions based on input features."
+                        },
+                        {
+                            "question": "What is the difference between a node and a leaf in a decision tree?",
+                            "type": "interview",
+                            "hint": "A node is a decision point, a leaf is the final decision or prediction."
+                        },
+                        {
+                            "question": "What is the purpose of pruning in decision trees?",
+                            "type": "interview",
+                            "hint": "Pruning reduces the size of the tree to prevent overfitting."
+                        },
+                        {
+                            "question": "What is the k-nearest neighbors algorithm?",
+                            "type": "interview",
+                            "hint": "k-NN classifies a sample based on the majority class of its k nearest neighbors."
+                        },
+                        {
+                            "question": "What is the difference between linear and logistic regression?",
+                            "type": "interview",
+                            "hint": "Linear regression predicts continuous values, logistic regression predicts probabilities."
+                        },
+                        {
+                            "question": "What is the difference between a generative and a discriminative model?",
+                            "type": "interview",
+                            "hint": "Generative models learn the joint distribution, discriminative models learn the decision boundary."
+                        },
+                        {
+                            "question": "What is the purpose of the kernel trick in SVM?",
+                            "type": "interview",
+                            "hint": "The kernel trick allows SVM to operate in high-dimensional space without explicitly computing the coordinates."
+                        },
+                        {
+                            "question": "What is the difference between hard and soft margin in SVM?",
+                            "type": "interview",
+                            "hint": "Hard margin does not allow misclassifications, soft margin allows some misclassifications."
+                        },
+                        {
+                            "question": "What is the difference between a perceptron and a neural network?",
+                            "type": "interview",
+                            "hint": "A perceptron is a single-layer neural network, a neural network can have multiple layers."
+                        },
+                        {
+                            "question": "What is backpropagation?",
+                            "type": "interview",
+                            "hint": "Backpropagation is a method for training neural networks by propagating errors backward."
+                        },
+                        {
+                            "question": "What is the vanishing gradient problem?",
+                            "type": "interview",
+                            "hint": "Gradients become very small, making it difficult to update weights in deep networks."
+                        },
+                        {
+                            "question": "What is the difference between batch normalization and layer normalization?",
+                            "type": "interview",
+                            "hint": "Batch normalization normalizes across the batch, layer normalization normalizes across the features."
+                        },
+                        {
+                            "question": "What is the difference between a generative adversarial network (GAN) and a variational autoencoder (VAE)?",
+                            "type": "interview",
+                            "hint": "GANs generate new data by training a generator and discriminator, VAEs learn a latent space to generate new data."
+                        },
+                        {
+                            "question": "What is transfer learning?",
+                            "type": "interview",
+                            "hint": "Transfer learning involves using a pre-trained model on a new task."
+                        },
+                        {
+                            "question": "What is the difference between a convolutional neural network (CNN) and a recurrent neural network (RNN)?",
+                            "type": "interview",
+                            "hint": "CNNs are used for spatial data, RNNs are used for sequential data."
+                        },
+                        {
+                            "question": "What is the role of the activation function in a neural network?",
+                            "type": "interview",
+                            "hint": "Activation functions introduce non-linearity to the model."
+                        },
+                        {
+                            "question": "How would you explain the core concepts of Mastering Machine Learning in 30 Days to a junior engineer?",
+                            "type": "interview",
+                            "hint": "Focus on practical trade-offs and real-world examples."
+                        }
+                    ],
+                    "youtube_search_term": "",
+                    "youtube_video_title": "",
+                    "youtube_channel_priority": [
+                        "Apna College",
+                        "Coding with Harry",
+                        "freeCodeCamp.org"
+                    ],
+                    "youtube_fallback_url": ""
+                }
+            ]
+        }
+    ],
+    "id": "c183008b-a19b-4b0a-bee1-2dc0aa1567d3",
+    "session_id": "abc",
+    "owner_user_key": "abc",
+    "created_at": "2026-03-07T01:12:19.851789",
+    "status": "active",
+    "days_completed": 0,
+    "progress_percentage": 0
+}
