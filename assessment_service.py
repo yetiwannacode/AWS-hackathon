@@ -5,8 +5,7 @@ import time
 import hashlib
 from collections import Counter
 from typing import List, Dict, Optional
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import HumanMessage, SystemMessage
+from bedrock_utils import invoke_bedrock_text
 from dotenv import load_dotenv
 from unstructured.partition.pdf import partition_pdf
 
@@ -20,9 +19,6 @@ PROGRESS_FILE = os.path.join(DATA_ROOT, "user_progress.json")
 COOLDOWN_SECONDS = 600 # 10 Minutes
 
 os.makedirs(ASSESSMENT_DIR, exist_ok=True)
-
-# Initialize Gemini
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.3)
 
 def get_session_text(session_id: str) -> str:
     """
@@ -186,19 +182,25 @@ def generate_assessment(session_id: str, level: int, chapter_index: Optional[int
 
     # 3. Generate
     prompt = get_assessment_prompt(level, context)
-    messages = [HumanMessage(content=prompt)]
     
     try:
-        response = llm.invoke(messages)
-        content = response.content.strip()
+        content = invoke_bedrock_text(prompt, temperature=0.3, max_tokens=2500).strip()
         
         # Clean Markdown
         if content.startswith("```json"):
-            content = content[7:-3]
+            content = content[7:-3].strip()
         elif content.startswith("```"):
-            content = content[3:-3]
+            content = content[3:-3].strip()
             
-        assessment_data = json.loads(content)
+        try:
+            assessment_data = json.loads(content)
+        except json.JSONDecodeError:
+            start = content.find("[")
+            end = content.rfind("]")
+            if start != -1 and end != -1:
+                assessment_data = json.loads(content[start:end+1])
+            else:
+                raise
         
         # Add metadata like timer
         result = {
@@ -256,11 +258,17 @@ def generate_remedial_plan(mistakes: List[Dict]) -> Dict:
     }}
     """
     try:
-        response = llm.invoke([HumanMessage(content=prompt)])
-        content = response.content.strip()
-        if content.startswith("```json"): content = content[7:-3]
-        elif content.startswith("```"): content = content[3:-3]
-        return json.loads(content)
+        content= invoke_bedrock_text(prompt, temperature= 0.3, max_tokens=1500).strip()
+        if content.startswith("```json"): content = content[7:-3].strip()
+        elif content.startswith("```"): content = content[3:-3].strip()
+        try:
+            return json.loads(content)
+        except json.JSONDecodeError:
+            start = content.find("{")
+            end = content.rfind("}")
+            if start != -1 and end != -1:
+                return json.loads(content[start:end+1])
+            raise
     except Exception as e:
         print(f"Remedial Plan Generation Failed: {e}")
         return {
