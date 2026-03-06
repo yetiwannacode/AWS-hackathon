@@ -7,9 +7,8 @@ from unstructured.partition.pdf import partition_pdf
 from unstructured.chunking.title import chunk_by_title
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_chroma import Chroma
-from langchain_core.messages import HumanMessage
+from bedrock_utils import invoke_bedrock_multimodal
 from dotenv import load_dotenv
 from tenacity import (
     retry,
@@ -33,11 +32,6 @@ load_dotenv(override=True)
 
 LOCAL_EMBEDDINGS = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 CHROMA_PATH = "./chroma_db"
-
-# GEMINI_MODEL = "gemini-2.5-flash"  # Use for high-quality showcase
-GEMINI_MODEL = "gemini-2.0-flash"  # Use for cost-effective testing
-
-llm = ChatGoogleGenerativeAI(model=GEMINI_MODEL, temperature=0)
 
 # --- CORE FUNCTIONS (Replicated from your notebook) ---
 
@@ -125,50 +119,37 @@ def separate_content_types(chunk):
     before_sleep=lambda retry_state: print(f"⚠️ API Limit hit. Retrying in {retry_state.next_action.sleep} seconds...")
 )
 def create_batch_ai_summaries(batch_contents: List[dict]) -> List[str]:
-    """Processes a batch of content blocks in a single Gemini call."""
-    with api_semaphore: # Limit total concurrent calls
-        if not batch_contents:
-            return []
 
-        prompt_text = (
-            "You are an expert at analyzing mixed-content chunks from technical documents for a RAG system.\n"
-            "Below are several content blocks. For each block, provide a concise summary that captures "
-            "the key facts, concepts, and data. Respond with a JSON array of strings, where each string "
-            "is the summary for the corresponding block.\n\n"
-        )
-        
-        message_content = [{"type": "text", "text": prompt_text}]
-        
-        for i, content in enumerate(batch_contents):
-            block_desc = f"--- BLOCK {i+1} ---\nTEXT:\n{content['text']}\n"
-            if content['tables']:
-                block_desc += f"TABLES:\n{chr(10).join(content['tables'])}\n"
-            
-            message_content.append({"type": "text", "text": block_desc})
-            for img_b64 in content['images']:
-                message_content.append({"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{img_b64}"}})
+    with api_semaphore:
 
-        try:
-            # Request JSON output
-            response = llm.invoke([HumanMessage(content=message_content)])
-            content_out = response.content.strip()
-            
-            # Strip markdown code blocks if present
-            if content_out.startswith("```json"):
-                content_out = content_out[7:-3].strip()
-            elif content_out.startswith("```"):
-                content_out = content_out[3:-3].strip()
-                
-            summaries = json.loads(content_out)
-            if isinstance(summaries, list) and len(summaries) == len(batch_contents):
-                return [str(s) for s in summaries]
-            else:
-                print(f"⚠️ Unexpected JSON format from LLM: {content_out}")
-                return [c['text'] for c in batch_contents]
-                
-        except Exception as e:
-            print(f"❌ Gemini summary failed: {e}")
-            return [c['text'] for c in batch_contents]
+        summaries = []
+
+        for content in batch_contents:
+
+            prompt = (
+                "You are an expert at analyzing mixed-content chunks from technical documents.\n"
+                "Provide a concise summary capturing the key facts and concepts.\n\n"
+                f"TEXT:\n{content['text']}\n"
+            )
+
+            if content["tables"]:
+                prompt += "\nTABLES:\n" + "\n".join(content["tables"])
+
+            try:
+
+                response = invoke_bedrock_multimodal(
+                    prompt,
+                    content["images"]
+                )
+
+                summaries.append(response.strip())
+
+            except Exception as e:
+
+                print(f"⚠️ Bedrock multimodal failed: {e}")
+                summaries.append(content["text"])
+
+        return summaries
 
 def is_already_ingested(filename: str, session_id: str) -> bool:
     """Checks ChromaDB to see if this file has already been processed for this session."""
