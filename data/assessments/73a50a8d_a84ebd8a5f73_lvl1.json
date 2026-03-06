@@ -1,0 +1,178 @@
+{
+    "level": 1,
+    "timer_seconds": 600,
+    "questions": [
+        {
+            "id": 1,
+            "question": "What is multithreading?",
+            "options": [
+                "A process of executing multiple tasks simultaneously",
+                "A process of executing a single task at a time",
+                "A process of executing multiple tasks sequentially",
+                "A process of executing multiple tasks in parallel"
+            ],
+            "correct_answer": "A",
+            "explanation": "Multithreading is the process of executing multiple tasks simultaneously.",
+            "hints": [
+                "Hint 1: It involves doing tasks at the same time",
+                "Hint 2: It's about simultaneous execution",
+                "Hint 3: It's not about sequential execution"
+            ]
+        },
+        {
+            "id": 2,
+            "question": "What are the two ways to define a thread in Java?",
+            "options": [
+                "By extending Thread class or implementing Runnable interface",
+                "By extending Runnable class or implementing Thread interface",
+                "By extending Thread class or implementing ThreadGroup interface",
+                "By extending Runnable class or implementing ThreadGroup interface"
+            ],
+            "correct_answer": "A",
+            "explanation": "A thread can be defined by extending the Thread class or by implementing the Runnable interface.",
+            "hints": [
+                "Hint 1: Two methods are mentioned in the text",
+                "Hint 2: One involves extending a class, the other involves implementing an interface",
+                "Hint 3: The interface is specifically named 'Runnable'"
+            ]
+        },
+        {
+            "id": 3,
+            "question": "What does the Thread Scheduler do in Java?",
+            "options": [
+                "Schedules threads for execution",
+                "Manages thread priorities",
+                "Handles thread synchronization",
+                "Manages thread life cycle"
+            ],
+            "correct_answer": "A",
+            "explanation": "The Thread Scheduler is responsible for scheduling threads for execution.",
+            "hints": [
+                "Hint 1: It's part of the JVM",
+                "Hint 2: It decides the order of execution for threads",
+                "Hint 3: It's involved in the execution process"
+            ]
+        },
+        {
+            "id": 4,
+            "question": "What is the purpose of the 'yield()' method in Java?",
+            "options": [
+                "To pause the current executing thread and give chance to other threads",
+                "To stop the execution of a thread",
+                "To resume a suspended thread",
+                "To change the priority of a thread"
+            ],
+            "correct_answer": "A",
+            "explanation": "The 'yield()' method causes the current executing thread to pause and give a chance to other threads of the same priority to execute.",
+            "hints": [
+                "Hint 1: It's a method used in multithreading",
+                "Hint 2: It's related to thread execution order",
+                "Hint 3: It doesn't stop or resume threads"
+            ]
+        },
+        {
+            "id": 5,
+            "question": "What is the main advantage of using the 'synchronized' keyword in Java?",
+            "options": [
+                "It increases waiting time of threads",
+                "It resolves data inconsistency problems",
+                "It decreases performance",
+                "It allows multiple threads to access synchronized methods simultaneously"
+            ],
+            "correct_answer": "B",
+            "explanation": "The main advantage of the 'synchronized' keyword is that it resolves data inconsistency problems when multiple threads operate on the same object.",
+            "hints": [
+                "Hint 1: It's used to prevent data inconsistency",
+                "Hint 2: It involves locking mechanism",
+                "Hint 3: It's not about increasing waiting time or performance"
+            ]
+        },
+        {
+            "id": 6,
+            "question": "What is a deadlock in the context of multithreading?",
+            "options": [
+                "A situation where a thread is waiting for another thread to release a resource",
+                "A situation where a thread is waiting indefinitely for a resource that is held by another thread",
+                "A situation where a thread is waiting for a resource that is not available",
+                "A situation where a thread is waiting for a resource that is available"
+            ],
+            "correct_answer": "B",
+            "explanation": "A deadlock is a situation where two threads are waiting for each other forever, resulting in an infinite waiting state.",
+            "hints": [
+                "Hint 1: It's a type of waiting situation",
+                "Hint 2: It involves two or more threads",
+                "Hint 3: It's an infinite waiting state"
+            ]
+        },
+        {
+            "id": 7,
+            "question": "What is the purpose of the 'wait()' method in Java?",
+            "options": [
+                "To pause the execution of a thread until it receives a notification",
+                "To stop the execution of a thread",
+                "To resume a suspended thread",
+                "To change the priority of a thread"
+            ],
+            "correct_answer": "A",
+            "explanation": "The 'wait()' method causes the current thread to pause its execution until it receives a notification from another thread.",
+            "hints": [
+                "Hint 1: It's used in inter-thread communication",
+                "Hint 2: It involves waiting for a notification",
+                "Hint 3: It doesn't stop, resume, or change priority of threads"
+            ]
+        },
+        {
+            "id": 8,
+            "question": "What is the difference between 'notify()' and 'notifyAll()' in Java?",
+            "options": [
+                "'notify()' notifies one waiting thread, while 'notifyAll()' notifies all waiting threads",
+                "'notify()' notifies all waiting threads, while 'notifyAll()' notifies one waiting thread",
+                "'notify()' and 'notifyAll()' have no difference",
+                "'notify()' notifies the thread with the highest priority, while 'notifyAll()' notifies all threads"
+            ],
+            "correct_answer": "A",
+            "explanation": "The 'notify()' method notifies one waiting thread, while the 'notifyAll()' method notifies all waiting threads.",
+            "hints": [
+                "Hint 1: It's about notifying waiting threads",
+                "Hint 2: One method notifies one thread, the other notifies all",
+                "Hint 3: It's not about thread priority"
+            ]
+        },
+        {
+            "id": 9,
+            "question": "What is a daemon thread in Java?",
+            "options": [
+                "A thread that runs in the background to provide support for non-daemon threads",
+                "A thread that runs in the foreground",
+                "A thread that runs with high priority",
+                "A thread that runs independently of other threads"
+            ],
+            "correct_answer": "A",
+            "explanation": "A daemon thread is a thread that runs in the background to provide support for non-daemon threads, such as garbage collection.",
+            "hints": [
+                "Hint 1: It's a type of background thread",
+                "Hint 2: It provides support for other threads",
+                "Hint 3: It's not about running in the foreground or with high priority"
+            ]
+        },
+        {
+            "id": 10,
+            "question": "What is the purpose of a ThreadGroup in Java?",
+            "options": [
+                "To group threads into a single unit for easier management",
+                "To manage thread priorities",
+                "To handle thread synchronization",
+                "To manage thread life cycle"
+            ],
+            "correct_answer": "A",
+            "explanation": "A ThreadGroup is used to group threads into a single unit, allowing for easier management and common operations on the threads.",
+            "hints": [
+                "Hint 1: It's related to grouping threads",
+                "Hint 2: It's for easier management",
+                "Hint 3: It's not about priorities, synchronization, or life cycle"
+            ]
+        }
+    ],
+    "chapter_name": "Multithreading (1).pdf",
+    "chapter_index": 0
+}

@@ -1,0 +1,178 @@
+{
+    "level": 1,
+    "timer_seconds": 600,
+    "questions": [
+        {
+            "id": 1,
+            "question": "What is Ayush Mukherjee's expected year of graduation?",
+            "options": [
+                "2026",
+                "2027",
+                "2028",
+                "2029"
+            ],
+            "correct_answer": "2028",
+            "explanation": "The text explicitly states that Ayush Mukherjee is expected to graduate in 2028.",
+            "hints": [
+                "Check the education section for the expected year of graduation.",
+                "It's mentioned right after the institution name.",
+                "Look for the year mentioned with 'Expected Year of Graduation'."
+            ]
+        },
+        {
+            "id": 2,
+            "question": "Which programming language is NOT mentioned in Ayush's technical skills?",
+            "options": [
+                "C",
+                "JAVA",
+                "Python",
+                "JavaScript"
+            ],
+            "correct_answer": "JavaScript",
+            "explanation": "The text lists C, JAVA, and Python as Ayush's programming languages, but JavaScript is not mentioned.",
+            "hints": [
+                "Review the technical skills section.",
+                "JavaScript is not listed among the programming languages.",
+                "Look for the programming languages mentioned in the text."
+            ]
+        },
+        {
+            "id": 3,
+            "question": "What is the name of the project built using C?",
+            "options": [
+                "Algorithm Visualizer",
+                "Student Record Management System",
+                "Smart Meeting Assistant",
+                "None of the above"
+            ],
+            "correct_answer": "Student Record Management System",
+            "explanation": "The text mentions that Ayush built a 'Student Record Management System' using C.",
+            "hints": [
+                "Check the projects section for the project built using C.",
+                "It's the first project mentioned in the projects section.",
+                "Look for the project description under the C language."
+            ]
+        },
+        {
+            "id": 4,
+            "question": "Which algorithm did Ayush implement in the Algorithm Visualizer project?",
+            "options": [
+                "Bubble Sort",
+                "Binary Search",
+                "Linear Search",
+                "All of the above"
+            ],
+            "correct_answer": "All of the above",
+            "explanation": "The text states that Ayush implemented linear/binary search and bubble/selection sort in the Algorithm Visualizer project.",
+            "hints": [
+                "Review the Algorithm Visualizer project description.",
+                "All the mentioned algorithms are part of the project.",
+                "Look for the list of algorithms implemented in the text."
+            ]
+        },
+        {
+            "id": 5,
+            "question": "What is Ayush's role in the Peer Mentorship Program (PMP)?",
+            "options": [
+                "Mentee",
+                "Mentor",
+                "Organizer",
+                "Participant"
+            ],
+            "correct_answer": "Mentor",
+            "explanation": "The text specifies that Ayush is a 'Mentor' in the Peer Mentorship Program (PMP).",
+            "hints": [
+                "Check the leadership/activities section for Ayush's role in PMP.",
+                "It's mentioned right after the PMP title.",
+                "Look for the role description in the text."
+            ]
+        },
+        {
+            "id": 6,
+            "question": "Which cultural association is Ayush a member of at BITS Pilani?",
+            "options": [
+                "Moruchhaya",
+                "BITSian",
+                "BITSians",
+                "BITS Pilani"
+            ],
+            "correct_answer": "Moruchhaya",
+            "explanation": "The text mentions that Ayush is a member of 'Moruchhaya (Cultural Association), BITS Pilani'.",
+            "hints": [
+                "Review the leadership/activities section for the cultural association.",
+                "It's mentioned right after the cultural association title.",
+                "Look for the association name in the text."
+            ]
+        },
+        {
+            "id": 7,
+            "question": "What event did Ayush organize as part of the Moruchhaya cultural association?",
+            "options": [
+                "Durga Puja",
+                "Holi Festival",
+                "Christmas Celebration",
+                "New Year's Eve"
+            ],
+            "correct_answer": "Durga Puja",
+            "explanation": "The text states that Ayush collaborated to organize 'Durga Puja on campus' as part of the Moruchhaya cultural association.",
+            "hints": [
+                "Check the leadership/activities section for the event organized by Ayush.",
+                "It's mentioned right after the cultural association event.",
+                "Look for the event name in the text."
+            ]
+        },
+        {
+            "id": 8,
+            "question": "What was the name of the hackathon where Ayush achieved the top 10 position?",
+            "options": [
+                "Mini Hackathon (AI Agents Workshop)- K.A.M.A.L.A",
+                "BITS Hackathon",
+                "Microsoft Hackathon",
+                "Google Hackathon"
+            ],
+            "correct_answer": "Mini Hackathon (AI Agents Workshop)- K.A.M.A.L.A",
+            "explanation": "The text mentions that Ayush achieved the top 10 position in the 'Mini Hackathon (AI Agents Workshop)- K.A.M.A.L.A'.",
+            "hints": [
+                "Review the achievements section for the hackathon name.",
+                "It's mentioned right after the achievement title.",
+                "Look for the hackathon name in the text."
+            ]
+        },
+        {
+            "id": 9,
+            "question": "Which scholarship did Ayush receive at BITS Pilani?",
+            "options": [
+                "100% Merit Scholarship",
+                "Sports Scholarship",
+                "Need-based Scholarship",
+                "International Scholarship"
+            ],
+            "correct_answer": "100% Merit Scholarship",
+            "explanation": "The text states that Ayush received a '100% Merit Scholarship, BITS Pilani (Sem-1)'.",
+            "hints": [
+                "Check the achievements section for the scholarship name.",
+                "It's mentioned right after the achievement title.",
+                "Look for the scholarship name in the text."
+            ]
+        },
+        {
+            "id": 10,
+            "question": "What is one of Ayush's interests mentioned in the text?",
+            "options": [
+                "Astronomy & Astrophysics",
+                "Sports",
+                "Cooking",
+                "Gardening"
+            ],
+            "correct_answer": "Astronomy & Astrophysics",
+            "explanation": "The text lists 'Astronomy & Astrophysics' as one of Ayush's interests.",
+            "hints": [
+                "Review the interests section for Ayush's hobbies.",
+                "It's mentioned right after the interests title.",
+                "Look for the interest name in the text."
+            ]
+        }
+    ],
+    "chapter_name": "Resume.pdf",
+    "chapter_index": 1
+}

@@ -1,0 +1,178 @@
+{
+    "level": 2,
+    "timer_seconds": 600,
+    "questions": [
+        {
+            "id": 1,
+            "question": "A student observes that when they start a new thread using t.start(), the thread does not immediately execute. What is the primary reason for this behavior?",
+            "options": [
+                "The thread is running in the background",
+                "The thread scheduler decides when to execute the thread",
+                "The thread is waiting for a signal",
+                "The thread is in a suspended state"
+            ],
+            "correct_answer": "B",
+            "explanation": "The thread scheduler, which is part of the JVM, decides when to execute the thread based on various factors including priority and availability of processors.",
+            "hints": [
+                "Consider the role of the thread scheduler",
+                "Think about how threads are managed in a multi-threaded environment",
+                "Recall the explanation of thread scheduling in the text"
+            ]
+        },
+        {
+            "id": 2,
+            "question": "If X happens, where X is a thread calling t.run() instead of t.start(), what will be the outcome?",
+            "options": [
+                "A new thread is created and executed",
+                "The run method is executed in the current thread context",
+                "An exception is thrown",
+                "The thread is paused"
+            ],
+            "correct_answer": "B",
+            "explanation": "Calling t.run() directly will execute the run method in the context of the current thread, not in a new thread.",
+            "hints": [
+                "Recall the difference between t.start() and t.run()",
+                "Consider the lifecycle of a thread",
+                "Think about how methods are called in Java"
+            ]
+        },
+        {
+            "id": 3,
+            "question": "In a multithreaded application, if two threads are accessing the same object's synchronized method simultaneously, what will happen?",
+            "options": [
+                "Both threads will execute the method at the same time",
+                "One thread will execute the method and the other will wait",
+                "An exception will be thrown",
+                "The application will crash"
+            ],
+            "correct_answer": "B",
+            "explanation": "Only one thread will be able to execute the synchronized method at a time. The other thread will have to wait until the first thread releases the lock.",
+            "hints": [
+                "Recall the purpose of the synchronized keyword",
+                "Consider how locks work in multithreading",
+                "Think about thread execution order with synchronized methods"
+            ]
+        },
+        {
+            "id": 4,
+            "question": "What will be the result if a thread calls the interrupt() method on another thread that is currently sleeping?",
+            "options": [
+                "The sleeping thread will immediately stop",
+                "The sleeping thread will stop after it wakes up",
+                "The sleeping thread will ignore the interrupt",
+                "An exception will be thrown"
+            ],
+            "correct_answer": "B",
+            "explanation": "The interrupt() method sets an interrupt flag on the target thread. The sleeping thread will stop only after it wakes up and notices the interrupt flag.",
+            "hints": [
+                "Recall the behavior of the interrupt() method",
+                "Consider the lifecycle of a thread in the context of interrupts",
+                "Think about how threads handle interrupts while sleeping"
+            ]
+        },
+        {
+            "id": 5,
+            "question": "If a thread calls the wait() method on an object, what is the immediate effect on the thread's state?",
+            "options": [
+                "The thread enters a running state",
+                "The thread enters a waiting state",
+                "The thread enters a blocked state",
+                "The thread is terminated"
+            ],
+            "correct_answer": "B",
+            "explanation": "Calling wait() on an object causes the thread to release the lock and enter a waiting state until it receives a notify() or notifyAll() call.",
+            "hints": [
+                "Recall the purpose of the wait() method",
+                "Consider the lifecycle of a thread when calling wait()",
+                "Think about thread states in synchronization"
+            ]
+        },
+        {
+            "id": 6,
+            "question": "In a producer-consumer scenario, what should the consumer thread do if the queue is empty?",
+            "options": [
+                "Continue to consume items",
+                "Call wait() and enter a waiting state",
+                "Call notify() to signal the producer",
+                "Exit the program"
+            ],
+            "correct_answer": "B",
+            "explanation": "If the queue is empty, the consumer thread should call wait() to release the lock and enter a waiting state until the producer thread notifies it.",
+            "hints": [
+                "Recall the producer-consumer problem scenario",
+                "Consider the role of wait() and notify() in this context",
+                "Think about how threads should handle empty queues"
+            ]
+        },
+        {
+            "id": 7,
+            "question": "What is the primary difference between notify() and notifyAll() in Java?",
+            "options": [
+                "notify() notifies one thread, notifyAll() notifies all threads",
+                "notify() notifies all threads, notifyAll() notifies one thread",
+                "notify() and notifyAll() have no difference",
+                "notify() is faster than notifyAll()"
+            ],
+            "correct_answer": "A",
+            "explanation": "notify() notifies a single waiting thread, while notifyAll() notifies all waiting threads, allowing one of them to proceed.",
+            "hints": [
+                "Recall the behavior of notify() and notifyAll()",
+                "Consider the difference in thread notification between the two methods",
+                "Think about how threads are woken up in a synchronized context"
+            ]
+        },
+        {
+            "id": 8,
+            "question": "If a thread is marked as a daemon thread, what will happen when the last non-daemon thread terminates?",
+            "options": [
+                "The daemon thread continues to run",
+                "The daemon thread terminates automatically",
+                "The daemon thread enters a waiting state",
+                "The daemon thread is promoted to a non-daemon thread"
+            ],
+            "correct_answer": "B",
+            "explanation": "When the last non-daemon thread terminates, all daemon threads will be terminated automatically, regardless of their state.",
+            "hints": [
+                "Recall the behavior of daemon threads",
+                "Consider the lifecycle of threads in a Java application",
+                "Think about the relationship between daemon and non-daemon threads"
+            ]
+        },
+        {
+            "id": 9,
+            "question": "In the context of thread groups, what is the significance of the system group?",
+            "options": [
+                "It is the root group for all thread groups",
+                "It contains only daemon threads",
+                "It manages thread priorities",
+                "It handles thread synchronization"
+            ],
+            "correct_answer": "A",
+            "explanation": "The system group acts as the root for all thread groups in Java, containing system-level threads and serving as the parent for all other thread groups.",
+            "hints": [
+                "Recall the role of the system group in thread management",
+                "Consider the hierarchy of thread groups",
+                "Think about the relationship between the system group and other thread groups"
+            ]
+        },
+        {
+            "id": 10,
+            "question": "What is the purpose of using the synchronized block in a method?",
+            "options": [
+                "To increase the execution speed of the method",
+                "To allow multiple threads to access the method simultaneously",
+                "To ensure that only one thread can execute the block at a time",
+                "To skip the execution of the block if a thread is waiting"
+            ],
+            "correct_answer": "C",
+            "explanation": "The synchronized block ensures that only one thread can execute the block of code at a time, preventing data inconsistency issues in multithreaded environments.",
+            "hints": [
+                "Recall the purpose of synchronization",
+                "Consider the impact of synchronized blocks on thread execution",
+                "Think about how synchronized blocks help in thread safety"
+            ]
+        }
+    ],
+    "chapter_name": "Multithreading (1).pdf",
+    "chapter_index": 0
+}

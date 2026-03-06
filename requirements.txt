@@ -12,3 +12,6 @@ langchain-chroma==0.2.5
 langchain-huggingface==0.3.1
 chromadb==1.0.20
 unstructured[pdf]==0.18.14
+sentence-transformers==3.0.1
+pillow
+pytesseract
