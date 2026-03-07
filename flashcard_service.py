@@ -3,6 +3,7 @@ import json
 import re
 import threading
 from typing import List, Dict, Optional
+from urllib.parse import unquote
 from bedrock_utils import invoke_bedrock_text
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -66,6 +67,13 @@ def _normalize_source_name(source: Optional[str]) -> Optional[str]:
         return None
     cleaned = os.path.basename(str(source)).strip()
     return cleaned or None
+
+
+def _canonical_source_name(source: Optional[str]) -> str:
+    if not source:
+        return ""
+    # Handle URL-encoded names and any path-like inputs from clients.
+    return os.path.basename(unquote(str(source))).strip().casefold()
 
 
 def _source_slug(source: str) -> str:
@@ -134,22 +142,29 @@ def generate_flashcards(session_id: str, language: str = "english", source: Opti
         )
 
         print(f"Retrieving material for {language} flashcards in session: {session_id}, source={source_name or 'ALL'}")
-        where_filter = {"session_id": session_id}
-        if source_name:
-            where_filter = {"$and": [{"session_id": session_id}, {"source": source_name}]}
-
-        results = db.get(where=where_filter, include=["documents", "metadatas"])
-        docs = results.get("documents", [])
+        # Always fetch session docs first, then apply robust source filtering in Python.
+        # This avoids false misses from strict metadata filter behavior across stores.
+        results = db.get(where={"session_id": session_id}, include=["documents", "metadatas"])
+        session_docs = results.get("documents", [])
         metadatas = results.get("metadatas", [])
-        if source_name and docs and metadatas:
-            # Defensive fallback: enforce source match in case backend filter behavior changes.
+        docs = session_docs
+        if source_name and session_docs and metadatas:
+            target_source = _canonical_source_name(source_name)
             filtered_docs = []
-            for doc, metadata in zip(docs, metadatas):
-                doc_source = str((metadata or {}).get("source", "")).strip()
-                if doc_source.lower() == source_name.lower():
+            for doc, metadata in zip(session_docs, metadatas):
+                doc_source = _canonical_source_name((metadata or {}).get("source", ""))
+                if doc_source == target_source:
                     filtered_docs.append(doc)
             docs = filtered_docs
+
         if not docs:
+            # Distinguish true indexing state from source mismatch to avoid indefinite "processing" UX.
+            if source_name and session_docs:
+                print(
+                    f"No source-matched docs found for session_id={session_id}, "
+                    f"source={source_name}. Session docs exist: {len(session_docs)}"
+                )
+                return {"status": "source_not_found", "flashcards": []}
             print(f"No documents found for session_id={session_id}, source={source_name}")
             return {"status": "processing", "flashcards": []}
 
