@@ -135,9 +135,20 @@ def generate_flashcards(session_id: str, language: str = "english", source: Opti
 
         print(f"Retrieving material for {language} flashcards in session: {session_id}, source={source_name or 'ALL'}")
         where_filter = {"session_id": session_id}
+        if source_name:
+            where_filter = {"$and": [{"session_id": session_id}, {"source": source_name}]}
 
-        results = db.get(where=where_filter, include=["documents"])
+        results = db.get(where=where_filter, include=["documents", "metadatas"])
         docs = results.get("documents", [])
+        metadatas = results.get("metadatas", [])
+        if source_name and docs and metadatas:
+            # Defensive fallback: enforce source match in case backend filter behavior changes.
+            filtered_docs = []
+            for doc, metadata in zip(docs, metadatas):
+                doc_source = str((metadata or {}).get("source", "")).strip()
+                if doc_source.lower() == source_name.lower():
+                    filtered_docs.append(doc)
+            docs = filtered_docs
         if not docs:
             print(f"No documents found for session_id={session_id}, source={source_name}")
             return {"status": "processing", "flashcards": []}
