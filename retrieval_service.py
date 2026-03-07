@@ -1,6 +1,6 @@
 import os
 import json
-from typing import List, Dict
+from typing import List, Dict, Optional, Set
 from bedrock_utils import invoke_bedrock_text
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -58,7 +58,13 @@ Rules for your response:
 10. **Google Search**: You have access to Google Search. If the provided context is insufficient or if the user asks about recent events, latest breakthroughs, or information outside the documents, use Google Search to provide accurate, grounded information. Always prioritize the teacher's documents for core course topics.
 """
 
-def get_doubt_assistant_response(query: str, session_id: str, language: str = "english", is_individual: bool = False):
+def get_doubt_assistant_response(
+    query: str,
+    session_id: str,
+    language: str = "english",
+    is_individual: bool = False,
+    allowed_sources: Optional[Set[str]] = None
+):
     """
     Main retrieval pipeline for the Doubt Assistant.
     """
@@ -81,20 +87,24 @@ def get_doubt_assistant_response(query: str, session_id: str, language: str = "e
             filter={"session_id": session_id}
         )
     print(f"📊 Found {len(results)} chunks in ChromaDB")
-    
-    if not results and not is_individual:
-        # Fallback to general search if no session-specific data (only for Institution track)
-        print("⚠️ No session-specific results found. Checking without filter...")
-        results = db.max_marginal_relevance_search(
-            query,
-            k=5,
-            fetch_k=10,
-            lambda_mult=0.5
+
+    normalized_allowed_sources = {
+        str(src).strip().casefold() for src in (allowed_sources or set()) if str(src).strip()
+    }
+    if normalized_allowed_sources:
+        filtered_results = []
+        for doc in results:
+            source = str((doc.metadata or {}).get("source", "")).strip().casefold()
+            if source in normalized_allowed_sources:
+                filtered_results.append(doc)
+        print(
+            f"📎 Source filtering enabled: {len(filtered_results)}/{len(results)} chunks match "
+            f"{len(normalized_allowed_sources)} allowed files"
         )
-        print(f"📊 Found {len(results)} chunks in Global fallback")
-        
-        if not results:
-            return "I'm sorry, I couldn't find any information related to that in your uploaded documents. Could you try rephrasing or asking about a different topic?"
+        results = filtered_results
+
+    if not results and not is_individual:
+        return "I'm sorry, I couldn't find relevant information in the classroom PDFs for this class. Please make sure the correct class is selected and files are fully ingested."
 
     # 3. Format Context
     context_text = ""

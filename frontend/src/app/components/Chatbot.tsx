@@ -16,6 +16,8 @@ mermaid.initialize({
     securityLevel: 'loose',
 });
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+
 const Mermaid = ({ chart }: { chart: string }) => {
     const ref = useRef<HTMLDivElement>(null);
 
@@ -95,7 +97,8 @@ export const Chatbot: React.FC<ChatbotProps> = ({ sessionId, track = 'institutio
         console.log("🤖 Chatbot Request:", { selectedClassroom, input, language });
 
         try {
-            const url = `http://localhost:8000/ask?session_id=${sessionId || selectedClassroom}&query=${encodeURIComponent(input)}&language=${language}&track=${track}`;
+            const activeSessionId = selectedClassroom;
+            const url = `${API_BASE_URL}/ask?session_id=${encodeURIComponent(activeSessionId)}&query=${encodeURIComponent(input)}&language=${language}&track=${track}`;
             console.log("🔗 Fetching URL:", url);
             const response = await fetch(url, {
                 method: 'POST',

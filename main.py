@@ -64,6 +64,16 @@ def is_allowed_file(filename: str) -> bool:
     return any(filename.lower().endswith(ext) for ext in ALLOWED_EXTENSIONS)
 
 
+def _is_portal_visible_material_filename(filename: str) -> bool:
+    normalized = os.path.basename(filename or "").strip().lower()
+    if not normalized:
+        return False
+    # Internal teacher-review artifacts should not be treated as classroom materials.
+    if normalized.startswith("teacher_review_"):
+        return False
+    return is_allowed_file(normalized)
+
+
 def _load_json_file(path: str) -> Dict[str, Any]:
     if not os.path.exists(path):
         return {}
@@ -256,7 +266,7 @@ def _sync_material_records_for_classroom(conn: sqlite3.Connection, classroom_id:
         return
 
     for filename in os.listdir(session_dir):
-        if not is_allowed_file(filename):
+        if not _is_portal_visible_material_filename(filename):
             continue
         file_path = os.path.join(session_dir, filename)
         if not os.path.isfile(file_path):
@@ -288,6 +298,27 @@ def _list_session_materials(session_id: str, conn: sqlite3.Connection) -> List[D
             "description": f"Posted new material: {row['filename']}"
         }
         for row in rows
+    ]
+
+
+def _get_allowed_material_filenames(session_id: str, conn: sqlite3.Connection) -> List[str]:
+    """
+    Returns material filenames that are visible in classroom portals for this session.
+    Only these sources should be used for classroom doubt retrieval.
+    """
+    _sync_material_records_for_classroom(conn, session_id)
+    rows = conn.execute(
+        """
+        SELECT filename
+        FROM classroom_materials
+        WHERE classroom_id = ?
+        """,
+        (session_id,)
+    ).fetchall()
+    return [
+        str(row["filename"]).strip()
+        for row in rows
+        if _is_portal_visible_material_filename(str(row["filename"]).strip())
     ]
 
 
@@ -594,7 +625,17 @@ async def ask_question(session_id: str, query: str, language: str = "english", t
     """
     try:
         is_individual = track == "individual"
-        response = get_doubt_assistant_response(query, session_id, language, is_individual)
+        allowed_sources = None
+        if not is_individual and session_id and session_id != "undefined":
+            conn = _get_db_connection()
+            try:
+                material_filenames = _get_allowed_material_filenames(session_id, conn)
+                if material_filenames:
+                    allowed_sources = set(material_filenames)
+                    print(f"📚 Restricting retrieval to {len(allowed_sources)} classroom materials for session {session_id}")
+            finally:
+                conn.close()
+        response = get_doubt_assistant_response(query, session_id, language, is_individual, allowed_sources)
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
