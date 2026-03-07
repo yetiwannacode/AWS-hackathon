@@ -82,6 +82,15 @@ def _contains_any(text: str, keywords: List[str]) -> bool:
     return any(keyword in text for keyword in keywords)
 
 
+def _is_dsa_topic(roadmap_title: str, day: Dict[str, Any]) -> bool:
+    content = _normalize_text(
+        roadmap_title,
+        day.get("topic", ""),
+        " ".join(day.get("learning_objectives", []) or [])
+    )
+    return _contains_any(content, DSA_KEYWORDS)
+
+
 def _infer_practice_source(roadmap_title: str, day: Dict[str, Any]) -> str:
     content = _normalize_text(
         roadmap_title,
@@ -110,6 +119,17 @@ def _build_practice_url(source: str, day: Dict[str, Any]) -> str:
         return "https://www.hackerrank.com/dashboard"
 
     return ""
+
+
+def _is_valid_practice_url(source: str, url: str) -> bool:
+    value = (url or "").strip().lower()
+    if not value:
+        return False
+    if source == "leetcode":
+        return value.startswith("https://leetcode.com/") or value.startswith("http://leetcode.com/")
+    if source == "hackerrank":
+        return value.startswith("https://www.hackerrank.com/") or value.startswith("http://www.hackerrank.com/")
+    return True
 
 
 def _build_fallback_practice_question(day: Dict[str, Any]) -> Dict[str, str]:
@@ -221,14 +241,26 @@ def _normalize_day_youtube_fields(roadmap_title: str, day: Dict[str, Any], fallb
 def _normalize_day_practice_fields(roadmap_title: str, day: Dict[str, Any]) -> None:
     source = (day.get("practice_source") or "").strip().lower()
     inferred_source = _infer_practice_source(roadmap_title, day)
+    is_dsa = _is_dsa_topic(roadmap_title, day)
+
+    # Strict rule: DSA roadmaps must be LeetCode-only.
+    if is_dsa:
+        source = "leetcode"
+
     if source not in ("hackerrank", "leetcode", "ai_generated"):
         source = inferred_source
 
     practice_url = (day.get("practice_url") or "").strip()
     is_coding_topic = bool(inferred_source)
 
-    if is_coding_topic and not practice_url and source in ("hackerrank", "leetcode"):
-        practice_url = _build_practice_url(source, day)
+    # For coding topics, always canonicalize platform URLs to stable topic pages.
+    # This avoids brittle model-generated deep links that often 404.
+    if is_coding_topic and source in ("hackerrank", "leetcode"):
+        canonical_url = _build_practice_url(source, day)
+        if canonical_url and _is_valid_practice_url(source, canonical_url):
+            practice_url = canonical_url
+        elif not _is_valid_practice_url(source, practice_url):
+            practice_url = ""
 
     practice_question = day.get("practice_question")
     if is_coding_topic and not practice_url:
