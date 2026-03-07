@@ -4,10 +4,11 @@ import random
 import time
 import hashlib
 from collections import Counter
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 from bedrock_utils import invoke_bedrock_text
 from dotenv import load_dotenv
 from unstructured.partition.pdf import partition_pdf
+from json_repair import repair_json
 
 load_dotenv(override=True)
 
@@ -19,6 +20,106 @@ PROGRESS_FILE = os.path.join(DATA_ROOT, "user_progress.json")
 COOLDOWN_SECONDS = 600 # 10 Minutes
 
 os.makedirs(ASSESSMENT_DIR, exist_ok=True)
+
+
+def _clean_model_json_text(content: str) -> str:
+    text = (content or "").strip()
+    if text.startswith("```json"):
+        text = text[7:]
+    elif text.startswith("```"):
+        text = text[3:]
+    if text.endswith("```"):
+        text = text[:-3]
+    return text.strip()
+
+
+def _coerce_questions(payload: Any) -> List[Dict[str, Any]]:
+    if isinstance(payload, list):
+        return [q for q in payload if isinstance(q, dict)]
+
+    if isinstance(payload, dict):
+        direct = payload.get("questions")
+        if isinstance(direct, list):
+            return [q for q in direct if isinstance(q, dict)]
+
+        # Fallback: find first list-of-dicts field that looks like questions.
+        for value in payload.values():
+            if isinstance(value, list) and value and all(isinstance(i, dict) for i in value):
+                return value
+    return []
+
+
+def _parse_questions_from_model_output(content: str) -> List[Dict[str, Any]]:
+    cleaned = _clean_model_json_text(content)
+    if not cleaned:
+        return []
+
+    # First pass: strict JSON.
+    try:
+        return _coerce_questions(json.loads(cleaned))
+    except Exception:
+        pass
+
+    # Second pass: repair slightly malformed JSON.
+    try:
+        repaired_obj = repair_json(cleaned, return_objects=True)
+        questions = _coerce_questions(repaired_obj)
+        if questions:
+            return questions
+    except Exception:
+        pass
+
+    # Third pass: bracket slicing fallback (legacy behavior, but safer).
+    try:
+        list_start = cleaned.find("[")
+        list_end = cleaned.rfind("]")
+        if list_start != -1 and list_end != -1 and list_end > list_start:
+            return _coerce_questions(json.loads(cleaned[list_start:list_end + 1]))
+    except Exception:
+        pass
+
+    return []
+
+
+def _normalize_questions(questions: List[Dict[str, Any]], level: int) -> List[Dict[str, Any]]:
+    normalized: List[Dict[str, Any]] = []
+    for idx, q in enumerate(questions):
+        question_text = str(q.get("question", "")).strip()
+        if not question_text:
+            continue
+
+        item = dict(q)
+        item["id"] = int(q.get("id", idx + 1) or idx + 1)
+        item["question"] = question_text
+
+        if level in (1, 2):
+            options = q.get("options")
+            if not isinstance(options, list):
+                continue
+            options = [str(opt).strip() for opt in options if str(opt).strip()]
+            if len(options) < 2:
+                continue
+            item["options"] = options
+            if "correct_answer" in q:
+                item["correct_answer"] = str(q.get("correct_answer", "")).strip()
+        else:
+            item.setdefault("type", "short_answer")
+
+        normalized.append(item)
+
+    return normalized
+
+
+def _is_valid_assessment_payload(data: Any, level: int) -> bool:
+    if not isinstance(data, dict):
+        return False
+    if int(data.get("level", level) or level) != level:
+        return False
+    questions = data.get("questions")
+    if not isinstance(questions, list):
+        return False
+    min_expected = 5 if level == 3 else 10
+    return len(questions) >= min_expected
 
 def get_session_text(session_id: str) -> str:
     """
@@ -62,13 +163,21 @@ def get_sorted_files(session_id: str):
 
 def get_current_chapter_context(session_id: str, chapter_file: dict) -> str:
     """Extracts text ONLY from the specific chapter file."""
-    try:
-        from unstructured.partition.pdf import partition_pdf
-        elements = partition_pdf(filename=chapter_file["path"], strategy="fast")
-        return "\n".join([str(e) for e in elements])[:40000]
-    except Exception as e:
-        print(f"Error reading chapter {chapter_file['filename']}: {e}")
-        return ""
+    file_path = chapter_file["path"]
+    strategies = [
+        {"strategy": "fast"},
+        {"strategy": "hi_res", "infer_table_structure": True},
+    ]
+
+    for params in strategies:
+        try:
+            elements = partition_pdf(filename=file_path, **params)
+            text = "\n".join([str(e) for e in elements]).strip()
+            if text:
+                return text[:40000]
+        except Exception as e:
+            print(f"Chapter read fallback failed ({chapter_file['filename']}, {params.get('strategy')}): {e}")
+    return ""
 
 def get_assessment_prompt(level: int, context: str) -> str:
     if level == 1:
@@ -172,54 +281,70 @@ def generate_assessment(session_id: str, level: int, chapter_index: Optional[int
     current_file = files[chapter_index]
     cache_file = _assessment_cache_file(session_id, current_file["filename"], level)
     if os.path.exists(cache_file):
-        with open(cache_file, "r") as f:
-            return json.load(f)
+        try:
+            with open(cache_file, "r") as f:
+                cached = json.load(f)
+            if _is_valid_assessment_payload(cached, level):
+                return cached
+            print(f"Invalid cached assessment detected, regenerating: {cache_file}")
+        except Exception as e:
+            print(f"Failed reading cached assessment, regenerating ({cache_file}): {e}")
+        try:
+            os.remove(cache_file)
+        except Exception:
+            pass
 
     # 3. Get Context for THIS Chapter ONLY
     context = get_current_chapter_context(session_id, current_file)
     if not context:
         return {"error": f"Failed to load content for {current_file['filename']}"}
 
-    # 3. Generate
-    prompt = get_assessment_prompt(level, context)
-    
-    try:
-        content = invoke_bedrock_text(prompt, temperature=0.3, max_tokens=2500).strip()
-        
-        # Clean Markdown
-        if content.startswith("```json"):
-            content = content[7:-3].strip()
-        elif content.startswith("```"):
-            content = content[3:-3].strip()
-            
+    # 4. Generate with retries and parser fallback.
+    base_prompt = get_assessment_prompt(level, context)
+    min_expected = 5 if level == 3 else 10
+    last_error = "unknown"
+
+    for attempt in range(1, 4):
         try:
-            assessment_data = json.loads(content)
-        except json.JSONDecodeError:
-            start = content.find("[")
-            end = content.rfind("]")
-            if start != -1 and end != -1:
-                assessment_data = json.loads(content[start:end+1])
-            else:
-                raise
-        
-        # Add metadata like timer
-        result = {
-            "level": level,
-            "timer_seconds": 600,
-            "questions": assessment_data,
-            "chapter_name": current_file['filename'],
-            "chapter_index": chapter_index
-        }
-        
-        # Save to Cache
-        with open(cache_file, "w") as f:
-            json.dump(result, f, indent=4)
-            
-        return result
-        
-    except Exception as e:
-        print(f"Assessment Generation Failed: {e}")
-        return {"error": "Failed to generate assessment."}
+            retry_suffix = ""
+            if attempt > 1:
+                retry_suffix = (
+                    "\n\nIMPORTANT OUTPUT FORMAT:\n"
+                    f"- Return ONLY a JSON array with exactly {min_expected} question objects.\n"
+                    "- Do NOT wrap in markdown.\n"
+                    "- Ensure valid JSON syntax."
+                )
+            prompt = f"{base_prompt}{retry_suffix}"
+
+            content = invoke_bedrock_text(prompt, temperature=0.2, max_tokens=2500).strip()
+            parsed_questions = _parse_questions_from_model_output(content)
+            normalized_questions = _normalize_questions(parsed_questions, level)
+
+            if len(normalized_questions) < min_expected:
+                last_error = (
+                    f"Insufficient questions for level {level}: "
+                    f"expected>={min_expected}, got={len(normalized_questions)}"
+                )
+                continue
+
+            result = {
+                "level": level,
+                "timer_seconds": 600,
+                "questions": normalized_questions,
+                "chapter_name": current_file["filename"],
+                "chapter_index": chapter_index,
+            }
+
+            with open(cache_file, "w") as f:
+                json.dump(result, f, indent=4)
+
+            return result
+        except Exception as e:
+            last_error = str(e)
+            print(f"Assessment generation attempt {attempt} failed (L{level}, {current_file['filename']}): {e}")
+
+    print(f"Assessment Generation Failed (L{level}, {current_file['filename']}): {last_error}")
+    return {"error": f"Failed to generate level {level} assessment for {current_file['filename']}"}
 
 def generate_remedial_plan(mistakes: List[Dict]) -> Dict:
     """
@@ -589,7 +714,8 @@ def get_all_assessments_for_teacher(session_id: str):
         chapter_data = {
             "chapter_name": file_info['filename'],
             "chapter_index": idx,
-            "quests": []
+            "quests": [],
+            "errors": []
         }
         
         # Generate assessments for all 3 levels
@@ -600,6 +726,11 @@ def get_all_assessments_for_teacher(session_id: str):
                     "level": level,
                     "questions": assessment.get("questions", []),
                     "timer_seconds": assessment.get("timer_seconds", 600)
+                })
+            else:
+                chapter_data["errors"].append({
+                    "level": level,
+                    "message": assessment.get("error", "Generation failed")
                 })
         
         chapters.append(chapter_data)
