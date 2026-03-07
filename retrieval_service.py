@@ -1,10 +1,9 @@
 import os
 import json
 from typing import List, Dict
-from langchain_google_genai import ChatGoogleGenerativeAI
+from bedrock_utils import invoke_bedrock_text
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_core.messages import HumanMessage, SystemMessage
 from tenacity import (
     retry,
     stop_after_attempt,
@@ -18,12 +17,10 @@ load_dotenv(override=True)
 # --- CONFIG ---
 CHROMA_PATH = "./chroma_db"
 LOCAL_EMBEDDINGS = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-# Temperature set to 0.2 for creative analogies while staying grounded
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash", 
-    temperature=0.2,
-    model_kwargs={"tools": [{"google_search": {}}]}
-)
+
+class BedrockResponse:
+    def __init__(self, content: str):
+        self.content = content
 
 @retry(
     stop=stop_after_attempt(5),
@@ -31,9 +28,10 @@ llm = ChatGoogleGenerativeAI(
     retry=retry_if_exception_type(Exception),
     before_sleep=lambda retry_state: print(f"⚠️ API Limit hit (Retrieval). Retrying in {retry_state.next_action.sleep} seconds...")
 )
-def generate_ai_response(messages):
+def generate_ai_response(prompt: str):
     try:
-        return llm.invoke(messages)
+        text = invoke_bedrock_text(prompt, temperature=0.2, max_tokens=2000).strip()
+        return BedrockResponse(text)
     except Exception as e:
         print(f"DEBUG: API call failed with error: {str(e)}")
         # If it's a 429, we want to know the EXACT message (e.g., TPM, RPM, or Account limit)
@@ -109,13 +107,6 @@ def get_doubt_assistant_response(query: str, session_id: str, language: str = "e
     # 4. Multilingual Prompt logic
     lang_instruction = ""
     if language.lower() == "hindi":
-        lang_instruction = "\n**LANGUAGE RULE**: Respond in a mix of Hindi and English. Explain the concepts in Hindi, but keep all technical terms, definitions, and context-specific labels in English exactly as they appear in any provided documentation. speak in a natural 'Hinglish' style."
-    elif language.lower() == "telugu":
-        lang_instruction = "\n**LANGUAGE RULE**: Respond in a mix of Telugu and English. Explain the concepts in Telugu, but keep all technical terms, definitions, and context-specific labels in English exactly as they appear in any provided documentation."
-
-    # 4. Multilingual Prompt logic
-    lang_instruction = ""
-    if language.lower() == "hindi":
         lang_instruction = "\n**LANGUAGE RULE**: Respond in a mix of Hindi and English. Explain the concepts in Hindi, but keep all technical terms, definitions, and context-specific labels in English exactly as they appear in the documentation. speak in a natural 'Hinglish' style."
     elif language.lower() == "telugu":
         lang_instruction = "\n**LANGUAGE RULE**: Respond in a mix of Telugu and English. Explain the concepts in Telugu, but keep all technical terms, definitions, and context-specific labels in English exactly as they appear in the documentation."
@@ -151,13 +142,9 @@ def get_doubt_assistant_response(query: str, session_id: str, language: str = "e
 
     Please explain this to the student using the rules provided in your system prompt. {lang_instruction} {teacher_instructions}
     """
-
-    messages = [
-        SystemMessage(content=SYSTEM_PROMPT),
-        HumanMessage(content=student_prompt)
-    ]
-
-    response = generate_ai_response(messages)
+    
+    full_prompt = f"{SYSTEM_PROMPT}\n\n{student_prompt}"
+    response = generate_ai_response(full_prompt)
     return response.content
 
 if __name__ == "__main__":

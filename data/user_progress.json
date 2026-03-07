@@ -98,5 +98,62 @@
         "mistakes": [],
         "history": [],
         "unlocked_level": 1
+    },
+    "73a50a8d::ayush mukherjee": {
+        "xp": 0,
+        "unlocked_level": 1,
+        "current_chapter_index": 0,
+        "history": [
+            {
+                "level": 1,
+                "score": 7,
+                "max_score": 10,
+                "passed": false,
+                "xp_gained": 0,
+                "timestamp": "1772806969.4001167"
+            }
+        ],
+        "mistakes": [
+            {
+                "question": "What is the main advantage of using the 'synchronized' keyword in Java?",
+                "correct_answer": "It resolves data inconsistency problems",
+                "explanation": "The main advantage of the 'synchronized' keyword is that it resolves data inconsistency problems when multiple threads operate on the same object.",
+                "user_answer": "It increases waiting time of threads",
+                "level": 1,
+                "comments": "",
+                "timestamp": "1772806969.4001167"
+            },
+            {
+                "question": "What is the difference between 'notify()' and 'notifyAll()' in Java?",
+                "correct_answer": "'notify()' notifies one waiting thread, while 'notifyAll()' notifies all waiting threads",
+                "explanation": "The 'notify()' method notifies one waiting thread, while the 'notifyAll()' method notifies all waiting threads.",
+                "user_answer": "'notify()' notifies the thread with the highest priority, while 'notifyAll()' notifies all threads",
+                "level": 1,
+                "comments": "",
+                "timestamp": "1772806969.4001167"
+            }
+        ],
+        "retry_available_at": 1772832965.0411453,
+        "remedial_plan": {
+            "diagnosis": "Concept Gap: Misunderstood the definition of 'synchronized' keyword and the behavior of 'notify()' and 'notifyAll()'",
+            "explanation": "The 'synchronized' keyword ensures that only one thread can access a resource at a time, preventing data inconsistency. 'notify()' wakes up one waiting thread, while 'notifyAll()' wakes up all waiting threads.",
+            "practice_question": {
+                "question": "Which of the following statements is true about the 'synchronized' keyword and 'notify()' method in Java?",
+                "options": [
+                    "A:'synchronized' increases waiting time; 'notify()' wakes up the highest priority thread",
+                    "B:'synchronized' resolves data inconsistency; 'notify()' wakes up one waiting thread",
+                    "C:'synchronized' decreases waiting time; 'notifyAll()' wakes up all waiting threads",
+                    "D:'synchronized' is used for multi-threading; 'notify()' and 'notifyAll()' are not used together"
+                ],
+                "correct_answer": "B",
+                "explanation": "'synchronized' resolves data inconsistency by ensuring exclusive access to a resource, and 'notify()' wakes up one waiting thread."
+            }
+        }
+    },
+    "73a50a8d": {
+        "xp": 240,
+        "mistakes": [],
+        "history": [],
+        "unlocked_level": 1
     }
 }
